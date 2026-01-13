@@ -1993,10 +1993,11 @@ END:VCARD` } }
 
         const buttons = [{ buttonId: `${config.PREFIX}img ${q}`, buttonText: { displayText: "⏩ Next Image" }, type: 1 }];
 
+        case 'image': {
+    try {
         const buttonMessage = {
             image: { url: randomImage },
-            caption: `🖼️ *Image Search:* ${q}\n\n ${botName}`
-            footer: config.FOOTER || '> QUEEN ASHI MINI',
+            caption: `🖼️ *Image Search:* ${q}\n\n${botName}`,
             buttons: buttons,
             headerType: 4,
             contextInfo: { mentionedJid: [sender] }
@@ -2009,8 +2010,7 @@ END:VCARD` } }
         await socket.sendMessage(sender, { text: '❌ Failed to fetch images.' }, { quoted: botMention });
     }
     break;
-}
-
+			}
 
 
 
