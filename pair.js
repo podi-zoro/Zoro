@@ -1140,12 +1140,13 @@ END:VCARD`
 
     // Final output
     return await socket.sendMessage(sender, {
-        text: `*Pong: ${final - inital} ms\n*`,
+        text: `*Pong : ${final - inital} ms*\n`,
         edit: ping.key
     });
 }
-//VV COM ADD
-case 'vv': {
+
+case 'vv':
+case 'viewonce': {
     // Reaction when command starts
     await socket.sendMessage(sender, {
         react: { text: "🐳", key: msg.key }
@@ -1158,58 +1159,169 @@ case 'vv': {
         }, { quoted: msg });
     }
 
-    // Check if replied to a view-once message
+    // Check if replied to a message
     if (!msg.quoted) {
         return await socket.sendMessage(sender, {
             text: "*🍁 Please reply to a view once message!*"
         }, { quoted: msg });
     }
 
-    try {
-        // Download & send the retrieved content directly
-        const buffer = await msg.quoted.download();
-        const mtype = msg.quoted.mtype;
+    // Check if it's a view-once message
+    const quoted = msg.quoted;
+    const isViewOnce = 
+        quoted.message?.viewOnceMessage ||
+        quoted.message?.viewOnceMessageV2 ||
+        quoted.message?.viewOnceMessageV2Extension ||
+        quoted.type?.includes('view_once');
 
+    if (!isViewOnce) {
+        return await socket.sendMessage(sender, {
+            text: "*❌ This is not a view once message!*"
+        }, { quoted: msg });
+    }
+
+    try {
+        // Get the actual view once message data
+        let viewOnceData = null;
+        if (quoted.message?.viewOnceMessage) {
+            viewOnceData = quoted.message.viewOnceMessage;
+        } else if (quoted.message?.viewOnceMessageV2) {
+            viewOnceData = quoted.message.viewOnceMessageV2;
+        } else if (quoted.message?.viewOnceMessageV2Extension) {
+            viewOnceData = quoted.message.viewOnceMessageV2Extension;
+        } else {
+            viewOnceData = quoted;
+        }
+
+        // Extract media type
+        let mtype = "";
+        let mimetype = "";
+        let caption = quoted.text || "";
+        
+        // Determine message type from viewOnceData
+        if (viewOnceData.message?.imageMessage) {
+            mtype = "imageMessage";
+            mimetype = viewOnceData.message.imageMessage.mimetype || "image/jpeg";
+            caption = viewOnceData.message.imageMessage.caption || caption;
+        } 
+        else if (viewOnceData.message?.videoMessage) {
+            mtype = "videoMessage";
+            mimetype = viewOnceData.message.videoMessage.mimetype || "video/mp4";
+            caption = viewOnceData.message.videoMessage.caption || caption;
+        }
+        else if (viewOnceData.message?.audioMessage) {
+            mtype = "audioMessage";
+            mimetype = viewOnceData.message.audioMessage.mimetype || "audio/mp4";
+        }
+        else if (viewOnceData.message?.documentMessage) {
+            mtype = "documentMessage";
+            mimetype = viewOnceData.message.documentMessage.mimetype || "application/octet-stream";
+        }
+        else {
+            // Try from quoted directly
+            mtype = quoted.mtype || quoted.type || "";
+            mimetype = quoted.mimetype || "";
+        }
+
+        // Download the media
+        let buffer;
+        try {
+            // Method 1: Use quoted.download() if available
+            if (typeof quoted.download === 'function') {
+                buffer = await quoted.download();
+            } 
+            // Method 2: Use socket.downloadMediaMessage()
+            else if (typeof socket.downloadMediaMessage === 'function') {
+                buffer = await socket.downloadMediaMessage(quoted);
+            }
+            // Method 3: Manual download from URL
+            else if (viewOnceData.message?.[mtype]?.url) {
+                const mediaUrl = viewOnceData.message[mtype].url;
+                const res = await fetch(mediaUrl);
+                buffer = await res.buffer();
+            } else {
+                throw new Error("No download method available");
+            }
+        } catch (downloadError) {
+            console.error("Download error:", downloadError);
+            return await socket.sendMessage(sender, {
+                text: "❌ Failed to download media. Please try again."
+            }, { quoted: msg });
+        }
+
+        if (!buffer || buffer.length === 0) {
+            return await socket.sendMessage(sender, {
+                text: "❌ No media content found."
+            }, { quoted: msg });
+        }
+
+        // Prepare message content based on type
         let messageContent = {};
+        
         switch (mtype) {
             case "imageMessage":
+            case "image":
                 messageContent = {
                     image: buffer,
-                    caption: msg.quoted.text || '',
-                    mimetype: msg.quoted.mimetype || "image/jpeg"
+                    caption: caption,
+                    mimetype: mimetype || "image/jpeg"
                 };
                 break;
+                
             case "videoMessage":
+            case "video":
                 messageContent = {
                     video: buffer,
-                    caption: msg.quoted.text || '',
-                    mimetype: msg.quoted.mimetype || "video/mp4"
+                    caption: caption,
+                    mimetype: mimetype || "video/mp4"
                 };
                 break;
+                
             case "audioMessage":
+            case "audio":
                 messageContent = {
                     audio: buffer,
                     mimetype: "audio/mp4",
-                    ptt: msg.quoted.ptt || false
+                    ptt: quoted.ptt || false
                 };
                 break;
+                
+            case "documentMessage":
+            case "document":
+                const ext = mimetype.split('/')[1] || 'bin';
+                messageContent = {
+                    document: buffer,
+                    mimetype: mimetype,
+                    fileName: `viewonce_${Date.now()}.${ext}`,
+                    caption: caption || "View Once Document"
+                };
+                break;
+                
             default:
-                return await socket.sendMessage(sender, {
-                    text: "❌ Only image, video, and audio messages are supported"
-                }, { quoted: msg });
+                // Send as document if type is unknown
+                messageContent = {
+                    document: buffer,
+                    fileName: `viewonce_${Date.now()}.file`,
+                    caption: "View Once Media"
+                };
         }
 
+        // Send success message
+        await socket.sendMessage(sender, {
+            text: "✅ *View once message retrieved successfully!*"
+        }, { quoted: msg });
+
+        // Send the retrieved media
         await socket.sendMessage(sender, messageContent, { quoted: msg });
 
     } catch (error) {
         console.error("vv Error:", error);
         await socket.sendMessage(sender, {
-            text: "❌ Error fetching vv message:\n" + error.message
+            text: `❌ Error fetching vv message:\n${error.message}`
         }, { quoted: msg });
     }
     break;
-}
-
+		}
 			  
 case 'activesessions':
 case 'active':
