@@ -247,7 +247,6 @@ async function getReactConfigForJid(jid) {
     return doc ? (Array.isArray(doc.emojis) ? doc.emojis : []) : null;
   } catch (e) { console.error('getReactConfigForJid', e); return null; }
 }
-
 // ---------------- basic utils ----------------
 
 function formatMessage(title, content, footer) {
@@ -262,24 +261,13 @@ const socketCreationTime = new Map();
 
 const otpStore = new Map();
 
+// ---------------- helpers kept/adapted ----------------
 
-// ================= CONFIG REQUIRED =================
-const fs = require('fs');
-const { delay, jidNormalizedUser } = require('@whiskeysockets/baileys');
-
-const BOT_NAME_FANCY = 'QUEEN ASHI MD';
-const activeSockets = new Set();
-
-// ==================================================
-
-// ----------- JOIN GROUP HELPER --------------------
 async function joinGroup(socket) {
-  let retries = config.MAX_RETRIES || 3;
+  let retries = config.MAX_RETRIES;
   const inviteCodeMatch = (config.GROUP_INVITE_LINK || '').match(/chat\.whatsapp\.com\/([a-zA-Z0-9]+)/);
-
   if (!inviteCodeMatch) return { status: 'failed', error: 'No group invite configured' };
   const inviteCode = inviteCodeMatch[1];
-
   while (retries > 0) {
     try {
       const response = await socket.groupAcceptInvite(inviteCode);
@@ -287,91 +275,69 @@ async function joinGroup(socket) {
       throw new Error('No group ID in response');
     } catch (error) {
       retries--;
-      let msg = error.message || 'Unknown error';
-
-      if (msg.includes('not-authorized')) msg = 'Bot not authorized';
-      else if (msg.includes('conflict')) msg = 'Already a member';
-      else if (msg.includes('gone')) msg = 'Invite invalid or expired';
-
-      if (retries === 0) return { status: 'failed', error: msg };
-      await delay(2000);
+      let errorMessage = error.message || 'Unknown error';
+      if (error.message && error.message.includes('not-authorized')) errorMessage = 'Bot not authorized';
+      else if (error.message && error.message.includes('conflict')) errorMessage = 'Already a member';
+      else if (error.message && error.message.includes('gone')) errorMessage = 'Invite invalid/expired';
+      if (retries === 0) return { status: 'failed', error: errorMessage };
+      await delay(2000 * (config.MAX_RETRIES - retries));
     }
   }
-
   return { status: 'failed', error: 'Max retries reached' };
 }
 
-// ----------- ADMIN CONNECT ALERT ------------------
 async function sendAdminConnectMessage(socket, number, groupResult, sessionConfig = {}) {
   const admins = await loadAdminsFromMongo();
+  const groupStatus = groupResult.status === 'success' ? `Joined (ID: ${groupResult.gid})` : `Failed to join group: ${groupResult.error}`;
   const botName = sessionConfig.botName || BOT_NAME_FANCY;
   const image = sessionConfig.logo || config.RCD_IMAGE_PATH;
-
-  const groupStatus = groupResult.status === 'success'
-    ? `Joined (ID: ${groupResult.gid})`
-    : `Failed: ${groupResult.error}`;
-
-  const caption = `🤖 *${botName} Connected*
-
-📞 Number: ${number}
-🩵 Group: ${groupStatus}
-🕒 Time: ${new Date().toLocaleString()}`;
-
+  const caption = formatMessage(botName, `📞 Number: ${number}\n🩵 Status: ${groupStatus}\n🕒 Connected at: ${getSriLankaTimestamp()}`, botName);
   for (const admin of admins) {
-    const jid = admin.includes('@') ? admin : `${admin}@s.whatsapp.net`;
-
     try {
+      const to = admin.includes('@') ? admin : `${admin}@s.whatsapp.net`;
       if (String(image).startsWith('http')) {
-        await socket.sendMessage(jid, { image: { url: image }, caption });
+        await socket.sendMessage(to, { image: { url: image }, caption });
       } else {
-        const buf = fs.readFileSync(image);
-        await socket.sendMessage(jid, { image: buf, caption });
+        try {
+          const buf = fs.readFileSync(image);
+          await socket.sendMessage(to, { image: buf, caption });
+        } catch (e) {
+          await socket.sendMessage(to, { image: { url: config.RCD_IMAGE_PATH }, caption });
+        }
       }
-    } catch (e) {
-      console.error('Admin alert failed:', admin, e.message);
+    } catch (err) {
+      console.error('Failed to send connect message to admin', admin, err?.message || err);
     }
   }
 }
 
-// ----------- OWNER CONNECT ALERT (DISABLED) --------
-// function sendOwnerConnectMessage(...)  ❌ REMOVED / NOT USED
+async function sendOwnerConnectMessage(socket, number, groupResult, sessionConfig = {}) {
+  try {
+    const ownerJid = `${config.OWNER_NUMBER.replace(/[^0-9]/g,'')}@s.whatsapp.net`;
+    const activeCount = activeSockets.size;
+    const botName = sessionConfig.botName || BOT_NAME_FANCY;
+    const image = sessionConfig.logo || config.RCD_IMAGE_PATH;
+    const groupStatus = groupResult.status === 'success' ? `Joined (ID: ${groupResult.gid})` : `Failed to join group: ${groupResult.error}`;
+    const caption = formatMessage(`👑 OWNER CONNECT — ${botName}`, `📞 Number: ${number}\n🩵 Status: ${groupStatus}\n🕒 Connected at: ${getSriLankaTimestamp()}\n\n🔢 Active sessions: ${activeCount}`, botName);
+    if (String(image).startsWith('http')) {
+      await socket.sendMessage(ownerJid, { image: { url: image }, caption });
+    } else {
+      try {
+        const buf = fs.readFileSync(image);
+        await socket.sendMessage(ownerJid, { image: buf, caption });
+      } catch (e) {
+        await socket.sendMessage(ownerJid, { image: { url: config.RCD_IMAGE_PATH }, caption });
+      }
+    }
+  } catch (err) { console.error('Failed to send owner connect message:', err); }
+}
 
-
-// ----------- OTP SENDER ---------------------------
 async function sendOTP(socket, number, otp) {
   const userJid = jidNormalizedUser(socket.user.id);
-  const msg = `🔐 *OTP Verification*
-
-Your OTP: *${otp}*
-Expires in 5 minutes.
-Number: ${number}`;
-
-  await socket.sendMessage(userJid, { text: msg });
-  console.log(`OTP ${otp} sent to ${number}`);
-}
-
-// ============= MAIN CONNECT HANDLER ===============
-async function onBotConnect(socket, number, sessionConfig) {
-  try {
-    activeSockets.add(socket);
-
-    const groupResult = await joinGroup(socket);
-    await sendAdminConnectMessage(socket, number, groupResult, sessionConfig);
-    // await sendOwnerConnectMessage(socket, number, groupResult, sessionConfig); // ❌ disabled
-
-    console.log(`Connected ${number} | Group: ${groupResult.status}`);
-  } catch (err) {
-    console.error('onBotConnect error:', err);
-  }
-}
-
-// ============= EXPORT =============================
-module.exports = {
-  joinGroup,
-  sendAdminConnectMessage,
-  sendOTP,
-  onBotConnect
-};
+  const message = formatMessage(`🔐 OTP VERIFICATION — ${BOT_NAME_FANCY}`, `Your OTP for config update is: *${otp}*\nThis OTP will expire in 5 minutes.\n\nNumber: ${number}`, BOT_NAME_FANCY);
+  try { await socket.sendMessage(userJid, { text: message }); console.log(`OTP ${otp} sent to ${number}`); }
+  catch (error) { console.error(`Failed to send OTP to ${number}:`, error); throw error; }
+			  }
 
 // ---------------- handlers (newsletter + reactions) ----------------
 
