@@ -1347,7 +1347,7 @@ END:VCARD`
             videoUrl = first.url;
         }
         // call new mp3 API
-        const apiUrl = `https:///movanest.xyz/v2/ytmp3?url=${encodeURIComponent(videoUrl)}`;
+        const apiUrl = `https://chama-api-yt-dl.vercel.app/mp3?id=${encodeURIComponent(videoUrl)}`;
         const apiRes = await axios.get(apiUrl, { timeout: 15000 }).then(r => r.data).catch(e => null);
         if (!apiRes || !apiRes.status || !apiRes.results?.download?.url) {
             await socket.sendMessage(sender, { text: '*`MP3 API returned no download link`*' }, { quoted: botMention });
@@ -1447,7 +1447,7 @@ END:VCARD`
     }
     function convertYouTubeLink(input) {
         const videoId = extractYouTubeId(input);
-        if (videoId) return `https://www.youtube.com/watch?v=${videoId}`;
+        if (videoId) return `https://sadaslk-apis.vercel.app/api/v1/download/youtube?q=${videoId}`;
         return input;
     }
     // get message text
