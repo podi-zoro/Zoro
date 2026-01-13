@@ -1120,15 +1120,31 @@ END:VCARD`
   break;
 }
 
-case 'ping':
-                    await socket.sendMessage(sender, { react: { text: "🎀", key: msg.key } });
+//=======================================
+ case 'ping': {
+    // Reaction to show ping process start
+    await socket.sendMessage(sender, {
+        react: { text: "📡", key: msg.key }
+    });
 
-                    var inital = new Date().getTime();
-                    const { key } = await socket.sendMessage(sender, { text: '```Ping!!!```' });
-                    var final = new Date().getTime();
-                    await socket.sendMessage(sender, { text: '*Pong*  *' + (final - inital) + ' ms* ', edit: key });
+    var inital = new Date().getTime();
+    let ping = await socket.sendMessage(sender, { text: '*_CHEKING SPEED..._* ❗' });
+    var final = new Date().getTime();
 
-                break;
+    // Progress bar animation
+    await socket.sendMessage(sender, { text: '《 █▒▒▒▒▒▒▒▒▒▒▒》10%', edit: ping.key });
+    await socket.sendMessage(sender, { text: '《 ████▒▒▒▒▒▒▒▒》30%', edit: ping.key });
+    await socket.sendMessage(sender, { text: '《 ███████▒▒▒▒▒》50%', edit: ping.key });
+    await socket.sendMessage(sender, { text: '《 ██████████▒▒》80%', edit: ping.key });
+    await socket.sendMessage(sender, { text: '《 ████████████》100%', edit: ping.key });
+
+    // Final output
+    return await socket.sendMessage(sender, {
+        text: `✅ *Pong:* ${final - inital} ms\n !`,
+        edit: ping.key
+    });
+}
+
 			  
 case 'activesessions':
 case 'active':
