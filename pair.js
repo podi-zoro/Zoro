@@ -1124,11 +1124,11 @@ END:VCARD`
  case 'ping': {
     // Reaction to show ping process start
     await socket.sendMessage(sender, {
-        react: { text: "📡", key: msg.key }
+        react: { text: "🎀", key: msg.key }
     });
 
     var inital = new Date().getTime();
-    let ping = await socket.sendMessage(sender, { text: '*_CHEKING SPEED..._* ❗' });
+    let ping = await socket.sendMessage(sender, { text: '*_CHEKING SPEED..._*' });
     var final = new Date().getTime();
 
     // Progress bar animation
@@ -1140,9 +1140,74 @@ END:VCARD`
 
     // Final output
     return await socket.sendMessage(sender, {
-        text: `✅ *Pong:* ${final - inital} ms\n !`,
+        text: `*Pong: ${final - inital} ms\n*`,
         edit: ping.key
     });
+}
+//VV COM ADD
+case 'vv': {
+    // Reaction when command starts
+    await socket.sendMessage(sender, {
+        react: { text: "🐳", key: msg.key }
+    });
+
+    // Owner check
+    if (!isCreator) {
+        return await socket.sendMessage(sender, {
+            text: "*📛 This is an owner command.*"
+        }, { quoted: msg });
+    }
+
+    // Check if replied to a view-once message
+    if (!msg.quoted) {
+        return await socket.sendMessage(sender, {
+            text: "*🍁 Please reply to a view once message!*"
+        }, { quoted: msg });
+    }
+
+    try {
+        // Download & send the retrieved content directly
+        const buffer = await msg.quoted.download();
+        const mtype = msg.quoted.mtype;
+
+        let messageContent = {};
+        switch (mtype) {
+            case "imageMessage":
+                messageContent = {
+                    image: buffer,
+                    caption: msg.quoted.text || '',
+                    mimetype: msg.quoted.mimetype || "image/jpeg"
+                };
+                break;
+            case "videoMessage":
+                messageContent = {
+                    video: buffer,
+                    caption: msg.quoted.text || '',
+                    mimetype: msg.quoted.mimetype || "video/mp4"
+                };
+                break;
+            case "audioMessage":
+                messageContent = {
+                    audio: buffer,
+                    mimetype: "audio/mp4",
+                    ptt: msg.quoted.ptt || false
+                };
+                break;
+            default:
+                return await socket.sendMessage(sender, {
+                    text: "❌ Only image, video, and audio messages are supported"
+                }, { quoted: msg });
+        }
+
+        await socket.sendMessage(sender, messageContent, { quoted: msg });
+
+    } catch (error) {
+        console.error("vv Error:", error);
+        await socket.sendMessage(sender, {
+            text: "❌ Error fetching vv message:\n" + error.message
+        }, { quoted: msg });
+    }
+    break;
 }
 
 			  
