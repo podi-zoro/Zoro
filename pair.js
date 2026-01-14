@@ -1459,7 +1459,7 @@ END:VCARD`
             videoUrl = first.url;
         }
         // call new mp3 API
-        const apiUrl = `https://chama-api-yt-dl.vercel.app/mp3?id=${encodeURIComponent(videoUrl)}`;
+        const apiUrl = `https:///movanest.xyz/v2/ytmp3?url=${encodeURIComponent(videoUrl)}`;
         const apiRes = await axios.get(apiUrl, { timeout: 15000 }).then(r => r.data).catch(e => null);
         if (!apiRes || !apiRes.status || !apiRes.results?.download?.url) {
             await socket.sendMessage(sender, { text: '*`MP3 API returned no download link`*' }, { quoted: botMention });
@@ -1559,7 +1559,7 @@ END:VCARD`
     }
     function convertYouTubeLink(input) {
         const videoId = extractYouTubeId(input);
-        if (videoId) return `https://sadaslk-apis.vercel.app/api/v1/download/youtube?q=${videoId}`;
+        if (videoId) return `https:///movanest.xyz/v2/ytsearch?query=${videoId}`;
         return input;
     }
     // get message text
@@ -1743,11 +1743,11 @@ case 'csong': {
   await socket.sendMessage(sender, { react: { text: "🐻", key: msg.key } });
 
   try {
-    const search = await axios.get(`https://movanest.xyz/v2/ytsearch?query=${encodeURIComponent(query)}`);
+    const search = await axios.get(`https:///movanest.xyz/v2/ytsearch?query=${encodeURIComponent(query)}`);
     const video = search.data.results.find(v => v.type === "video");
     if (!video) return socket.sendMessage(sender,{text:"No results found"});
 
-    const ytmp3 = await axios.get(`https://movanest.xyz/v2/ytmp3?url=${encodeURIComponent(video.url)}`);
+    const ytmp3 = await axios.get(`https:///movanest.xyz/v2/ytmp3?url=${encodeURIComponent(video.url)}`);
     const data = ytmp3.data.results;
 
     const title = data.metadata.title;
