@@ -1838,100 +1838,84 @@ case 'csong': {
 }
    
 case 'menu': {
-  try {
-    await socket.sendMessage(sender, { react: { text: '🤖', key: msg.key } });
+  try { await socket.sendMessage(sender, { react: { text: "🚪", key: msg.key } }); } catch(e){}
 
+  try {
     const startTime = socketCreationTime.get(number) || Date.now();
     const uptime = Math.floor((Date.now() - startTime) / 1000);
     const hours = Math.floor(uptime / 3600);
     const minutes = Math.floor((uptime % 3600) / 60);
     const seconds = Math.floor(uptime % 60);
-    const usedMemory = Math.round(process.memoryUsage().heapUsed / 1024 / 1024);
-    const totalMemory = Math.round(os.totalmem() / 1024 / 1024);
 
     let userCfg = {};
-    try { if (number && typeof loadUserConfigFromMongo === 'function') userCfg = await loadUserConfigFromMongo((number || '').replace(/[^0-9]/g,'')) || {}; } catch(e){}
+    try {
+      if (number && typeof loadUserConfigFromMongo === 'function')
+        userCfg = await loadUserConfigFromMongo((number || '').replace(/[^0-9]/g, '')) || {};
+    } catch(e){ userCfg = {}; }
 
-    const title = userCfg.botName || 'QUEEN ASHI MINI';
+    const botName = userCfg.botName || 'QUEEN ASHI MINI';
     const logo = userCfg.logo || 'https://files.catbox.moe/84288h.jpg';
 
-    const fakevCard = {
-      key: { remoteJid: "status@broadcast", participant: "0@s.whatsapp.net", fromMe: false, id: "META_AI_MENU" },
-      message: { contactMessage: { displayName: title, vcard: `BEGIN:VCARD\nVERSION:3.0\nFN:${title}\nEND:VCARD` } }
-    };
+    const caption = `
+    
+╭──❂ 🧚 𝐁𝙾𝚃 𝐌𝙰𝙸𝙽 𝐌𝙴𝙽𝚄 ❂──╮
+│ 🎀 ◆ *Oᴡɴᴇʀ :* Dev xanz
+│ 🎀 ◆ *Vᴇʀꜱɪᴏɴ :* 1.0.0V
+│ 🎀 ◆ *Hᴏꜱᴛ :* Ashi linux
+│ 🎀 ◆ *Uᴘᴛɪᴍᴇ :* ${hours}h ${minutes}m ${seconds}s
+│ 🎀 ◆ *Lᴇɴɢᴜᴀɢᴇ :* Java script
+│ 🎀 ◆ *Cᴏᴍᴍᴀɴᴅꜱ :* 50+
+╰──────────────❂
 
-    const menuText = `
-╭───────────────⭓
-│ ʙᴏᴛ : ${title}
-│ ᴜsᴇʀ : @${sender.split("@")[0]}
-│ ᴘʀᴇғɪx : ${config.PREFIX}
-│ ᴍᴇᴍᴏʀʏ : ${usedMemory}MB/${totalMemory}MB
-│ ᴜᴘᴛɪᴍᴇ : ${hours}h ${minutes}m ${seconds}s
-╰───────────────⭓
-*Ξ select category or open full menu below*
+> *Jᴏɪɴ🪪 ➠ https://whatsapp.com/channel/0029Vb6yaNMIt5s3s5iUK51g*
+
 `.trim();
 
-    const messageContext = {
-      forwardingScore: 1,
-      isForwarded: true,
-      forwardedNewsletterMessageInfo: {
-        newsletterJid: '120363397722863547@newsletter',
-        newsletterName: title,
-        serverMessageId: -1
-      }
-    };
+    const buttons = [
+      { buttonId: `${config.PREFIX}quick_commands`, buttonText: { displayText: "📜 MENU" }, type: 1 }
+    ];
 
-    const menuMessage = {
-      image: { url: logo },
-      caption: menuText,
-      footer: title,
-      buttons: [
-		  {
-  buttonId: `${config.PREFIX}menu_select`,
-  buttonText: { displayText: "📜 QUEEN ASHI MINI" },
-  type: 4,
-  nativeFlowInfo: {
-    name: "single_select",
-    paramsJson: JSON.stringify({
-      title: "QUEEN ASHI MINI",
-      sections: [
-        {
-          title: "GENERAL COMMANDS",
-          rows: [
-            { title: "🟢 Alive", description: "Check if bot is active", id: `${config.PREFIX}alive` },
-            { title: "📊 Bot Stats", description: "View bot statistics", id: `${config.PREFIX}bot_stats` },
-            { title: "ℹ️ Bot Info", description: "Get bot information", id: `${config.PREFIX}bot_info` },
-            { title: "📜 Menu", description: "Show this menu", id: `${config.PREFIX}menu` },
-            { title: "📋 All Menu", description: "List all commands (text)", id: `${config.PREFIX}allmenu` },
-            { title: "🏓 Ping", description: "Check response speed", id: `${config.PREFIX}ping` },
-            { title: "🔗 Pair", description: "Generate pairing code", id: `${config.PREFIX}pair` },
-            { title: "✨ Fancy", description: "Fancy text generator", id: `${config.PREFIX}fancy` },
-            { title: "🎨 Logo", description: "Create custom logos", id: `${config.PREFIX}logo` }
-          ]
-        }
-      ]
-    })
-  }
-		  }
-        { buttonId: `${config.PREFIX}download`, buttonText: { displayText: '📥 Download' }, type: 1 },
-        { buttonId: `${config.PREFIX}user`, buttonText: { displayText: '🧑 User' }, type: 1 },
-        { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: '⚙ Settings' }, type: 1 }
-      ],
-      headerType: 4,
-      contextInfo: messageContext
-    };
+    const imagePayload = String(logo).startsWith('http') ? { url: logo } : fs.readFileSync(logo);
 
-    await socket.sendMessage(from, menuMessage, { quoted: fakevCard });
-    await socket.sendMessage(sender, { react: { text: '✅', key: msg.key } });
+    await socket.sendMessage(sender, {
+      image: imagePayload,
+      caption,
+      footer: botName,
+      buttons,
+      headerType: 4
+    }, { quoted: msg });
 
-  } catch (error) {
-    console.error('menu error:', error);
-    await socket.sendMessage(sender, { text: '❌ Failed to load menu.' }, { quoted: msg });
-    await socket.sendMessage(sender, { react: { text: '❌', key: msg.key } });
+  } catch (err) {
+    console.error('menu error:', err);
+    await socket.sendMessage(sender, { text: '❌ Failed to show menu.' }, { quoted: msg });
   }
   break;
-		}
+}
 
+// ================= SELECT LIST =================
+
+case 'quick_commands': {
+  const listMessage = {
+    text: "CLICK HERE ⇓",
+    footer: "QUEEN ASHI MINI",
+    title: "MAIN MENU",
+    buttonText: "SELECT",
+    sections: [
+      {
+        title: "Choose a menu",
+        rows: [
+          { title: "📥 DOWNLOAD", description: "Download menu", rowId: `${config.PREFIX}download` },
+          { title: "🧑 USER", description: "User menu", rowId: `${config.PREFIX}user` },
+          { title: "⚙ SETTINGS", description: "Settings menu", rowId: `${config.PREFIX}settings` },
+          { title: "👨‍💻 DEVELOPER", description: "Bot developer info", rowId: `${config.PREFIX}developer` }
+        ]
+      }
+    ]
+  };
+
+  await socket.sendMessage(sender, listMessage, { quoted: msg });
+  break;
+  }
 // ==================== DOWNLOAD MENU ====================
 case 'download': {
   try { await socket.sendMessage(sender, { react: { text: "📥", key: msg.key } }); } catch(e){}
