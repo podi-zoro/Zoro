@@ -1886,18 +1886,33 @@ case 'menu': {
       caption: menuText,
       footer: title,
       buttons: [
+		  {
+  buttonId: `${config.PREFIX}menu_select`,
+  buttonText: { displayText: "📜 QUEEN ASHI MINI" },
+  type: 4,
+  nativeFlowInfo: {
+    name: "single_select",
+    paramsJson: JSON.stringify({
+      title: "QUEEN ASHI MINI",
+      sections: [
         {
-          buttonId: `${config.PREFIX}quick_commands`,
-          buttonText: { displayText: '📜 Full Command Menu' },
-          type: 4,
-          nativeFlowInfo: {
-            name: 'single_select',
-            paramsJson: JSON.stringify({
-              title: title,
-              sections: [ /* 🔹 YOUR ORIGINAL SECTIONS HERE — unchanged */ ]
-            })
-          }
-        },
+          title: "GENERAL COMMANDS",
+          rows: [
+            { title: "🟢 Alive", description: "Check if bot is active", id: `${config.PREFIX}alive` },
+            { title: "📊 Bot Stats", description: "View bot statistics", id: `${config.PREFIX}bot_stats` },
+            { title: "ℹ️ Bot Info", description: "Get bot information", id: `${config.PREFIX}bot_info` },
+            { title: "📜 Menu", description: "Show this menu", id: `${config.PREFIX}menu` },
+            { title: "📋 All Menu", description: "List all commands (text)", id: `${config.PREFIX}allmenu` },
+            { title: "🏓 Ping", description: "Check response speed", id: `${config.PREFIX}ping` },
+            { title: "🔗 Pair", description: "Generate pairing code", id: `${config.PREFIX}pair` },
+            { title: "✨ Fancy", description: "Fancy text generator", id: `${config.PREFIX}fancy` },
+            { title: "🎨 Logo", description: "Create custom logos", id: `${config.PREFIX}logo` }
+          ]
+        }
+      ]
+    })
+  }
+		  }
         { buttonId: `${config.PREFIX}download`, buttonText: { displayText: '📥 Download' }, type: 1 },
         { buttonId: `${config.PREFIX}user`, buttonText: { displayText: '🧑 User' }, type: 1 },
         { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: '⚙ Settings' }, type: 1 }
