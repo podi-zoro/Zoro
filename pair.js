@@ -1895,12 +1895,13 @@ END:VCARD`
 
 > *Join🪪 ➠ https://whatsapp.com/channel/0029Vb6yaNMIt5s3s5iUK51g*
 
-> © ${config.BOT_FOOTER || ''}
+
+${config.BOT_FOOTER || ''}
 `.trim();
 
     const buttons = [
       { buttonId: `${config.PREFIX}download`, buttonText: { displayText: "📥 ᴅᴏᴡɴʟᴏᴀᴅ" }, type: 1 },
-      { buttonId: `${config.PREFIX}creative`, buttonText: { displayText: "👾 ᴜꜱᴇʀ" }, type: 1 },
+      { buttonId: `${config.PREFIX}user`, buttonText: { displayText: "👾 ᴜꜱᴇʀ" }, type: 1 },
       { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: "⚙️ ꜱᴇᴛᴛɪɴɢꜱ" }, type: 1 },
       { buttonId: `${config.PREFIX}owner`, buttonText: { displayText: "👨‍💻 ᴅᴇᴠᴇʟᴏᴘᴇʀ" }, type: 1 }
     ];
