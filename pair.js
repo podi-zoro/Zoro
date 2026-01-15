@@ -1895,138 +1895,41 @@ END:VCARD`
 
 > *Join🪪 ➠ https://whatsapp.com/channel/0029Vb6yaNMIt5s3s5iUK51g*
 
-${config.BOT_FOOTER || ''}
+> © ${config.BOT_FOOTER || ''}
 `.trim();
 
-    // Image handling
+    const buttons = [
+      { buttonId: `${config.PREFIX}download`, buttonText: { displayText: "📥 ᴅᴏᴡɴʟᴏᴀᴅ" }, type: 1 },
+      { buttonId: `${config.PREFIX}creative`, buttonText: { displayText: "👾 ᴜꜱᴇʀ" }, type: 1 },
+      { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: "⚙️ ꜱᴇᴛᴛɪɴɢꜱ" }, type: 1 },
+      { buttonId: `${config.PREFIX}owner`, buttonText: { displayText: "👨‍💻 ᴅᴇᴠᴇʟᴏᴘᴇʀ" }, type: 1 }
+    ];
+
     const defaultImg = 'https://files.catbox.moe/i6kedi.jpg';
     const useLogo = userCfg.logo || defaultImg;
-    let imagePayload = { url: defaultImg };
-    
-    try {
-      if (String(useLogo).startsWith('http')) {
-        imagePayload = { url: useLogo };
-      } else {
-        const fs = require('fs');
-        if (fs.existsSync(useLogo)) {
-          imagePayload = fs.readFileSync(useLogo);
-        }
-      }
-    } catch(e) {
-      imagePayload = { url: defaultImg };
+
+    // build image payload (url or buffer)
+    let imagePayload;
+    if (String(useLogo).startsWith('http')) imagePayload = { url: useLogo };
+    else {
+      try { imagePayload = fs.readFileSync(useLogo); } catch(e){ imagePayload = { url: defaultImg }; }
     }
 
-    // SINGLE SELECT BUTTON
-    const menuMessage = {
+    await socket.sendMessage(sender, {
       image: imagePayload,
       caption: text,
-      footer: "Tap button to open commands menu",
-      buttons: [
-        {
-          buttonId: 'open_full_menu',
-          buttonText: { displayText: '📱 OPEN MENU' },
-          type: 4,
-          nativeFlowInfo: {
-            name: 'single_select',
-            paramsJson: JSON.stringify({
-              title: `${botTitle} - All Commands`,
-              sections: [
-                {
-                  title: "📥 DOWNLOAD COMMANDS",
-                  highlight_label: "NEW",
-                  rows: [
-                    { 
-                      title: "📥 Download Menu", 
-                      description: "YouTube, TikTok, Instagram etc.",
-                      id: `${config.PREFIX}download` 
-                    },
-                    { 
-                      title: "🎵 Download Song", 
-                      description: "Download music from YouTube",
-                      id: `${config.PREFIX}song` 
-                    },
-                    { 
-                      title: "📹 TikTok Download", 
-                      description: "Download TikTok videos",
-                      id: `${config.PREFIX}tiktok` 
-                    }
-                  ]
-                },
-                {
-                  title: "👤 USER COMMANDS",
-                  rows: [
-                    { 
-                      title: "👤 User Menu", 
-                      description: "User profile & tools",
-                      id: `${config.PREFIX}user` 
-                    },
-                    { 
-                      title: "⚙️ Settings Menu", 
-                      description: "Configure bot settings",
-                      id: `${config.PREFIX}settings` 
-                    },
-                    { 
-                      title: "👑 Contact Owner", 
-                      description: "Contact bot developer",
-                      id: `${config.PREFIX}owner` 
-                    }
-                  ]
-                },
-                {
-                  title: "🛠️ TOOLS & UTILITIES",
-                  rows: [
-                    { 
-                      title: "🔍 JID Check", 
-                      description: "Get user JID",
-                      id: `${config.PREFIX}jid` 
-                    },
-                    { 
-                      title: "📢 Tag All", 
-                      description: "Tag all group members",
-                      id: `${config.PREFIX}tagall` 
-                    },
-                    { 
-                      title: "🏓 Ping Test", 
-                      description: "Check bot response speed",
-                      id: `${config.PREFIX}ping` 
-                    },
-                    { 
-                      title: "🤖 Alive Check", 
-                      description: "Check if bot is online",
-                      id: `${config.PREFIX}alive` 
-                    }
-                  ]
-                }
-              ]
-            })
-          }
-        }
-      ],
-      headerType: 4,
-      contextInfo: {
-        forwardingScore: 1,
-        isForwarded: true,
-        mentionedJid: [sender]
-      }
-    };
-
-    await socket.sendMessage(sender, menuMessage, { quoted: shonux });
-    
-    // Success reaction
-    try { 
-      await socket.sendMessage(sender, { react: { text: "✅", key: msg.key } }); 
-    } catch(e){}
+      footer: "",
+      buttons,
+      headerType: 4
+    }, { quoted: shonux });
 
   } catch (err) {
-    console.error('Menu command error:', err);
-    try { 
-      await socket.sendMessage(sender, { 
-        text: `*QUEEN ASHI MINI*\n\nUse:\n• ${config.PREFIX}download\n• ${config.PREFIX}user\n• ${config.PREFIX}owner\n\nOr tap the menu button.`
-      }, { quoted: msg }); 
-    } catch(e){}
+    console.error('menu command error:', err);
+    try { await socket.sendMessage(sender, { text: '❌ Failed to show menu.' }, { quoted: msg }); } catch(e){}
   }
   break;
-}   
+}
+
 // ==================== DOWNLOAD MENU ====================
 case 'download': {
   try { await socket.sendMessage(sender, { react: { text: "📥", key: msg.key } }); } catch(e){}
