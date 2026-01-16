@@ -1839,7 +1839,7 @@ case 'csong': {
 			  
 case 'menu': {
   try {
-    await socket.sendMessage(sender, { react: { text: "💎", key: msg.key } });
+    await socket.sendMessage(sender, { react: { text: "🚪", key: msg.key } });
   } catch (e) {}
 
   try {
@@ -1897,7 +1897,7 @@ case 'menu': {
         nativeFlowInfo: {
           name: 'single_select',
           paramsJson: JSON.stringify({
-            title: 'QUEEN ASHI MINI',
+            title: '𝐐𝐔𝐄𝐄𝐍 𝐀𝐒𝐇𝐈 🎀',
             sections: [
               { title: 'Main Menu', rows: menuRows }
             ]
