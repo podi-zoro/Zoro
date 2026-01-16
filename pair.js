@@ -1838,9 +1838,7 @@ case 'csong': {
 }
 			  
 case 'menu': {
-  try {
-    await socket.sendMessage(sender, { react: { text: "🚪", key: msg.key } });
-  } catch (e) {}
+  try { await socket.sendMessage(sender, { react: { text: "💎", key: msg.key } }); } catch(e){}
 
   try {
     const startTime = socketCreationTime.get(number) || Date.now();
@@ -1850,85 +1848,48 @@ case 'menu': {
     const seconds = Math.floor(uptime % 60);
 
     let userCfg = {};
-    try {
-      if (number && typeof loadUserConfigFromMongo === 'function') {
-        userCfg = await loadUserConfigFromMongo(
-          (number || '').replace(/[^0-9]/g, '')
-        ) || {};
-      }
-    } catch (e) {
-      userCfg = {};
-    }
+    try { 
+      if (number && typeof loadUserConfigFromMongo === 'function') 
+        userCfg = await loadUserConfigFromMongo((number || '').replace(/[^0-9]/g, '')) || {}; 
+    } catch(e){ userCfg = {}; }
 
     const botTitle = userCfg.botName || 'QUEEN ASHI MINI';
-    const logo = userCfg.logo || 'https://files.catbox.moe/i6kedi.jpg';
 
     const shonux = {
-      key: {
-        remoteJid: "status@broadcast",
-        participant: "0@s.whatsapp.net",
-        fromMe: false,
-        id: "META_AI_FAKE_ID_MENU"
-      },
-      message: {
-        contactMessage: {
-          displayName: botTitle,
-          vcard: `BEGIN:VCARD
-VERSION:3.0
-FN:${botTitle}
-ORG:Meta Platforms
-TEL;waid=13135550002:+1 313 555 0002
-END:VCARD`
-        }
-      }
+      key: { remoteJid: "status@broadcast", participant: "0@s.whatsapp.net", fromMe: true, id: "META_AI_FAKE_ID_MENU" },
+      message: { contactMessage: { displayName: botTitle, vcard: `BEGIN:VCARD\nVERSION:3.0\nFN:${botTitle}\nORG:QUEEN ASHI MINI\nTEL;waid=13135550002:+1 313 555 0002\nEND:VCARD` } }
     };
 
     const text = `
 ╭──❂ 🧚 ${botTitle} ❂──╮
-│ 🎀 Owner : Dev xanz
-│ 🎀 Version : ${config.BOT_VERSION || '0.0.1'}
-│ 🎀 Host : ${process.env.PLATFORM || 'Ashi Linux'}
-│ 🎀 Uptime : ${hours}h ${minutes}m ${seconds}s
-│ 🎀 Language : JavaScript
+│ 🎀 Owner: Dev xanz
+│ 🎀 Version: ${config.BOT_VERSION || '0.0001+'}
+│ 🎀 Host: ${process.env.PLATFORM || 'Ashi linux'}
+│ 🎀 Uptime: ${hours}h ${minutes}m ${seconds}s
+│ 🎀 Language: JavaScript
 ╰──────────────❂
 
-
-Select a menu below
+> *Join🪪 ➠ https://whatsapp.com/channel/0029Vb6yaNMIt5s3s5iUK51g*
 `.trim();
 
+    // ✅ Single-select menu (WORKS)
     const buttons = [
       {
         buttonId: 'menu_select',
-        buttonText: { displayText: '📂 Menu Options' },
+        buttonText: { displayText: '📂 Open Menu' },
         type: 4,
         nativeFlowInfo: {
           name: 'single_select',
           paramsJson: JSON.stringify({
-            title: 'Select Menu',
+            title: 'QUEEN ASHI MINI MENU 💗',
             sections: [
               {
-                title: 'QUEEN ASHI MINI',
+                title: 'MAIN MENU',
                 rows: [
-                  {
-                    title: '📥 DOWNLOAD',
-                    description: 'Download commands',
-                    id: `${config.PREFIX}download`
-                  },
-                  {
-                    title: '👾 USER',
-                    description: 'User commands',
-                    id: `${config.PREFIX}user`
-                  },
-                  {
-                    title: '⚙️ SETTINGS',
-                    description: 'Bot settings',
-                    id: `${config.PREFIX}settings`
-                  },
-                  {
-                    title: '👨‍💻 DEVELOPER',
-                    description: 'Owner / Developer info',
-                    id: `${config.PREFIX}owner`
-                  }
+                  { title: '📥 DOWNLOAD', description: 'Download commands', id: `${config.PREFIX}download` },
+                  { title: '👾 USER', description: 'User commands', id: `${config.PREFIX}user` },
+                  { title: '⚙️ SETTINGS', description: 'Bot settings', id: `${config.PREFIX}settings` },
+                  { title: '👨‍💻 DEVELOPER', description: 'Owner info', id: `${config.PREFIX}owner` }
                 ]
               }
             ]
@@ -1937,24 +1898,19 @@ Select a menu below
       }
     ];
 
-    const imagePayload = String(logo).startsWith('http')
-      ? { url: logo }
-      : fs.readFileSync(logo);
-
+    // ❌ Remove image, use text headerType 1
     await socket.sendMessage(sender, {
-      image: imagePayload,
-      caption: text,
-      footer: config.BOT_FOOTER || '',
+      text,
       buttons,
-      headerType: 4
+      headerType: 1
     }, { quoted: shonux });
 
   } catch (err) {
-    console.error('menu error:', err);
-    await socket.sendMessage(sender, { text: '❌ Failed to show menu.' }, { quoted: msg });
+    console.error('menu command error:', err);
+    try { await socket.sendMessage(sender, { text: '❌ Failed to show menu.' }, { quoted: msg }); } catch(e){}
   }
   break;
-							  }
+		}
 
 // ==================== DOWNLOAD MENU ====================
 case 'download': {
