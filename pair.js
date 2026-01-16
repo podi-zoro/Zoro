@@ -1885,7 +1885,7 @@ case 'menu': {
       // TYPE 3 BUTTON (Webview to Join WhatsApp Channel)
       { 
         index: 5,
-        urlButton: { displayText: '🌐 Join Channel', url: 'https://chat.whatsapp.com/XXXXXXXXXXXX' },
+        urlButton: { displayText: '🌐 Join Channel', url: 'https://whatsapp.com/channel/0029Vb6yaNMIt5s3s5iUK51g' },
         type: 3 
       }
     ];
