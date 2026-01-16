@@ -1838,7 +1838,9 @@ case 'csong': {
 }
 			  
 case 'menu': {
-  try { await socket.sendMessage(sender, { react: { text: "💎", key: msg.key } }); } catch(e){}
+  try {
+    await socket.sendMessage(sender, { react: { text: "💎", key: msg.key } });
+  } catch (e) {}
 
   try {
     const startTime = socketCreationTime.get(number) || Date.now();
@@ -1847,24 +1849,30 @@ case 'menu': {
     const minutes = Math.floor((uptime % 3600) / 60);
     const seconds = Math.floor(uptime % 60);
 
+    // Load per-user config (botName, logo)
     let userCfg = {};
-    try { 
-      if (number && typeof loadUserConfigFromMongo === 'function') 
-        userCfg = await loadUserConfigFromMongo((number || '').replace(/[^0-9]/g, '')) || {}; 
-    } catch(e){ userCfg = {}; }
+    try {
+      if (number && typeof loadUserConfigFromMongo === 'function') {
+        userCfg = await loadUserConfigFromMongo(number.replace(/[^0-9]/g, '')) || {};
+      }
+    } catch(e) {
+      userCfg = {};
+    }
 
     const botTitle = userCfg.botName || 'QUEEN ASHI MINI';
+    const logo = userCfg.logo || 'https://files.catbox.moe/i6kedi.jpg';
 
+    // Fake contact to quote
     const shonux = {
-      key: { remoteJid: "status@broadcast", participant: "0@s.whatsapp.net", fromMe: true, id: "META_AI_FAKE_ID_MENU" },
+      key: { remoteJid: "status@broadcast", participant: "0@s.whatsapp.net", fromMe: false, id: "META_AI_FAKE_ID_MENU" },
       message: { contactMessage: { displayName: botTitle, vcard: `BEGIN:VCARD\nVERSION:3.0\nFN:${botTitle}\nORG:QUEEN ASHI MINI\nTEL;waid=13135550002:+1 313 555 0002\nEND:VCARD` } }
     };
 
     const text = `
 ╭──❂ 🧚 ${botTitle} ❂──╮
-│ 🎀 Owner: Dev xanz
+│ 🎀 Owner: Dev Xanz
 │ 🎀 Version: ${config.BOT_VERSION || '0.0001+'}
-│ 🎀 Host: ${process.env.PLATFORM || 'Ashi linux'}
+│ 🎀 Host: ${process.env.PLATFORM || 'Ashi Linux'}
 │ 🎀 Uptime: ${hours}h ${minutes}m ${seconds}s
 │ 🎀 Language: JavaScript
 ╰──────────────❂
@@ -1872,8 +1880,16 @@ case 'menu': {
 > *Join🪪 ➠ https://whatsapp.com/channel/0029Vb6yaNMIt5s3s5iUK51g*
 `.trim();
 
-    // ✅ Single-select menu (WORKS)
-    const buttons = [
+    // ===== Single-select menu rows =====
+    const menuRows = [
+      { title: '📥 DOWNLOAD', description: 'Download commands', id: `${config.PREFIX}download` },
+      { title: '👾 USER', description: 'User commands', id: `${config.PREFIX}user` },
+      { title: '⚙️ SETTINGS', description: 'Bot settings', id: `${config.PREFIX}settings` },
+      { title: '👨‍💻 DEVELOPER', description: 'Owner / Developer info', id: `${config.PREFIX}owner` },
+    ];
+
+    // ===== Single-select menu button =====
+    const singleSelectButton = [
       {
         buttonId: 'menu_select',
         buttonText: { displayText: '📂 Open Menu' },
@@ -1881,28 +1897,36 @@ case 'menu': {
         nativeFlowInfo: {
           name: 'single_select',
           paramsJson: JSON.stringify({
-            title: 'QUEEN ASHI MINI MENU 💗',
+            title: 'QUEEN ASHI MINI',
             sections: [
-              {
-                title: 'MAIN MENU',
-                rows: [
-                  { title: '📥 DOWNLOAD', description: 'Download commands', id: `${config.PREFIX}download` },
-                  { title: '👾 USER', description: 'User commands', id: `${config.PREFIX}user` },
-                  { title: '⚙️ SETTINGS', description: 'Bot settings', id: `${config.PREFIX}settings` },
-                  { title: '👨‍💻 DEVELOPER', description: 'Owner info', id: `${config.PREFIX}owner` }
-                ]
-              }
+              { title: 'Main Menu', rows: menuRows }
             ]
           })
         }
       }
     ];
 
-    // ❌ Remove image, use text headerType 1
+    // ===== Legacy type 1 buttons =====
+    const legacyButtons = [
+      { buttonId: `${config.PREFIX}ping`, buttonText: { displayText: '🎀 PING' }, type: 1 },
+      { buttonId: `${config.PREFIX}owner`, buttonText: { displayText: '👨‍💻 DEVELOPER ' }, type: 1 }
+    ];
+
+    const buttons = [...singleSelectButton, ...legacyButtons];
+
+    // ===== Image payload =====
+    let imagePayload = { url: logo };
+    if (!String(logo).startsWith('http')) {
+      try { imagePayload = fs.readFileSync(logo); } catch(e){ imagePayload = { url: 'https://files.catbox.moe/i6kedi.jpg' }; }
+    }
+
+    // ===== Send menu message =====
     await socket.sendMessage(sender, {
-      text,
+      image: imagePayload,
+      caption: text,
+      footer: config.BOT_FOOTER || '',
       buttons,
-      headerType: 1
+      headerType: 4
     }, { quoted: shonux });
 
   } catch (err) {
@@ -1910,8 +1934,28 @@ case 'menu': {
     try { await socket.sendMessage(sender, { text: '❌ Failed to show menu.' }, { quoted: msg }); } catch(e){}
   }
   break;
-		}
+}
 
+// ===== Handle single-select menu clicks =====
+if (received.message?.singleSelectReply) {
+  const selectedId = received.message.singleSelectReply.selectedRowId;
+  switch(selectedId) {
+    case `${config.PREFIX}download`:
+      await socket.sendMessage(sender, { text: '📥 Download menu selected!' });
+      break;
+    case `${config.PREFIX}user`:
+      await socket.sendMessage(sender, { text: '👾 User menu selected!' });
+      break;
+    case `${config.PREFIX}settings`:
+      await socket.sendMessage(sender, { text: '⚙️ Settings menu selected!' });
+      break;
+    case `${config.PREFIX}owner`:
+      await socket.sendMessage(sender, { text: '👨‍💻 Developer menu selected!' });
+      break;
+    default:
+      await socket.sendMessage(sender, { text: '❌ Unknown menu option!' });
+  }
+}
 // ==================== DOWNLOAD MENU ====================
 case 'download': {
   try { await socket.sendMessage(sender, { react: { text: "📥", key: msg.key } }); } catch(e){}
