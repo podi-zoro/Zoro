@@ -1905,6 +1905,38 @@ ${config.BOT_FOOTER || ''}
       { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: "⚙️ ꜱᴇᴛᴛɪɴɢꜱ" }, type: 1 },
       { buttonId: `${config.PREFIX}owner`, buttonText: { displayText: "👨‍💻 ᴅᴇᴠᴇʟᴏᴘᴇʀ" }, type: 1 }
     ];
+	  buttonId: 'action',
+            buttonText: {
+                displayText: '📂 Menu Options'
+            },
+            type: 4,
+            nativeFlowInfo: {
+                name: 'single_select',
+                paramsJson: JSON.stringify({
+                    title: 'Click Here ❏',
+                    sections: [
+                        {
+                            title: `𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳`,
+                            highlight_label: '',
+                            rows: [
+                                {
+                                    title: 'CHECK BOT STATUS',
+                                    description: '𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸',
+                                    id: `${config.PREFIX}alive`,
+                                },
+                                {
+                                    title: 'OWNER NUMBER',
+                                    description: '𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐒𝚄𝙻𝙰 𝐌𝙳',
+                                    id: `${config.PREFIX}owner`,
+                                },
+                            ],
+                        },
+                    ],
+                }),
+            },
+        }
+    ];
+
 
     const defaultImg = 'https://files.catbox.moe/i6kedi.jpg';
     const useLogo = userCfg.logo || defaultImg;
