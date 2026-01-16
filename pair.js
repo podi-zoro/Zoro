@@ -1837,10 +1837,11 @@ case 'csong': {
   break;
 }
 			  
+
 case 'menu': {
-  try {
-    await socket.sendMessage(sender, { react: { text: "🚪", key: msg.key } });
-  } catch (e) {}
+  try { 
+    await socket.sendMessage(sender, { react: { text: "🚪", key: msg.key } }); 
+  } catch(e){}
 
   try {
     const startTime = socketCreationTime.get(number) || Date.now();
@@ -1849,82 +1850,81 @@ case 'menu': {
     const minutes = Math.floor((uptime % 3600) / 60);
     const seconds = Math.floor(uptime % 60);
 
-    // Load per-user config (botName, logo)
     let userCfg = {};
-    try {
-      if (number && typeof loadUserConfigFromMongo === 'function') {
-        userCfg = await loadUserConfigFromMongo(number.replace(/[^0-9]/g, '')) || {};
-      }
-    } catch(e) {
-      userCfg = {};
-    }
+    try { 
+      if (number && typeof loadUserConfigFromMongo === 'function') 
+        userCfg = await loadUserConfigFromMongo((number || '').replace(/[^0-9]/g, '')) || {}; 
+    } catch(e){ console.warn('menu: failed to load config', e); }
 
     const botTitle = userCfg.botName || 'QUEEN ASHI MINI';
-    const logo = userCfg.logo || 'https://files.catbox.moe/i6kedi.jpg';
+    const defaultImg = 'https://files.catbox.moe/i6kedi.jpg';
+    const useLogo = userCfg.logo || defaultImg;
 
-    // Fake contact to quote
     const shonux = {
       key: { remoteJid: "status@broadcast", participant: "0@s.whatsapp.net", fromMe: false, id: "META_AI_FAKE_ID_MENU" },
       message: { contactMessage: { displayName: botTitle, vcard: `BEGIN:VCARD\nVERSION:3.0\nFN:${botTitle}\nORG:QUEEN ASHI MINI\nTEL;waid=13135550002:+1 313 555 0002\nEND:VCARD` } }
     };
 
     const text = `
-╭──❂ 🧚 ${botTitle} ❂──╮
-│ 🎀 Owner: Dev Xanz
-│ 🎀 Version: ${config.BOT_VERSION || '0.0001+'}
-│ 🎀 Host: ${process.env.PLATFORM || 'Ashi Linux'}
-│ 🎀 Uptime: ${hours}h ${minutes}m ${seconds}s
-│ 🎀 Language: JavaScript
+╭──❂ 🧚 𝐁𝙾𝚃 𝐌𝙰𝙸𝙽 𝐌𝙴𝙽𝚄 ❂──╮
+│ 🎀 ◆ *Owner:* Dev xanz
+│ 🎀 ◆ *Version:* ${config.BOT_VERSION || '0.0001+'}
+│ 🎀 ◆ *Host:* ${process.env.PLATFORM || 'Ashi linux'}
+│ 🎀 ◆ *Uptime:* ${hours}h ${minutes}m ${seconds}s
+│ 🎀 ◆ *Language:* JavaScript
+│ 🎀 ◆ *Commands:* 50+
 ╰──────────────❂
+`;
 
-> *Join🪪 ➠ https://whatsapp.com/channel/0029Vb6yaNMIt5s3s5iUK51g*
-`.trim();
-
-    // ===== Single-select menu rows =====
-    const menuRows = [
-      { title: '📥 DOWNLOAD', description: 'Download commands', id: `${config.PREFIX}download` },
-      { title: '👾 USER', description: 'User commands', id: `${config.PREFIX}user` },
-      { title: '⚙️ SETTINGS', description: 'Bot settings', id: `${config.PREFIX}settings` },
-      { title: '👨‍💻 DEVELOPER', description: 'Owner / Developer info', id: `${config.PREFIX}owner` },
+    // TYPE 1 BUTTONS
+    let buttons = [
+      { buttonId: `${config.PREFIX}download`, buttonText: { displayText: "📥 𝐃𝙾𝚆𝙽𝙻𝙾𝙰𝙳" }, type: 1 },
+      { buttonId: `${config.PREFIX}user`, buttonText: { displayText: "🧑‍🔧 𝐔ꜱᴇʀ" }, type: 1 },
+      { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: "⚙️ 𝐒𝙴𝚃𝚃𝙸𝙽𝙶𝚂" }, type: 1 },
+      { buttonId: `${config.PREFIX}owner`, buttonText: { displayText: "👨‍💻 𝐃𝙴𝚅ᴇʟᴏᴘᴇʀ" }, type: 1 },
+      // TYPE 3 BUTTON (Webview to Join WhatsApp Channel)
+      { 
+        index: 5,
+        urlButton: { displayText: '🌐 Join Channel', url: 'https://chat.whatsapp.com/XXXXXXXXXXXX' },
+        type: 3 
+      }
     ];
 
-    // ===== Single-select menu button =====
-    const singleSelectButton = [
+    // SINGLE-SELECT MENU
+    let singleSelect = [
       {
-        buttonId: 'menu_select',
-        buttonText: { displayText: '📂 Open Menu' },
+        buttonId: 'main_select',
+        buttonText: { displayText: '📂 Menu Options' },
         type: 4,
         nativeFlowInfo: {
           name: 'single_select',
           paramsJson: JSON.stringify({
-            title: '𝐐𝐔𝐄𝐄𝐍 𝐀𝐒𝐇𝐈 🎀',
+            title: 'QUEEN ASHI MINI MENU',
             sections: [
-              { title: 'Main Menu', rows: menuRows }
+              {
+                title: 'Extras',
+                rows: [
+                  { title: '🕒 Check Time', description: 'Get current time', id: `${config.PREFIX}time` },
+                  { title: '📅 Check Date', description: 'Get current date', id: `${config.PREFIX}date` },
+                  { title: '🌤 Weather', description: 'Check weather', id: `${config.PREFIX}weather` },
+                  { title: '🧮 Calculator', description: 'Do calculations', id: `${config.PREFIX}calc` },
+                  { title: '⏰ Reminder', description: 'Set reminder', id: `${config.PREFIX}remind` },
+                  { title: '🔗 Short URL', description: 'Generate short link', id: `${config.PREFIX}shorturl` }
+                ]
+              }
             ]
           })
         }
       }
     ];
 
-    // ===== Legacy type 1 buttons =====
-    const legacyButtons = [
-      { buttonId: `${config.PREFIX}ping`, buttonText: { displayText: '🎀 PING' }, type: 1 },
-      { buttonId: `${config.PREFIX}owner`, buttonText: { displayText: '👨‍💻 DEVELOPER ' }, type: 1 }
-    ];
+    // combine TYPE1 + SINGLE-SELECT
+    buttons = [...buttons, ...singleSelect];
 
-    const buttons = [...singleSelectButton, ...legacyButtons];
-
-    // ===== Image payload =====
-    let imagePayload = { url: logo };
-    if (!String(logo).startsWith('http')) {
-      try { imagePayload = fs.readFileSync(logo); } catch(e){ imagePayload = { url: 'https://files.catbox.moe/i6kedi.jpg' }; }
-    }
-
-    // ===== Send menu message =====
     await socket.sendMessage(sender, {
-      image: imagePayload,
+      image: { url: useLogo },
       caption: text,
-      footer: config.BOT_FOOTER || '',
+      footer: '𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳 𝐋𝙸𝚃𝙴',
       buttons,
       headerType: 4
     }, { quoted: shonux });
@@ -1934,28 +1934,8 @@ case 'menu': {
     try { await socket.sendMessage(sender, { text: '❌ Failed to show menu.' }, { quoted: msg }); } catch(e){}
   }
   break;
-}
+	}
 
-// ===== Handle single-select menu clicks =====
-if (received.message?.singleSelectReply) {
-  const selectedId = received.message.singleSelectReply.selectedRowId;
-  switch(selectedId) {
-    case `${config.PREFIX}download`:
-      await socket.sendMessage(sender, { text: '📥 Download menu selected!' });
-      break;
-    case `${config.PREFIX}user`:
-      await socket.sendMessage(sender, { text: '👾 User menu selected!' });
-      break;
-    case `${config.PREFIX}settings`:
-      await socket.sendMessage(sender, { text: '⚙️ Settings menu selected!' });
-      break;
-    case `${config.PREFIX}owner`:
-      await socket.sendMessage(sender, { text: '👨‍💻 Developer menu selected!' });
-      break;
-    default:
-      await socket.sendMessage(sender, { text: '❌ Unknown menu option!' });
-  }
-}
 // ==================== DOWNLOAD MENU ====================
 case 'download': {
   try { await socket.sendMessage(sender, { react: { text: "📥", key: msg.key } }); } catch(e){}
