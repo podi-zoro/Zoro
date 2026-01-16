@@ -1838,9 +1838,9 @@ case 'csong': {
 }
 			  
 case 'menu': {
-  try { 
-    await socket.sendMessage(sender, { react: { text: "🚪", key: msg.key } }); 
-  } catch(e){}
+  try {
+    await socket.sendMessage(sender, { react: { text: "🚪", key: msg.key } });
+  } catch (e) {}
 
   try {
     const startTime = socketCreationTime.get(number) || Date.now();
@@ -1849,19 +1849,20 @@ case 'menu': {
     const minutes = Math.floor((uptime % 3600) / 60);
     const seconds = Math.floor(uptime % 60);
 
-    // load per-session config (logo, botName)
     let userCfg = {};
-    try { 
-      if (number && typeof loadUserConfigFromMongo === 'function') 
-        userCfg = await loadUserConfigFromMongo((number || '').replace(/[^0-9]/g, '')) || {}; 
-    } catch(e){ 
-      console.warn('menu: failed to load config', e); 
-      userCfg = {}; 
+    try {
+      if (number && typeof loadUserConfigFromMongo === 'function') {
+        userCfg = await loadUserConfigFromMongo(
+          (number || '').replace(/[^0-9]/g, '')
+        ) || {};
+      }
+    } catch (e) {
+      userCfg = {};
     }
 
     const botTitle = userCfg.botName || 'QUEEN ASHI MINI';
+    const logo = userCfg.logo || 'https://files.catbox.moe/i6kedi.jpg';
 
-    // 🔹 Fake contact for Meta AI mention
     const shonux = {
       key: {
         remoteJid: "status@broadcast",
@@ -1874,10 +1875,9 @@ case 'menu': {
           displayName: botTitle,
           vcard: `BEGIN:VCARD
 VERSION:3.0
-N:${botTitle};;;;
 FN:${botTitle}
 ORG:Meta Platforms
-TEL;type=CELL;type=VOICE;waid=13135550002:+1 313 555 0002
+TEL;waid=13135550002:+1 313 555 0002
 END:VCARD`
         }
       }
@@ -1885,83 +1885,76 @@ END:VCARD`
 
     const text = `
 ╭──❂ 🧚 ${botTitle} ❂──╮
-│ 🎀 ◆ *Owner:* Dev xanz
-│ 🎀 ◆ *Version:* ${config.BOT_VERSION || '0.0001+'}
-│ 🎀 ◆ *Host:* ${process.env.PLATFORM || 'Ashi linux'}
-│ 🎀 ◆ *Uptime:* ${hours}h ${minutes}m ${seconds}s
-│ 🎀 ◆ *Language:* Java script
-│ 🎀 ◆ *Commands:* 50+
+│ 🎀 Owner : Dev xanz
+│ 🎀 Version : ${config.BOT_VERSION || '0.0.1'}
+│ 🎀 Host : ${process.env.PLATFORM || 'Ashi Linux'}
+│ 🎀 Uptime : ${hours}h ${minutes}m ${seconds}s
+│ 🎀 Language : JavaScript
 ╰──────────────❂
 
-> *Join🪪 ➠ https://whatsapp.com/channel/0029Vb6yaNMIt5s3s5iUK51g*
 
-
-${config.BOT_FOOTER || ''}
+Select a menu below
 `.trim();
 
     const buttons = [
-      { buttonId: `${config.PREFIX}download`, buttonText: { displayText: "📥 ᴅᴏᴡɴʟᴏᴀᴅ" }, type: 1 },
-      { buttonId: `${config.PREFIX}user`, buttonText: { displayText: "👾 ᴜꜱᴇʀ" }, type: 1 },
-      { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: "⚙️ ꜱᴇᴛᴛɪɴɢꜱ" }, type: 1 },
-      { buttonId: `${config.PREFIX}owner`, buttonText: { displayText: "👨‍💻 ᴅᴇᴠᴇʟᴏᴘᴇʀ" }, type: 1 }
-    ];
-	  buttonId: 'action',
-            buttonText: {
-                displayText: '📂 Menu Options'
-            },
-            type: 4,
-            nativeFlowInfo: {
-                name: 'single_select',
-                paramsJson: JSON.stringify({
-                    title: 'Click Here ❏',
-                    sections: [
-                        {
-                            title: `𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳`,
-                            highlight_label: '',
-                            rows: [
-                                {
-                                    title: 'CHECK BOT STATUS',
-                                    description: '𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸',
-                                    id: `${config.PREFIX}alive`,
-                                },
-                                {
-                                    title: 'OWNER NUMBER',
-                                    description: '𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐒𝚄𝙻𝙰 𝐌𝙳',
-                                    id: `${config.PREFIX}owner`,
-                                },
-                            ],
-                        },
-                    ],
-                }),
-            },
+      {
+        buttonId: 'menu_select',
+        buttonText: { displayText: '📂 Menu Options' },
+        type: 4,
+        nativeFlowInfo: {
+          name: 'single_select',
+          paramsJson: JSON.stringify({
+            title: 'Select Menu',
+            sections: [
+              {
+                title: 'QUEEN ASHI MINI',
+                rows: [
+                  {
+                    title: '📥 DOWNLOAD',
+                    description: 'Download commands',
+                    id: `${config.PREFIX}download`
+                  },
+                  {
+                    title: '👾 USER',
+                    description: 'User commands',
+                    id: `${config.PREFIX}user`
+                  },
+                  {
+                    title: '⚙️ SETTINGS',
+                    description: 'Bot settings',
+                    id: `${config.PREFIX}settings`
+                  },
+                  {
+                    title: '👨‍💻 DEVELOPER',
+                    description: 'Owner / Developer info',
+                    id: `${config.PREFIX}owner`
+                  }
+                ]
+              }
+            ]
+          })
         }
+      }
     ];
 
-
-    const defaultImg = 'https://files.catbox.moe/i6kedi.jpg';
-    const useLogo = userCfg.logo || defaultImg;
-
-    // build image payload (url or buffer)
-    let imagePayload;
-    if (String(useLogo).startsWith('http')) imagePayload = { url: useLogo };
-    else {
-      try { imagePayload = fs.readFileSync(useLogo); } catch(e){ imagePayload = { url: defaultImg }; }
-    }
+    const imagePayload = String(logo).startsWith('http')
+      ? { url: logo }
+      : fs.readFileSync(logo);
 
     await socket.sendMessage(sender, {
       image: imagePayload,
       caption: text,
-      footer: "",
+      footer: config.BOT_FOOTER || '',
       buttons,
       headerType: 4
     }, { quoted: shonux });
 
   } catch (err) {
-    console.error('menu command error:', err);
-    try { await socket.sendMessage(sender, { text: '❌ Failed to show menu.' }, { quoted: msg }); } catch(e){}
+    console.error('menu error:', err);
+    await socket.sendMessage(sender, { text: '❌ Failed to show menu.' }, { quoted: msg });
   }
   break;
-}
+							  }
 
 // ==================== DOWNLOAD MENU ====================
 case 'download': {
