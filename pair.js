@@ -2021,35 +2021,46 @@ END:VCARD`
 
 // ==================== USER MENU ====================
 case 'user': {
-  try { await socket.sendMessage(sender, { react: { text: "🧑‍🔧", key: msg.key } }); } catch(e){}
+  try {
+    await socket.sendMessage(sender, { react: { text: "🧑‍🔧", key: msg.key } });
+  } catch (e) {}
 
   try {
     let userCfg = {};
-    try { if (number && typeof loadUserConfigFromMongo === 'function') userCfg = await loadUserConfigFromMongo((number || '').replace(/[^0-9]/g, '')) || {}; } catch(e){ userCfg = {}; }
+    try {
+      if (number && typeof loadUserConfigFromMongo === 'function') {
+        userCfg = await loadUserConfigFromMongo(
+          (number || '').replace(/[^0-9]/g, '')
+        ) || {};
+      }
+    } catch (e) {
+      userCfg = {};
+    }
+
     const title = userCfg.botName || 'QUEEN ASHI MINI BOT';
 
     const shonux = {
-        key: {
-            remoteJid: "status@broadcast",
-            participant: "0@s.whatsapp.net",
-            fromMe: false,
-            id: "META_AI_FAKE_ID_TOOLS"
-        },
-        message: {
-            contactMessage: {
-                displayName: title,
-                vcard: `BEGIN:VCARD
+      key: {
+        remoteJid: "status@broadcast",
+        participant: "0@s.whatsapp.net",
+        fromMe: false,
+        id: "META_AI_FAKE_ID_USER"
+      },
+      message: {
+        contactMessage: {
+          displayName: title,
+          vcard: `BEGIN:VCARD
 VERSION:3.0
 N:${title};;;;
 FN:${title}
 ORG:Meta Platforms
 TEL;type=CELL;type=VOICE;waid=13135550002:+1 313 555 0002
 END:VCARD`
-            }
         }
+      }
     };
 
-    const Text = `
+    const text = `
 ╭───❂ 🧑‍🔧 𝐔𝚂𝙴𝚁 𝐂𝙾𝙼𝙼𝙰𝙽𝙳𝚂 ❂───╮
 │
 │ ➤ *Command .jid*
@@ -2082,13 +2093,12 @@ END:VCARD`
 │
 ╰──────────────❂
 `.trim();
-	  
+
     const buttons = [
       { buttonId: `${config.PREFIX}menu`, buttonText: { displayText: "🚪 𝐌𝙰𝙸𝙽 𝐌𝙴𝙽𝚄" }, type: 1 },
       { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: "⚙️ 𝐒𝙴𝚃𝚃𝙸𝙽𝙶𝚂" }, type: 1 }
     ];
 
-        // 🔹 ONLY ADDITION: image + caption
     await socket.sendMessage(sender, {
       image: { url: 'https://i.ibb.co/21Q2m6CW/tourl-1768647451592.jpg' },
       caption: text,
@@ -2097,43 +2107,57 @@ END:VCARD`
     }, { quoted: shonux });
 
   } catch (err) {
-    console.error('tools command error:', err);
-    try { await socket.sendMessage(sender, { text: '❌ Failed to show tools menu.' }, { quoted: msg }); } catch(e){}
+    console.error('user command error:', err);
+    await socket.sendMessage(sender, {
+      text: '❌ Failed to show user menu.'
+    }, { quoted: msg });
   }
   break;
 }
 
 
+ // ==================== SETTINGS MENU ===================
 case 'settings': {
-  try { await socket.sendMessage(sender, { react: { text: "⚙️", key: msg.key } }); } catch(e){}
+  try {
+    await socket.sendMessage(sender, { react: { text: "⚙️", key: msg.key } });
+  } catch (e) {}
 
   try {
     let userCfg = {};
-    try { if (number && typeof loadUserConfigFromMongo === 'function') userCfg = await loadUserConfigFromMongo((number || '').replace(/[^0-9]/g, '')) || {}; } catch(e){ userCfg = {}; }
+    try {
+      if (number && typeof loadUserConfigFromMongo === 'function') {
+        userCfg = await loadUserConfigFromMongo(
+          (number || '').replace(/[^0-9]/g, '')
+        ) || {};
+      }
+    } catch (e) {
+      userCfg = {};
+    }
+
     const title = userCfg.botName || 'QUEEN ASHI MINI BOT AI';
 
     const shonux = {
-        key: {
-            remoteJid: "status@broadcast",
-            participant: "0@s.whatsapp.net",
-            fromMe: false,
-            id: "META_AI_FAKE_ID_SETTINGS"
-        },
-        message: {
-            contactMessage: {
-                displayName: title,
-                vcard: `BEGIN:VCARD
+      key: {
+        remoteJid: "status@broadcast",
+        participant: "0@s.whatsapp.net",
+        fromMe: false,
+        id: "META_AI_FAKE_ID_SETTINGS"
+      },
+      message: {
+        contactMessage: {
+          displayName: title,
+          vcard: `BEGIN:VCARD
 VERSION:3.0
 N:${title};;;;
 FN:${title}
 ORG:Meta Platforms
 TEL;type=CELL;type=VOICE;waid=13135550002:+1 313 555 0002
 END:VCARD`
-            }
         }
+      }
     };
 
-    const Text = `
+    const text = `
 ╭─❂ ⚙ 𝐒𝙴𝚃𝚃𝙸𝙽𝙶𝚂 𝐂𝙾𝙼𝙼𝙰𝙽𝙳𝚂 ❂─╮
 │
 │ ➤ *Command .setbotname*
@@ -2144,12 +2168,12 @@ END:VCARD`
 │ ☛ Usage ${config.PREFIX}setlogo (reply to image/url)
 │ _✨ Desc : Change bot profile picture_
 │
-│ ➤ *Command .showconfig
+│ ➤ *Command .showconfig*
 │ ☛ Usage ${config.PREFIX}showconfig
 │ _✨ Desc : Show your current bot config_
 │
-│ ➤ *Command .resetconfig
-│ ☛ *Usage ${config.PREFIX}resetconfig
+│ ➤ *Command .resetconfig*
+│ ☛ Usage ${config.PREFIX}resetconfig
 │ _✨ Desc : Reset your bot config_
 │
 │ ➤ *Command .deleteme*
@@ -2158,27 +2182,28 @@ END:VCARD`
 │
 ╰──────────────❂
 `.trim();
-	  
+
     const buttons = [
       { buttonId: `${config.PREFIX}menu`, buttonText: { displayText: "🚪 𝐌𝙰𝙸𝙽 𝐌𝙴𝙽𝚄" }, type: 1 },
       { buttonId: `${config.PREFIX}owner`, buttonText: { displayText: "👨‍💻 𝐃𝙴𝚅𝙴𝙻𝙾𝙿𝙴𝚁" }, type: 1 }
     ];
 
-        // 🔹 ONLY ADDITION: image + caption
     await socket.sendMessage(sender, {
       image: { url: 'https://i.ibb.co/CKvxzpjb/tourl-1768647487785.jpg' },
       caption: text,
       footer: "𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳",
       buttons
     }, { quoted: shonux });
-	  
+
   } catch (err) {
     console.error('settings command error:', err);
-    try { await socket.sendMessage(sender, { text: '❌ Failed to show settings menu.' }, { quoted: msg }); } catch(e){}
+    await socket.sendMessage(sender, {
+      text: '❌ Failed to show settings menu.'
+    }, { quoted: msg });
   }
   break;
-}
-
+		  }
+			  
     case 'owner': {
     const ownerNumber = '+94776803526';
     const ownerName = '🎀 𝐐𝐔𝐄𝐄𝐍 𝐀𝐒𝐇𝐈 𝐌𝐃 𝐎𝐖𝐍𝐄𝐑';
