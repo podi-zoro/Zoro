@@ -1967,7 +1967,7 @@ END:VCARD`
 │
 │ ➤ *Command `.csong`
 │ *☛ Usage ${config.PREFIX}csong (query)*
-│ _✨ Desc : post songs to channels
+│ _✨ Desc : post songs to channels_
 │
 │ ➤ *Command `.tiktok`
 │ *☛ Usage ${config.PREFIX}tiktok (url)*
@@ -1977,7 +1977,7 @@ END:VCARD`
 │ *☛ Usage ${config.PREFIX}video (query)*
 │ _✨ Desc : download yt videos_
 │
-│ ➤ *Command `apksearch`
+│ ➤ *Command `.apksearch`
 │ *☛ Usage ${config.PREFIX}apksearch (app name)*
 │ _✨ Desc : get information for apks_
 │
@@ -1993,7 +1993,7 @@ END:VCARD`
 │ *☛ Usage ${config.PREFIX}img (query)*
 │ _✨ Desc ; download google images_
 │
-╰───────────────❂`.trim();
+╰──────────────❂`.trim();
 
     const buttons = [
       { buttonId: `${config.PREFIX}menu`, buttonText: { displayText: "🚪 𝐌𝙰𝙸𝙽 𝐌𝙴𝙽𝚄" }, type: 1 },
