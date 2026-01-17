@@ -1880,12 +1880,12 @@ END:VCARD`
 🎀 𝐇𝐄𝐘❜ 𝐐𝐔𝐄𝐄𝐍 𝐀𝐒𝐇𝐈 𝐌𝐃 𝐔𝐒𝐄𝐑	
 
 ╭──❂ 🧚 𝐁𝙾𝚃 𝐌𝙰𝙸𝙽 𝐌𝙴𝙽𝚄 ❂──╮
-│ 🎀 ◆ *Oᴡɴᴇʀ :* Dev xanz
-│ 🎀 ◆ *Vᴇʀꜱɪᴏɴ :* ${config.BOT_VERSION || '0.0001+'}
-│ 🎀 ◆ *Hᴏꜱᴛ :* ${process.env.PLATFORM || 'Ashi linux'}
-│ 🎀 ◆ *Uᴘᴛɪᴍᴇ :* ${hours}h ${minutes}m ${seconds}s
-│ 🎀 ◆ *Lᴇɴɢᴜᴀɢᴇ :* Java script
-│ 🎀 ◆ *Cᴏᴍᴍᴀɴᴅꜱ :* 50+
+│  ◆ *Oᴡɴᴇʀ :* Dev xanz
+│  ◆ *Vᴇʀꜱɪᴏɴ :* ${config.BOT_VERSION || '0.0001+'}
+│  ◆ *Hᴏꜱᴛ :* ${process.env.PLATFORM || 'Ashi linux'}
+│  ◆ *Uᴘᴛɪᴍᴇ :* ${hours}h ${minutes}m ${seconds}s
+│  ◆ *Lᴇɴɢᴜᴀɢᴇ :* Java script
+│  ◆ *Cᴏᴍᴍᴀɴᴅꜱ :* 50+
 ╰──────────────❂
 
  ${config.BOT_FOOTER || ''}
@@ -1987,7 +1987,7 @@ END:VCARD`
 │
 │ ➤ *Command .save*
 │ ☛ Usage ${config.PREFIX}save (reply to status)
-│ _✨ Desc : download whatsapp statuses_
+│ _✨ Desc : download whatsapp status_
 │
 │ ➤ *Command .img*
 │ ☛ Usage ${config.PREFIX}img (query)
@@ -2049,17 +2049,39 @@ END:VCARD`
         }
     };
 
-    const text = `
-╭─❂ 🧑‍🔧 𝐔𝚂𝙴𝚁 𝐂𝙾𝙼𝙼𝙰𝙽𝙳𝚂 ❂─╮
-│🎀 ◆ ${config.PREFIX}jid   
-│🎀 ◆ ${config.PREFIX}tagall (message)  
-│🎀 ◆ ${config.PREFIX}online  
-│🎀 ◆ ${config.PREFIX}block (number)  
-│🎀 ◆ ${config.PREFIX}unblock (number)  
-│🎀 ◆ ${config.PREFIX}ping  
-│🎀 ◆ ${config.PREFIX}alive  
-╰─────────────────❂`.trim();
-
+    const userMenuText = `
+╭───❂ 🧑‍🔧 𝐔𝚂𝙴𝚁 𝐂𝙾𝙼𝙼𝙰𝙽𝙳𝚂 ❂───╮
+│
+│ ➤ *Command ${config.PREFIX}jid*
+│ ☛ *Usage ${config.PREFIX}jid*
+│ _✨ Desc : Get jid of a user_
+│
+│ ➤ *Command ${config.PREFIX}tagall*
+│ ☛ *Usage ${config.PREFIX}tagall (message)*
+│ _✨ Desc : Mention everyone in group_
+│
+│ ➤ *Command ${config.PREFIX}online*
+│ ☛ *Usage ${config.PREFIX}online*
+│ _✨ Desc : Check online members_
+│
+│ ➤ *Command ${config.PREFIX}block*
+│ ☛ *Usage ${config.PREFIX}block (number)*
+│ _✨ Desc : Block a user_
+│
+│ ➤ *Command ${config.PREFIX}unblock*
+│ ☛ *Usage ${config.PREFIX}unblock (number)*
+│ _✨ Desc : Unblock a user_
+│
+│ ➤ *Command ${config.PREFIX}ping*
+│ ☛ *Usage ${config.PREFIX}ping*
+│ _✨ Desc : Check bot ping_
+│
+│ ➤ *Command ${config.PREFIX}alive*
+│ ☛ *Usage ${config.PREFIX}alive*
+│ _✨ Desc : Check bot alive status_
+│
+╰──────────────❂
+`.trim();
 	  
     const buttons = [
       { buttonId: `${config.PREFIX}menu`, buttonText: { displayText: "🚪 𝐌𝙰𝙸𝙽 𝐌𝙴𝙽𝚄" }, type: 1 },
