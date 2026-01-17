@@ -1978,7 +1978,7 @@ END:VCARD`
 
     // 🔹 ONLY ADDITION: image + caption
     await socket.sendMessage(sender, {
-      image: { url: 'https://files.catbox.moe/i6kedi.jpg' },
+      image: { url: 'https://i.ibb.co/PGZ0jS2D/tourl-1768647299517.jpg' },
       caption: text,
       footer: "",
       buttons
@@ -2043,7 +2043,7 @@ END:VCARD`
 
         // 🔹 ONLY ADDITION: image + caption
     await socket.sendMessage(sender, {
-      image: { url: 'https://files.catbox.moe/i6kedi.jpg' },
+      image: { url: 'https://i.ibb.co/21Q2m6CW/tourl-1768647451592.jpg' },
       caption: text,
       footer: "",
       buttons
@@ -2103,7 +2103,7 @@ END:VCARD`
 
         // 🔹 ONLY ADDITION: image + caption
     await socket.sendMessage(sender, {
-      image: { url: 'https://files.catbox.moe/i6kedi.jpg' },
+      image: { url: 'https://i.ibb.co/CKvxzpjb/tourl-1768647487785.jpg' },
       caption: text,
       footer: "",
       buttons
