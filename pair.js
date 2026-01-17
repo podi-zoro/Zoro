@@ -2005,7 +2005,7 @@ END:VCARD`
     await socket.sendMessage(sender, {
       image: { url: 'https://i.ibb.co/PGZ0jS2D/tourl-1768647299517.jpg' },
       caption: text,
-      footer: "",
+      footer: "𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳",
       buttons
     }, { quoted: shonux });
 
@@ -2049,7 +2049,7 @@ END:VCARD`
         }
     };
 
-    const userMenuText = `
+    const Text = `
 ╭───❂ 🧑‍🔧 𝐔𝚂𝙴𝚁 𝐂𝙾𝙼𝙼𝙰𝙽𝙳𝚂 ❂───╮
 │
 │ ➤ *Command .jid*
@@ -2092,7 +2092,7 @@ END:VCARD`
     await socket.sendMessage(sender, {
       image: { url: 'https://i.ibb.co/21Q2m6CW/tourl-1768647451592.jpg' },
       caption: text,
-      footer: "",
+      footer: "𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳",
       buttons
     }, { quoted: shonux });
 
@@ -2133,7 +2133,7 @@ END:VCARD`
         }
     };
 
-    const settingsMenuText = `
+    const Text = `
 ╭─❂ ⚙ 𝐒𝙴𝚃𝚃𝙸𝙽𝙶𝚂 𝐂𝙾𝙼𝙼𝙰𝙽𝙳𝚂 ❂─╮
 │
 │ ➤ *Command .setbotname*
@@ -2168,7 +2168,7 @@ END:VCARD`
     await socket.sendMessage(sender, {
       image: { url: 'https://i.ibb.co/CKvxzpjb/tourl-1768647487785.jpg' },
       caption: text,
-      footer: "",
+      footer: "𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳",
       buttons
     }, { quoted: shonux });
 	  
