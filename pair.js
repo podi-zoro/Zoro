@@ -2052,32 +2052,32 @@ END:VCARD`
     const userMenuText = `
 ╭───❂ 🧑‍🔧 𝐔𝚂𝙴𝚁 𝐂𝙾𝙼𝙼𝙰𝙽𝙳𝚂 ❂───╮
 │
-│ ➤ *Command ${config.PREFIX}jid*
-│ ☛ *Usage ${config.PREFIX}jid*
+│ ➤ *Command .jid*
+│ ☛ Usage ${config.PREFIX}jid
 │ _✨ Desc : Get jid of a user_
 │
-│ ➤ *Command ${config.PREFIX}tagall*
-│ ☛ *Usage ${config.PREFIX}tagall (message)*
+│ ➤ *Command .tagall*
+│ ☛ Usage ${config.PREFIX}tagall (message)
 │ _✨ Desc : Mention everyone in group_
 │
-│ ➤ *Command ${config.PREFIX}online*
-│ ☛ *Usage ${config.PREFIX}online*
+│ ➤ *Command .online*
+│ ☛ Usage ${config.PREFIX}online
 │ _✨ Desc : Check online members_
 │
-│ ➤ *Command ${config.PREFIX}block*
-│ ☛ *Usage ${config.PREFIX}block (number)*
+│ ➤ *Command .block*
+│ ☛ Usage ${config.PREFIX}block (number)
 │ _✨ Desc : Block a user_
 │
-│ ➤ *Command ${config.PREFIX}unblock*
-│ ☛ *Usage ${config.PREFIX}unblock (number)*
+│ ➤ *Command .unblock*
+│ ☛ Usage ${config.PREFIX}unblock (number)
 │ _✨ Desc : Unblock a user_
 │
-│ ➤ *Command ${config.PREFIX}ping*
-│ ☛ *Usage ${config.PREFIX}ping*
+│ ➤ *Command .ping*
+│ ☛ Usage ${config.PREFIX}ping
 │ _✨ Desc : Check bot ping_
 │
-│ ➤ *Command ${config.PREFIX}alive*
-│ ☛ *Usage ${config.PREFIX}alive*
+│ ➤ *Command .alive*
+│ ☛ Usage ${config.PREFIX}alive
 │ _✨ Desc : Check bot alive status_
 │
 ╰──────────────❂
@@ -2133,15 +2133,31 @@ END:VCARD`
         }
     };
 
-    const text = `
+    const settingsMenuText = `
 ╭─❂ ⚙ 𝐒𝙴𝚃𝚃𝙸𝙽𝙶𝚂 𝐂𝙾𝙼𝙼𝙰𝙽𝙳𝚂 ❂─╮
-│🎀 ◆ ${config.PREFIX}setbotname (name) 
-│🎀 ◆ ${config.PREFIX}setlogo (reply to image/url)  
-│🎀 ◆ ${config.PREFIX}showconfig  
-│🎀 ◆ ${config.PREFIX}resetconfig  
-│🎀 ◆ ${config.PREFIX}deleteme  
-╰─────────────────❂`.trim();
-
+│
+│ ➤ *Command .setbotname*
+│ ☛ Usage ${config.PREFIX}setbotname (name)
+│ _✨ Desc : Set a new bot name_
+│
+│ ➤ *Command .setlogo*
+│ ☛ Usage ${config.PREFIX}setlogo (reply to image/url)
+│ _✨ Desc : Change bot profile picture_
+│
+│ ➤ *Command .showconfig
+│ ☛ Usage ${config.PREFIX}showconfig
+│ _✨ Desc : Show your current bot config_
+│
+│ ➤ *Command .resetconfig
+│ ☛ *Usage ${config.PREFIX}resetconfig
+│ _✨ Desc : Reset your bot config_
+│
+│ ➤ *Command .deleteme*
+│ ☛ Usage ${config.PREFIX}deleteme
+│ _✨ Desc : Delete your bot session_
+│
+╰──────────────❂
+`.trim();
 	  
     const buttons = [
       { buttonId: `${config.PREFIX}menu`, buttonText: { displayText: "🚪 𝐌𝙰𝙸𝙽 𝐌𝙴𝙽𝚄" }, type: 1 },
@@ -2165,7 +2181,7 @@ END:VCARD`
 
     case 'owner': {
     const ownerNumber = '+94776803526';
-    const ownerName = '𝐏𝐎𝐃𝐈 𝐙𝐎𝐑𝐎';
+    const ownerName = '🎀 𝐐𝐔𝐄𝐄𝐍 𝐀𝐒𝐇𝐈 𝐌𝐃 𝐎𝐖𝐍𝐄𝐑';
     const organization = '𝐃𝐄𝐕𝐄𝐋𝐎𝐏𝐄𝐑';
 
     const vcard = 'BEGIN:VCARD\n' +
@@ -2186,7 +2202,7 @@ END:VCARD`
 
         // Then send message with reference
         await socket.sendMessage(from, {
-            text: `OWNER INFO \n\n👤 Name: ${ownerName}\n📞 Number: ${ownerNumber}\n\n> 𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸`,
+            text: `OWNER INFOMATION \n\n👤 Name: ${ownerName}\n📞 Number: ${ownerNumber}\n\n> 𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸`,
             contextInfo: {
                 mentionedJid: [`${ownerNumber.replace('+', '')}@s.whatsapp.net`],
                 quotedMessageId: sent.key.id
@@ -2217,7 +2233,7 @@ END:VCARD`
   if (!jid) {
     let userCfg = {};
     try { if (number && typeof loadUserConfigFromMongo === 'function') userCfg = await loadUserConfigFromMongo((number || '').replace(/[^0-9]/g, '')) || {}; } catch(e){ userCfg = {}; }
-    const title = userCfg.botName || 'QUEEN ASHI MINI BOT AI';
+    const title = userCfg.botName || 'QUEEN ASHI MINI BOT';
 
     const shonux = {
         key: { remoteJid: "status@broadcast", participant: "0@s.whatsapp.net", fromMe: false, id: "META_AI_FAKE_ID_UNFOLLOW" },
