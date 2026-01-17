@@ -1961,39 +1961,40 @@ END:VCARD`
     const text = `
 ╭───❂ 𝐃𝙾𝚆𝙽𝙻𝙾𝙰𝙳 𝐌𝙴𝙽𝚄 ❂───╮
 │
-│ ➤ *Command `.song`
-│ *☛ Usage ${config.PREFIX}song (query)*
-│ _✨ Desc : download yt songes_
+│ ➤ *Command .song*
+│ ☛ Usage ${config.PREFIX}song (query)
+│ _✨ Desc : download yt songs_
 │
-│ ➤ *Command `.csong`
-│ *☛ Usage ${config.PREFIX}csong (query)*
+│ ➤ *Command .csong*
+│ ☛ Usage ${config.PREFIX}csong (query)
 │ _✨ Desc : post songs to channels_
 │
-│ ➤ *Command `.tiktok`
-│ *☛ Usage ${config.PREFIX}tiktok (url)*
+│ ➤ *Command .tiktok*
+│ ☛ Usage ${config.PREFIX}tiktok (url)
 │ _✨ Desc : download tiktok videos_
 │
-│ ➤ *Command `.video`
-│ *☛ Usage ${config.PREFIX}video (query)*
+│ ➤ *Command .video*
+│ ☛ Usage ${config.PREFIX}video (query)
 │ _✨ Desc : download yt videos_
 │
-│ ➤ *Command `.apksearch`
-│ *☛ Usage ${config.PREFIX}apksearch (app name)*
+│ ➤ *Command .apksearch*
+│ ☛ Usage ${config.PREFIX}apksearch (app name)
 │ _✨ Desc : get information for apks_
 │
-│ ➤ *Command `.getdp`
-│ *☛ Usage ${config.PREFIX}getdp (number)*
+│ ➤ *Command .getdp*
+│ ☛ Usage ${config.PREFIX}getdp (number)
 │ _✨ Desc : get whatsapp dp picture_
 │
-│ ➤ *Command `.save`
-│ *☛ Usage ${config.PREFIX}save (reply to status)*
+│ ➤ *Command .save*
+│ ☛ Usage ${config.PREFIX}save (reply to status)
 │ _✨ Desc : download whatsapp statuses_
 │
-│ ➤ *Command `.img`
-│ *☛ Usage ${config.PREFIX}img (query)*
-│ _✨ Desc ; download google images_
+│ ➤ *Command .img*
+│ ☛ Usage ${config.PREFIX}img (query)
+│ _✨ Desc : download google images_
 │
-╰──────────────❂`.trim();
+╰──────────────❂
+`.trim();
 
     const buttons = [
       { buttonId: `${config.PREFIX}menu`, buttonText: { displayText: "🚪 𝐌𝙰𝙸𝙽 𝐌𝙴𝙽𝚄" }, type: 1 },
