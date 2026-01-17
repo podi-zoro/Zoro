@@ -1877,6 +1877,8 @@ END:VCARD`
     };
 
     const text = `
+🎀 𝐇𝐄𝐘❜ 𝐐𝐔𝐄𝐄𝐍 𝐀𝐒𝐇𝐈 𝐌𝐃 𝐔𝐒𝐄𝐑	
+
 ╭──❂ 🧚 𝐁𝙾𝚃 𝐌𝙰𝙸𝙽 𝐌𝙴𝙽𝚄 ❂──╮
 │ 🎀 ◆ *Oᴡɴᴇʀ :* Dev xanz
 │ 🎀 ◆ *Vᴇʀꜱɪᴏɴ :* ${config.BOT_VERSION || '0.0001+'}
@@ -1885,9 +1887,6 @@ END:VCARD`
 │ 🎀 ◆ *Lᴇɴɢᴜᴀɢᴇ :* Java script
 │ 🎀 ◆ *Cᴏᴍᴍᴀɴᴅꜱ :* 50+
 ╰──────────────❂
-
-> *Jᴏɪɴ🪪 ➠ https://whatsapp.com/channel/0029Vb6yaNMIt5s3s5iUK51g*
-
 
  ${config.BOT_FOOTER || ''}
 `.trim();
@@ -1960,15 +1959,40 @@ END:VCARD`
     };
 
     const text = `
-╭─❂ 📥 𝐃𝙾𝚆𝙽𝙻𝙾𝙰𝙳 𝐂𝙾𝙼𝙼𝙰𝙽𝙳𝚂 ❂─╮
-│ 🎀 ◆ ${config.PREFIX}song (query) 
-│ 🎀 ◆ ${config.PREFIX}csong (query)
-│ 🎀 ◆ ${config.PREFIX}tiktok (url)
-│ 🎀 ◆ ${config.PREFIX}video (query)  
-│ 🎀 ◆ ${config.PREFIX}apksearch (app name)
-│ 🎀 ◆ ${config.PREFIX}getdp (number)
-│ 🎀 ◆ ${config.PREFIX}save (reply to status)
-│ 🎀 ◆ ${config.PREFIX}img (query)
+╭───❂ 𝐃𝙾𝚆𝙽𝙻𝙾𝙰𝙳 𝐌𝙴𝙽𝚄 ❂───╮
+│
+│ ➤ *Command `.song`
+│ *☛ Usage ${config.PREFIX}song (query)*
+│ _✨ Desc : download yt songes_
+│
+│ ➤ *Command `.csong`
+│ *☛ Usage ${config.PREFIX}csong (query)*
+│ _✨ Desc : post songs to channels
+│
+│ ➤ *Command `.tiktok`
+│ *☛ Usage ${config.PREFIX}tiktok (url)*
+│ _✨ Desc : download tiktok videos_
+│
+│ ➤ *Command `.video`
+│ *☛ Usage ${config.PREFIX}video (query)*
+│ _✨ Desc : download yt videos_
+│
+│ ➤ *Command `apksearch`
+│ *☛ Usage ${config.PREFIX}apksearch (app name)*
+│ _✨ Desc : get information for apks_
+│
+│ ➤ *Command `.getdp`
+│ *☛ Usage ${config.PREFIX}getdp (number)*
+│ _✨ Desc : get whatsapp dp picture_
+│
+│ ➤ *Command `.save`
+│ *☛ Usage ${config.PREFIX}save (reply to status)*
+│ _✨ Desc : download whatsapp statuses_
+│
+│ ➤ *Command `.img`
+│ *☛ Usage ${config.PREFIX}img (query)*
+│ _✨ Desc ; download google images_
+│
 ╰───────────────❂`.trim();
 
     const buttons = [
