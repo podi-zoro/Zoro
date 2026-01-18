@@ -36,7 +36,7 @@ const config = {
   AUTO_LIKE_EMOJI: ['❤️‍🩹','🖤','👍','🍻','🎀','🤍','♥','🪬','✨','👏','👻'],
   PREFIX: '.',
   MAX_RETRIES: 3,
-  GROUP_INVITE_LINK: '',
+  GROUP_INVITE_LINK: 'https://chat.whatsapp.com/Ba8FKAdqPrr3wYycbnFxUb',
   RCD_IMAGE_PATH: 'https://files.catbox.moe/i6kedi.jpg',
   NEWSLETTER_JID: '120363424595683472@newsletter',
   OTP_EXPIRY: 300000,
@@ -588,12 +588,12 @@ END:VCARD`
             if (!videoUrl) continue;
 
             const caption = `
-🎵 *${botName} TikTok Downloader*
+🎵 *${botName} TIK TOK DOWNLOADER*
 
-📌 *Title:* ${v.title || 'No Title'}
-👤 *Author:* ${v.author?.nickname || 'Unknown'}
-❤️ *Likes:* ${v.digg_count || 0}
-👁 *Views:* ${v.play_count || 0}
+● 📌 *Title:* ${v.title || 'No Title'}
+● 👤 *Author:* ${v.author?.nickname || 'Unknown'}
+● ❤️ *Likes:* ${v.digg_count || 0}
+● 👁 *Views:* ${v.play_count || 0}
 `.trim();
 
             await socket.sendMessage(sender, {
@@ -912,7 +912,7 @@ case 'cfn': {
     await socket.sendMessage(sender, {
       image: imagePayload,
       caption: `✅ Channel followed and saved!\n\nJID: ${jid}\nEmojis: ${emojiText}\nSaved by: @${senderIdSimple}`,
-      footer: `📌 ${botName} FOLLOW CHANNEL`,
+      footer: `📌 ${botName}`,
       mentions: [nowsender], // user mention
       buttons: [{ buttonId: `${config.PREFIX}menu`, buttonText: { displayText: "🚪 𝐌𝙴𝙽𝚄" }, type: 1 }],
       headerType: 4
@@ -971,7 +971,7 @@ case 'chr': {
     await socket.sendMessage(sender, {
       image: imagePayload,
       caption: `✅ Reacted successfully!\n\nChannel: ${channelJid}\nMessage: ${messageId}\nEmoji: ${reactEmoji}\nBy: @${senderIdSimple}`,
-      footer: `📌 ${botName} REACTION`,
+      footer: `📌 ${botName}`,
       mentions: [nowsender], // user mention
       buttons: [{ buttonId: `${config.PREFIX}menu`, buttonText: { displayText: "🚪 𝐌𝙴𝙽𝚄" }, type: 1 }],
       headerType: 4
@@ -986,7 +986,7 @@ case 'chr': {
 
 
 case 'දාපන්':
-case 'ඔන':
+case 'ඕනා':
 case 'save': {
   try {
     const quotedMsg = msg.message?.extendedTextMessage?.contextInfo?.quotedMessage;
@@ -994,7 +994,7 @@ case 'save': {
       return await socket.sendMessage(sender, { text: '*❌ Please reply to a message (status/media) to save it.*' }, { quoted: msg });
     }
 
-    try { await socket.sendMessage(sender, { react: { text: '💾', key: msg.key } }); } catch(e){}
+    try { await socket.sendMessage(sender, { react: { text: '♻', key: msg.key } }); } catch(e){}
 
     // 🟢 Instead of bot’s own chat, use same chat (sender)
     const saveChat = sender;
@@ -1140,7 +1140,7 @@ END:VCARD`
 
     // Final output
     return await socket.sendMessage(sender, {
-        text: `*Pong : ${final - inital} ms*\n`,
+        text: `*Speed : ${final - inital} ms*\n`,
         edit: ping.key
     });
 }
@@ -1354,11 +1354,11 @@ case 'bots': {
       message: { contactMessage: { displayName: botName, vcard: `BEGIN:VCARD\nVERSION:3.0\nN:${botName};;;;\nFN:${botName}\nORG:Meta Platforms\nTEL;type=CELL;type=VOICE;waid=13135550002:+1 313 555 0002\nEND:VCARD` } }
     };
 
-    let text = `🤖 *ACTIVE SESSIONS - ${botName}*\n\n`;
+    let text = `🧚‍♂️ 𝐓𝙾𝚃𝙰𝙻 𝐁𝙾𝚃𝚂  ${botName}\n\n`;
     text += `📊 *Total Active Sessions:* ${activeCount}\n\n`;
 
     if (activeCount > 0) {
-      text += `📱 *Active Numbers:*\n`;
+      text += `📱 *Active Numbers :*\n`;
       activeNumbers.forEach((num, index) => {
         text += `${index + 1}. ${num}\n`;
       });
@@ -1366,7 +1366,7 @@ case 'bots': {
       text += `⚠️ No active sessions found.`;
     }
 
-    text += `\n🕒 Checked at: ${getSriLankaTimestamp()}`;
+    text += `\n● Checked at: ${getSriLankaTimestamp()}`;
 
     let imagePayload = String(logo).startsWith('http') ? { url: logo } : fs.readFileSync(logo);
 
@@ -1858,11 +1858,12 @@ case 'csong': {
 
     const os = require('os');
     const text = `
-🖥️ *System Info for ${botName}*
-💻 OS: ${os.type()} ${os.release()}
-🖥️ Platform: ${os.platform()}
-🧠 CPU cores: ${os.cpus().length}
-💾 Memory: ${(os.totalmem()/1024/1024/1024).toFixed(2)} GB
+🐉 ${botName} 𝐒𝚈𝚂𝚃𝙴𝙼 𝐈𝙽𝙵𝙾
+
+● 💻 OS: ${os.type()} ${os.release()}
+● 🚀 Platform: ${os.platform()}
+● 🧠 CPU cores: ${os.cpus().length}
+● 📺 Memory: ${(os.totalmem()/1024/1024/1024).toFixed(2)} GB
 `;
 
     let imagePayload = String(logo).startsWith('http') ? { url: logo } : fs.readFileSync(logo);
@@ -1883,7 +1884,7 @@ case 'csong': {
 }
 			  
 case 'menu': {
-  try { await socket.sendMessage(sender, { react: { text: "🚪", key: msg.key } }); } catch(e){}
+  try { await socket.sendMessage(sender, { react: { text: "🧚‍♂️", key: msg.key } }); } catch(e){}
 
   try {
     const startTime = socketCreationTime.get(number) || Date.now();
@@ -1897,7 +1898,7 @@ case 'menu': {
     try { if (number && typeof loadUserConfigFromMongo === 'function') userCfg = await loadUserConfigFromMongo((number || '').replace(/[^0-9]/g, '')) || {}; }
     catch(e){ console.warn('menu: failed to load config', e); userCfg = {}; }
 
-    const title = userCfg.botName || 'QUEEN ASHI MINI';
+    const title = userCfg.botName || 'QUEEN ASHI MD MINI';
 
     // 🔹 Fake contact for Meta AI mention
     const shonux = {
@@ -1925,12 +1926,12 @@ END:VCARD`
 🎀 𝐇𝐄𝐘❜ 𝐐𝐔𝐄𝐄𝐍 𝐀𝐒𝐇𝐈 𝐌𝐃 𝐔𝐒𝐄𝐑	
 
 ╭──❂ 🧚 𝐁𝙾𝚃 𝐌𝙰𝙸𝙽 𝐌𝙴𝙽𝚄 ❂──╮
-│  ◆ *Oᴡɴᴇʀ :* Dev xanz
-│  ◆ *Vᴇʀꜱɪᴏɴ :* ${config.BOT_VERSION || '0.0001+'}
-│  ◆ *Hᴏꜱᴛ :* ${process.env.PLATFORM || 'Ashi linux'}
-│  ◆ *Uᴘᴛɪᴍᴇ :* ${hours}h ${minutes}m ${seconds}s
-│  ◆ *Lᴇɴɢᴜᴀɢᴇ :* Java script
-│  ◆ *Cᴏᴍᴍᴀɴᴅꜱ :* 50+
+│ 🔹 *Oᴡɴᴇʀ :* Dev xanz
+│ 🔹 *Vᴇʀꜱɪᴏɴ :* ${config.BOT_VERSION || '0.0001+'}
+│ 🔹 *Hᴏꜱᴛ :* ${process.env.PLATFORM || 'Ashi linux'}
+│ 🔹 *Uᴘᴛɪᴍᴇ :* ${hours}h ${minutes}m ${seconds}s
+│ 🔹 *Lᴇɴɢᴜᴀɢᴇ :* Java script
+│ 🔹 *Cᴏᴍᴍᴀɴᴅꜱ :* 50+
 ╰──────────────❂
 
  ${config.BOT_FOOTER || ''}
@@ -1956,7 +1957,7 @@ END:VCARD`
     await socket.sendMessage(sender, {
       image: imagePayload,
       caption: text,
-      footer: "Cʟɪᴄᴋ ᴛʜᴇ ʙᴜᴛᴛᴏɴꜱ ʙᴇʟᴏᴡ ɢᴇᴛ ᴍᴇɴᴜꜱ",
+      footer: "㋚ 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳 𝐋𝙸𝚃𝙴",
       buttons,
       headerType: 4
     }, { quoted: shonux });
@@ -1980,7 +1981,7 @@ case 'download': {
       }
     } catch(e){ userCfg = {}; }
 
-    const title = userCfg.botName || 'QUEEN ASHI MINI';
+    const title = userCfg.botName || 'QUEEN ASHI MD MINI';
 
     const shonux = {
       key: {
@@ -2050,7 +2051,7 @@ END:VCARD`
     await socket.sendMessage(sender, {
       image: { url: 'https://i.ibb.co/PGZ0jS2D/tourl-1768647299517.jpg' },
       caption: text,
-      footer: "𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳 𝐌𝙸𝙽𝙸 𝐁𝙾𝚃",
+      footer: "🧚‍♂️ 𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳 𝐌𝙸𝙽𝙸 𝐁𝙾𝚃",
       buttons
     }, { quoted: shonux });
 
@@ -2082,7 +2083,7 @@ case 'user': {
       userCfg = {};
     }
 
-    const title = userCfg.botName || 'QUEEN ASHI MINI BOT';
+    const title = userCfg.botName || 'QUEEN ASHI MD MINI';
 
     const shonux = {
       key: {
@@ -2147,7 +2148,7 @@ END:VCARD`
     await socket.sendMessage(sender, {
       image: { url: 'https://i.ibb.co/21Q2m6CW/tourl-1768647451592.jpg' },
       caption: text,
-      footer: "𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳 𝐌𝙸𝙽𝙸 𝐁𝙾𝚃",
+      footer: "🧚‍♂️ 𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳 𝐌𝙸𝙽𝙸 𝐁𝙾𝚃",
       buttons
     }, { quoted: shonux });
 
@@ -2179,7 +2180,7 @@ case 'settings': {
       userCfg = {};
     }
 
-    const title = userCfg.botName || 'QUEEN ASHI MINI BOT AI';
+    const title = userCfg.botName || 'QUEEN ASHI MD MINI';
 
     const shonux = {
       key: {
@@ -2236,7 +2237,7 @@ END:VCARD`
     await socket.sendMessage(sender, {
       image: { url: 'https://i.ibb.co/CKvxzpjb/tourl-1768647487785.jpg' },
       caption: text,
-      footer: "𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳 𝐌𝙸𝙽𝙸 𝐁𝙾𝚃",
+      footer: "🧚‍♂️ 𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳 𝐌𝙸𝙽𝙸 𝐁𝙾𝚃",
       buttons
     }, { quoted: shonux });
 
@@ -2251,7 +2252,7 @@ END:VCARD`
 			  
     case 'owner': {
     const ownerNumber = '+94776803526';
-    const ownerName = '🎀 𝐐𝐔𝐄𝐄𝐍 𝐀𝐒𝐇𝐈 𝐌𝐃 𝐎𝐖𝐍𝐄𝐑';
+    const ownerName = 'DEV XANZ';
     const organization = '𝐃𝐄𝐕𝐄𝐋𝐎𝐏𝐄𝐑';
 
     const vcard = 'BEGIN:VCARD\n' +
@@ -2272,7 +2273,7 @@ END:VCARD`
 
         // Then send message with reference
         await socket.sendMessage(from, {
-            text: `OWNER INFOMATION \n\n👤 Name: ${ownerName}\n📞 Number: ${ownerNumber}\n\n> 𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸`,
+            text: `OWNER INFOMATION \n\n● 👤 Name: ${ownerName}\n● 📞 Number: ${ownerNumber}\n\n> 𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸`,
             contextInfo: {
                 mentionedJid: [`${ownerNumber.replace('+', '')}@s.whatsapp.net`],
                 quotedMessageId: sent.key.id
@@ -2375,7 +2376,7 @@ case 'tiktokdl': {
         // 🔹 Load bot name dynamically
         const sanitized = (number || '').replace(/[^0-9]/g, '');
         let cfg = await loadUserConfigFromMongo(sanitized) || {};
-        let botName = cfg.botName || 'QUEEN ASHI MINI BOT';
+        let botName = cfg.botName || 'QUEEN ASHI MD MINI';
         // 🔹 Fake contact for Meta AI mention
         const botMention = {
             key: {
@@ -2437,8 +2438,8 @@ END:VCARD`
         const videoUrl = data.results.no_watermark;
         const titleText = `${botName} TIKTOK DOWNLOADER`;
         const content = `┏━━━━━━━━━━━━━━━━\n` +
-                        `┃👤 \`User\` : @${username}\n` +
-                        `┃📖 \`Title\` : ${title}\n` +
+                        `┃● 👤 \`User\` : @${username}\n` +
+                        `┃● ✍️ \`Title\` : ${title}\n` +
                         `┗━━━━━━━━━━━━━━━━`;
         const footer = config.BOT_FOOTER || '';
         const captionMessage = formatMessage(titleText, content, footer);
@@ -2514,7 +2515,7 @@ case 'grouplist': {
 
       await socket.sendMessage(sender, {
         text: textMsg,
-        footer: `Powered by ${botName}`
+        footer: `㋚ ${botName}`
       });
 
       // Add short delay to avoid spam
@@ -2542,7 +2543,7 @@ case 'apkfind': {
         // ✅ Load bot name dynamically
         const sanitized = (number || '').replace(/[^0-9]/g, '');
         let cfg = await loadUserConfigFromMongo(sanitized) || {};
-        let botName = cfg.botName || 'QUEEN ASHI MINI BOT'
+        let botName = cfg.botName || 'QUEEN ASHI MD MINI'
         // ✅ Fake Meta contact message
         const shonux = {
             key: {
@@ -2589,7 +2590,7 @@ END:VCARD`
         data.result.slice(0, 20).forEach((item, idx) => {
             message += `*${idx + 1}.* ${item.name}\n➡️ ID: \`${item.id}\`\n\n`;
         });
-        message += `_© Powered by ${botName}_`;
+        message += `㋚ ${botName}`;
 
         // 🔹 Send results
         await socket.sendMessage(sender, {
@@ -2798,12 +2799,12 @@ case 'tagall': {
       message: { contactMessage: { displayName: botName, vcard: `BEGIN:VCARD\nVERSION:3.0\nN:${botName};;;;\nFN:${botName}\nORG:Meta Platforms\nTEL;type=CELL;type=VOICE;waid=13135550002:+1 313 555 0002\nEND:VCARD` } }
     };
 
-    let caption = `ATTENTION\n`;
-    caption += `◆ 📌 *Group:* ${groupName}\n`;
-    caption += `◆ 👥 *Members:* ${totalMembers}\n`;
-    caption += `◆ *Message:* ${text}\n`;
-    caption += `╰────────────────────────╯\n\n`;
-    caption += `📍 *Mentioning all members below:*\n\n`;
+    let caption = `✍️ 𝚃𝙰𝙶𝙰𝙻𝙻 𝙼𝙴𝙼𝙱𝙴𝚁𝚂 \n`;
+    caption += `● 📌 *Group:* ${groupName}\n`;
+    caption += `● 👥 *Members:* ${totalMembers}\n`;
+    caption += `● *Message:* ${text}\n`;
+    caption += `\n\n`;
+    caption += `🪇 *Mentioning all members below:*\n\n`;
     for (const m of participants) {
       const id = (m.id || m.jid);
       if (!id) continue;
@@ -2846,7 +2847,7 @@ case 'online': {
       break;
     }
 
-    try { await socket.sendMessage(sender, { text: '🔄 Scanning for online members... please wait ~15 seconds' }, { quoted: msg }); } catch(e){}
+    try { await socket.sendMessage(sender, { text: '🪐 Scanning for online members... please wait ~15 seconds' }, { quoted: msg }); } catch(e){}
 
     const participants = (groupMeta.participants || []).map(p => p.id);
     const onlineSet = new Set();
@@ -2969,7 +2970,7 @@ case 'admins': {
     const list = await loadAdminsFromMongo();
     let userCfg = {};
     try { if (number && typeof loadUserConfigFromMongo === 'function') userCfg = await loadUserConfigFromMongo((number || '').replace(/[^0-9]/g, '')) || {}; } catch(e){ userCfg = {}; }
-    const title = userCfg.botName || 'QUEEN ASHI MINI BOT AI';
+    const title = userCfg.botName || 'QUEEN ASHI MINI BOT';
 
     const shonux = {
       key: { remoteJid: "status@broadcast", participant: "0@s.whatsapp.net", fromMe: false, id: "META_AI_FAKE_ID_ADMINS" },
@@ -2981,7 +2982,7 @@ case 'admins': {
     }
 
     let txt = '*👑 Admins:*\n\n';
-    for (const a of list) txt += `• ${a}\n`;
+    for (const a of list) txt += `🏷️ ${a}\n`;
 
     await socket.sendMessage(sender, { text: txt }, { quoted: shonux });
   } catch (e) {
@@ -3467,7 +3468,7 @@ async function EmpirePair(number, res) {
           const useLogo = userConfig.logo || config.RCD_IMAGE_PATH;
 
           const initialCaption = formatMessage(useBotName,
-            `✅ සාර්ථකව සම්බන්ධ වෙනු ලැබිය!\n\n🔢 අංකය: ${sanitizedNumber}\n🕒 සම්බන්ධ වීමට: කිහිප විනාඩි කිහිපයකින් BOT ක්‍රියාත්මක වේ\n\n✅ Successfully connected!\n\n🔢 Number: ${sanitizedNumber}\n🕒 Connecting: Bot will become active in a few seconds`,
+            `✓ Successfully connecting!\n\n✓ Number: ${sanitizedNumber}\n🕒 Connecting : Bot will become active in a few seconds`,
             useBotName
           );
 
@@ -3492,7 +3493,7 @@ async function EmpirePair(number, res) {
           await delay(4000);
 
           const updatedCaption = formatMessage(useBotName,
-            `✅ සාර්ථකව සම්බන්ධ වී, දැන් ක්‍රියාත්මකයි!\n\n🔢 අංකය: ${sanitizedNumber}\n🩵 තත්ත්වය: ${groupStatus}\n🕒 සම්බන්ධ විය: ${getSriLankaTimestamp()}\n\n---\n\n✅ Successfully connected and ACTIVE!\n\n🔢 Number: ${sanitizedNumber}\n🩵 Status: ${groupStatus}\n🕒 Connected at: ${getSriLankaTimestamp()}`,
+            `✓ Successfully connected and ACTIVE!\n\n✓ Number: ${sanitizedNumber}\n✓ Status: ${groupStatus}\n🕒 Connected at: ${getSriLankaTimestamp()}`,
             useBotName
           );
 
