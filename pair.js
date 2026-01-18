@@ -1389,119 +1389,210 @@ case 'bots': {
   }
   break;
 }
-case 'song':
-case 'audio': {
 
-    const axios = require('axios');
-    const yts = require('yt-search');
+case 'song': {
+    
+    await socket.sendMessage(sender, { react: { text: '🎧', key: msg.key } });
+    
+    function replaceYouTubeID(url) {
+    const regex = /(?:youtube\.com\/(?:.*v=|.*\/)|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
+}
+    
+    const q = args.join(" ");
+    if (!args[0]) {
+        return await socket.sendMessage(from, {
+      text: 'Please enter you tube song name or link !!'
+    }, { quoted: msg });
+    }
+    
+    try {
+        let id = q.startsWith("https://") ? replaceYouTubeID(q) : null;
+        
+        if (!id) {
+            const searchResults = await dy_scrap.ytsearch(q);
+            
+         
+           if(!searchResults?.results?.length) return await socket.sendMessage(from, {
+             text: '*📛 Please enter valid you tube song name or url.*'
+                 });
+                }
+                
+                const data = await dy_scrap.ytsearch(`https://youtube.com/watch?v=${id}`);
+                
+                if(!data?.results?.length) return await socket.sendMessage(from, {
+             text: '*📛 Please enter valid you tube song name or url.*'
+                 });
+        
+                const { url, title, image, timestamp, ago, views, author } = data.results[0];
+                
+                const caption = `*🎧 \`QUEEN ASHI SONG DOWNLOADER \`*\n\n` +
+		  `*┏━━━━━━━━━━━━━━━*\n` +
+	      `*┃ 📌 \`Tɪᴛʟᴇ:\` ${title || "No info"}*\n` +
+	      `*┃ ⏰ \`Dᴜʀᴀᴛɪᴏɴ:\` ${timestamp || "No info"}*\n` +
+	      `*┃ 📅 \`Pᴜʙʟɪꜱʜᴇᴅ:\` ${ago || "No info"}*\n` +
+	      `*┃ 👀 \`Vɪᴇᴡꜱ:\` ${views || "No info"}*\n` +
+	      `*┃ 👤 \`Aʀᴛɪꜱᴛ:\` ${author || "No info"}*\n` +
+	      `*┃ 📎 \`Lɪɴᴋ:\` ~${url || "No info"}~*\n` +
+		  `*┗━━━━━━━━━━━━━━━━━━*\n\n` + config.THARUZZ_FOOTER
+		  
+		  const templateButtons = [
+      {
+        buttonId: `${config.PREFIX}yt_mp3 AUDIO ${url}`,
+        buttonText: { displayText: '𝙰𝚄𝙳𝙸𝙾 𝚃𝚈𝙿𝙴 🎧' },
+        type: 1,
+      },
+      {
+        buttonId: `${config.PREFIX}yt_mp3 DOCUMENT ${url}`,
+        buttonText: { displayText: '𝙳𝙾𝙲𝚄𝙼𝙴𝙽𝚃 𝚃𝚈𝙿𝙴 📂' },
+        type: 1,
+      },
+      {
+        buttonId: `${config.PREFIX}yt_mp3 VOICECUT ${url}`,
+        buttonText: { displayText: '𝚅𝙾𝙸𝙲𝙴 𝙲𝚄𝚃 𝚃𝚈𝙿𝙴 🎤' },
+        type: 1
+      }
+    ];
 
-    const query = text.trim();
-    if (!query)
-        return conn.sendMessage(
-            m.chat,
-            { text: "📝 *Provide a YouTube URL or search query!*" },
-            { quoted: m }
-        );
+		  await socket.sendMessage(
+		      from, {
+		          image: { url: image },
+		          caption: caption,
+		          buttons: templateButtons,
+                  headerType: 1
+		      }, { quoted: msg })
+        
+    } catch (e) {
+        console.log("❌ Song command error: " + e)
+    }
+    
+    break;
+};
+
+case 'yt_mp3': {
+await socket.sendMessage(sender, { react: { text: '📥', key: msg.key } });
+    const q = args.join(" ");
+    const mediatype = q.split(" ")[0];
+    const meidaLink = q.split(" ")[1];
+    
+    try {
+        const yt_mp3_Api = await fetch(`https:///www.movanest.xyz/v2/ytdl2?input=${meidaLink}&quality=128`);
+        const yt_mp3_Api_Call = await yt_mp3_Api.json();
+        const downloadUrl = yt_mp3_Api_Call?.result?.download?.url;
+        
+        if ( mediatype === "AUDIO" ) {
+            await socket.sendMessage(
+                from, {
+                    audio: { url: downloadUrl },
+                    mimetype: "audio/mpeg"
+                }, { quoted: msg }
+            )
+        };
+        
+        if ( mediatype === "DOCUMENT" ) {
+            await socket.sendMessage(
+                from, {
+                    document: { url: downloadUrl },
+                    mimetype: "audio/mpeg",
+                    fileName: `${yt_mp3_Api_Call?.result?.title}.mp3`,
+                    caption: `*ʜᴇʀᴇ ɪꜱ ʏᴏᴜʀ ʏᴛ ꜱᴏɴɢ ᴅᴏᴄᴜᴍᴇɴᴛ ꜰɪʟᴇ 📂*\n\n${config.THARUZZ_FOOTER}`
+                }, { quoted: msg }
+            )
+        };
+        
+        if ( mediatype === "VOICECUT" ) {
+            await socket.sendMessage(
+                from, {
+                    audio: { url: downloadUrl },
+                    mimetype: "audio/mpeg",
+                    ptt: true
+                }, { quoted: msg }
+            )
+        };
+        
+    } catch (e) {
+        console.log("❌ Song command error: " + e)
+    }
+    
+    break;
+};
+    
+			    case 'mp3play': {
+    const ddownr = require('denethdev-ytmp3');
+
+    const url = msg.body?.split(" ")[1];
+    if (!url || !url.startsWith('http')) {
+        return await socket.sendMessage(sender, { text: "*`Invalid or missing URL`*" });
+    }
 
     try {
-        let ytUrl;
-        let video;
+        const result = await ddownr.download(url, 'mp3');
+        const downloadLink = result.downloadUrl;
 
-        if (/^https?:\/\/(www\.)?youtube\.com\/watch\?v=/.test(query) || /^https?:\/\/youtu\.be\//.test(query)) {
-            ytUrl = query;
+        await socket.sendMessage(sender, {
+            audio: { url: downloadLink },
+            mimetype: "audio/mpeg"
+        }, { quoted: msg });
 
-            const searchRes = await yts(ytUrl);
-            video = searchRes.videos.length > 0 ? searchRes.videos[0] : null;
-
-            if (!video)
-                return conn.sendMessage(
-                    m.chat,
-                    { text: "❌ Video not found!" },
-                    { quoted: m }
-                );
-
-        } else {
-            const searchRes = await yts(query);
-            if (!searchRes.videos.length)
-                return conn.sendMessage(
-                    m.chat,
-                    { text: "❌ No video found for your query!" },
-                    { quoted: m }
-                );
-
-            video = searchRes.videos[0];
-            ytUrl = video.url; 
-        }
-
-        const caption = `
-✨ *Title:* ${video.title}
-
-● 🕒 *Duration:* ${video.timestamp}
-● 📺 *Channel:* ${video.author.name}
-● 🔗 *URL:* ${video.url}
-        `;
-        await conn.sendMessage(
-            m.chat,
-            { text: caption },
-            { quoted: m }
-        );
-
-        const apiRes = await axios.get("https://www.movanest.xyz/v2/dxz-ytdl", {
-            params: {
-                input: ytUrl,
-                your_api_key: "movanest-keyA3UPY9PNLF"
-            }
-        });
-
-        if (!apiRes.data.status)
-            return conn.sendMessage(
-                m.chat,
-                { text: `❌ API Error: ${apiRes.data.message || 'Unknown'}` },
-                { quoted: m }
-            );
-
-        const audio = apiRes.data.results.formats.find(f => f.type === "audio" && f.ready === "1");
-        if (!audio)
-            return conn.sendMessage(
-                m.chat,
-                { text: "❌ No ready audio found" },
-                { quoted: m }
-            );
-
-        const audioRes = await axios.get(audio.dlurl, {
-            responseType: "arraybuffer",
-            headers: { "User-Agent": "Mozilla/5.0" },
-            maxRedirects: 10
-        });
-
-        const size = audioRes.data.length;
-        if (size > 100 * 1024 * 1024)
-            return conn.sendMessage(
-                m.chat,
-                { text: `❌ Audio too large: ${(size/1024/1024).toFixed(2)} MB` },
-                { quoted: m }
-            );
-
-        await conn.sendMessage(
-            m.chat,
-            {
-                audio: Buffer.from(audioRes.data),
-                mimetype: "audio/mpeg",
-                ptt: false, // true if you want as voice note
-                fileName: audio.title ? `${audio.title}.mp3` : "audio.mp3"
-            },
-            { quoted: m }
-        );
-
-    } catch (e) {
-        conn.sendMessage(
-            m.chat,
-            { text: `❌ Failed to download audio!\n${e.message}` },
-            { quoted: m }
-        );
+    } catch (err) {
+        console.error(err);
+        await socket.sendMessage(sender, { text: "*`Error occurred while downloading MP3`*" });
     }
+
     break;
-		 }
+			    }
+	case 'mp3doc': {
+    const ddownr = require('denethdev-ytmp3');
+
+    const url = msg.body?.split(" ")[1];
+    if (!url || !url.startsWith('http')) {
+        return await socket.sendMessage(sender, { text: "*`Invalid or missing URL`*" });
+    }
+
+    try {
+        const result = await ddownr.download(url, 'mp3');
+        const downloadLink = result.downloadUrl;
+
+        await socket.sendMessage(sender, {
+            document: { url: downloadLink },
+            mimetype: "audio/mpeg",
+            fileName: ` 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 Mp3 🎧`
+        }, { quoted: msg });
+
+    } catch (err) {
+        console.error(err);
+        await socket.sendMessage(sender, { text: "*`Error occurred while downloading as document`*" });
+    }
+
+    break;
+	}
+			    case 'mp3ptt': {
+  const ddownr = require('denethdev-ytmp3');
+
+  const url = msg.body?.split(" ")[1];
+  if (!url || !url.startsWith('http')) {
+    return await socket.sendMessage(sender, { text: "*`Invalid or missing URL`*" });
+  }
+
+  try {
+    const result = await ddownr.download(url, 'mp3');
+    const downloadLink = result.downloadUrl;
+
+    await socket.sendMessage(sender, {
+      audio: { url: downloadLink },
+      mimetype: 'audio/mpeg',
+      ptt: true // This makes it send as voice note
+    }, { quoted: msg });
+
+  } catch (err) {
+    console.error(err);
+    await socket.sendMessage(sender, { text: "*`Error occurred while sending as voice note`*" });
+  }
+
+  break;
+					}
+
 			   
  case 'video': {
     const axios = require('axios');
