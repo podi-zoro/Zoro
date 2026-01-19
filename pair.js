@@ -1140,7 +1140,7 @@ END:VCARD`
 
     // Final output
     return await socket.sendMessage(sender, {
-        text: `*Speed : ${final - inital} ms*\n`,
+        text: `*♻ Speed : ${final - inital} ms*\n`,
         edit: ping.key
     });
 }
@@ -1858,12 +1858,12 @@ case 'csong': {
 
     const os = require('os');
     const text = `
-🐉 ${botName} 𝐒𝚈𝚂𝚃𝙴𝙼 𝐈𝙽𝙵𝙾
+🐉 ${botName} 𝐒𝚈𝚂𝚃𝙴𝙼
 
-● 💻 OS: ${os.type()} ${os.release()}
-● 🚀 Platform: ${os.platform()}
-● 🧠 CPU cores: ${os.cpus().length}
-● 📺 Memory: ${(os.totalmem()/1024/1024/1024).toFixed(2)} GB
+●  💻 OS: ${os.type()} ${os.release()}
+●  🚀 Platform: ${os.platform()}
+●  🧠 CPU cores: ${os.cpus().length}
+●  📺 Memory: ${(os.totalmem()/1024/1024/1024).toFixed(2)} GB
 `;
 
     let imagePayload = String(logo).startsWith('http') ? { url: logo } : fs.readFileSync(logo);
@@ -1893,65 +1893,73 @@ case 'menu': {
     const minutes = Math.floor((uptime % 3600) / 60);
     const seconds = Math.floor(uptime % 60);
 
-    // load per-session config (logo, botName)
+    // greeting
+    const hourNow = new Date().getHours();
+    let greeting = "Hello";
+    if (hourNow < 12) greeting = "Good Morning";
+    else if (hourNow < 18) greeting = "Good Afternoon";
+    else greeting = "Good Evening";
+
     let userCfg = {};
-    try { if (number && typeof loadUserConfigFromMongo === 'function') userCfg = await loadUserConfigFromMongo((number || '').replace(/[^0-9]/g, '')) || {}; }
-    catch(e){ console.warn('menu: failed to load config', e); userCfg = {}; }
+    try {
+      if (number && typeof loadUserConfigFromMongo === 'function') {
+        userCfg = await loadUserConfigFromMongo((number || '').replace(/[^0-9]/g, '')) || {};
+      }
+    } catch(e){ userCfg = {}; }
 
     const title = userCfg.botName || 'QUEEN ASHI MD MINI';
 
-    // 🔹 Fake contact for Meta AI mention
     const shonux = {
-        key: {
-            remoteJid: "status@broadcast",
-            participant: "0@s.whatsapp.net",
-            fromMe: false,
-            id: "META_AI_FAKE_ID_MENU"
-        },
-        message: {
-            contactMessage: {
-                displayName: title,
-                vcard: `BEGIN:VCARD
+      key: {
+        remoteJid: "status@broadcast",
+        participant: "0@s.whatsapp.net",
+        fromMe: false,
+        id: "META_AI_FAKE_ID_MENU"
+      },
+      message: {
+        contactMessage: {
+          displayName: title,
+          vcard: `BEGIN:VCARD
 VERSION:3.0
 N:${title};;;;
 FN:${title}
 ORG:Meta Platforms
 TEL;type=CELL;type=VOICE;waid=13135550002:+1 313 555 0002
 END:VCARD`
-            }
         }
+      }
     };
 
     const text = `
-🎀 𝐇𝐄𝐘❜ 𝐐𝐔𝐄𝐄𝐍 𝐀𝐒𝐇𝐈 𝐌𝐃 𝐔𝐒𝐄𝐑	
+ 🎀 ${greeting}, *${pushname || 'User'}* 
 
 ╭──❂ 🧚 𝐁𝙾𝚃 𝐌𝙰𝙸𝙽 𝐌𝙴𝙽𝚄 ❂──╮
-│ 🔹 *Oᴡɴᴇʀ :* Dev xanz
-│ 🔹 *Vᴇʀꜱɪᴏɴ :* ${config.BOT_VERSION || '0.0001+'}
-│ 🔹 *Hᴏꜱᴛ :* ${process.env.PLATFORM || 'Ashi linux'}
-│ 🔹 *Uᴘᴛɪᴍᴇ :* ${hours}h ${minutes}m ${seconds}s
-│ 🔹 *Lᴇɴɢᴜᴀɢᴇ :* Java script
-│ 🔹 *Cᴏᴍᴍᴀɴᴅꜱ :* 50+
+│ 🔹 *Owner*    : Dev Xanz
+│ 🔹 *Version*  : ${config.BOT_VERSION || '0.0001+'}
+│ 🔹 *Host*     : ${process.env.PLATFORM || 'Ashi Linux'}
+│ 🔹 *Uptime*   : ${hours}h ${minutes}m ${seconds}s
+│ 🔹 *Language* : JavaScript
+│ 🔹 *Commands* : 50+
 ╰──────────────❂
 
- ${config.BOT_FOOTER || ''}
+${config.BOT_FOOTER || ''}
 `.trim();
 
     const buttons = [
-      { buttonId: `${config.PREFIX}download`, buttonText: { displayText: "📥 𝐃𝙾𝚆𝙽𝙻𝙾𝙰𝙳" }, type: 1 },
-      { buttonId: `${config.PREFIX}user`, buttonText: { displayText: "🧑‍🔧 𝐔ꜱᴇʀ" }, type: 1 },
-      { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: "⚙️ 𝐒𝙴𝚃𝚃𝙸𝙽𝙶𝚂" }, type: 1 },
-      { buttonId: `${config.PREFIX}owner`, buttonText: { displayText: "👨‍💻 𝐃𝙴𝚅𝙴𝙻𝙾𝙿𝙴𝚁" }, type: 1 }
+      { buttonId: `${config.PREFIX}download`, buttonText: { displayText: "📥 DOWNLOAD" }, type: 1 },
+      { buttonId: `${config.PREFIX}user`, buttonText: { displayText: "🧑‍🔧 USER" }, type: 1 },
+      { buttonId: `${config.PREFIX}group`, buttonText: { displayText: "👥 GROUP" }, type: 1 },
+      { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: "⚙️ SETTINGS" }, type: 1 }
     ];
 
     const defaultImg = 'https://files.catbox.moe/i6kedi.jpg';
     const useLogo = userCfg.logo || defaultImg;
 
-    // build image payload (url or buffer)
     let imagePayload;
     if (String(useLogo).startsWith('http')) imagePayload = { url: useLogo };
     else {
-      try { imagePayload = fs.readFileSync(useLogo); } catch(e){ imagePayload = { url: defaultImg }; }
+      try { imagePayload = fs.readFileSync(useLogo); }
+      catch(e){ imagePayload = { url: defaultImg }; }
     }
 
     await socket.sendMessage(sender, {
@@ -1964,14 +1972,14 @@ END:VCARD`
 
   } catch (err) {
     console.error('menu command error:', err);
-    try { await socket.sendMessage(sender, { text: '❌ Failed to show menu.' }, { quoted: msg }); } catch(e){}
+    await socket.sendMessage(sender, { text: '❌ Failed to show menu.' }, { quoted: msg });
   }
   break;
 	  }
 
 // ==================== DOWNLOAD MENU ====================
 case 'download': {
-  try { await socket.sendMessage(sender, { react: { text: "📥", key: msg.key } }); } catch(e){}
+  try { await socket.sendMessage(sender, { react: { text: "🧬", key: msg.key } }); } catch(e){}
 
   try {
     let userCfg = {};
@@ -2051,7 +2059,7 @@ END:VCARD`
     await socket.sendMessage(sender, {
       image: { url: 'https://i.ibb.co/PGZ0jS2D/tourl-1768647299517.jpg' },
       caption: text,
-      footer: "🧚‍♂️ 𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳 𝐌𝙸𝙽𝙸 𝐁𝙾𝚃",
+      footer: "㋚ 𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳",
       buttons
     }, { quoted: shonux });
 
@@ -2068,7 +2076,7 @@ END:VCARD`
 // ==================== USER MENU ====================
 case 'user': {
   try {
-    await socket.sendMessage(sender, { react: { text: "🧑‍🔧", key: msg.key } });
+    await socket.sendMessage(sender, { react: { text: "🧬", key: msg.key } });
   } catch (e) {}
 
   try {
@@ -2107,7 +2115,7 @@ END:VCARD`
     };
 
     const text = `
-╭───❂ 🧑‍🔧 𝐔𝚂𝙴𝚁 𝐂𝙾𝙼𝙼𝙰𝙽𝙳𝚂 ❂───╮
+╭───❂ 𝐔𝚂𝙴𝚁 𝐂𝙾𝙼𝙼𝙰𝙽𝙳𝚂 ❂───╮
 │
 │ ➤ *Command .jid*
 │ ☛ Usage ${config.PREFIX}jid
@@ -2148,7 +2156,7 @@ END:VCARD`
     await socket.sendMessage(sender, {
       image: { url: 'https://i.ibb.co/21Q2m6CW/tourl-1768647451592.jpg' },
       caption: text,
-      footer: "🧚‍♂️ 𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳 𝐌𝙸𝙽𝙸 𝐁𝙾𝚃",
+      footer: "㋚ 𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳",
       buttons
     }, { quoted: shonux });
 
@@ -2160,7 +2168,78 @@ END:VCARD`
   }
   break;
 }
+ // ==================== GRUOP MENU ===================
+case 'group': {
+  try { await socket.sendMessage(sender, { react: { text: "🧬", key: msg.key } }); } catch(e){}
 
+  const text = `
+╭──❂ 𝐆𝚁𝚄𝙾𝙿 𝐂𝙾𝙼𝙼𝙰𝙽𝙳𝚂 ❂──╮
+│
+│ ➤ *Command .add*
+│ ☛ Usage ${config.PREFIX}add 947xxxxxxxx
+│ _✨ Desc : Add a member to group_
+│
+│ ➤ *Command .setname*
+│ ☛ Usage ${config.PREFIX}setname (group name)
+│ _✨ Desc : Change group name_
+│
+│ ➤ *Command .warn*
+│ ☛ Usage ${config.PREFIX}warn @user
+│ _✨ Desc : Warn a group member_
+│
+│ ➤ *Command .kick*
+│ ☛ Usage ${config.PREFIX}kick @user
+│ _✨ Desc : Remove a member from group_
+│
+│ ➤ *Command .kickall*
+│ ☛ Usage ${config.PREFIX}kickall
+│ _✨ Desc : Remove all non-admin members_
+│
+│ ➤ *Command .open*
+│ ☛ Usage ${config.PREFIX}open
+│ _✨ Desc : Open group for everyone_
+│
+│ ➤ *Command .close*
+│ ☛ Usage ${config.PREFIX}close
+│ _✨ Desc : Close group (admins only)_
+│
+│ ➤ *Command .invite*
+│ ☛ Usage ${config.PREFIX}invite
+│ _✨ Desc : Get group invite link_
+│
+│ ➤ *Command .promote*
+│ ☛ Usage ${config.PREFIX}promote @user
+│ _✨ Desc : Promote member to admin_
+│
+│ ➤ *Command .demote*
+│ ☛ Usage ${config.PREFIX}demote @user
+│ _✨ Desc : Demote admin to member_
+│
+│ ➤ *Command .tagall*
+│ ☛ Usage ${config.PREFIX}tagall (msg)
+│ _✨ Desc : Mention all group members_
+│
+│ ➤ *Command .join*
+│ ☛ Usage ${config.PREFIX}join (group link)
+│ _✨ Desc : Join group via invite link_
+│
+╰──────────────❂
+`.trim();
+
+  const buttons = [
+    { buttonId: `${config.PREFIX}menu`, buttonText: { displayText: "🏠 MAIN MENU" }, type: 1 }
+  ];
+
+  await socket.sendMessage(sender, {
+    image: { url: 'https://i.ibb.co/jk3TmSPx/tourl-1768806720932.jpg' }, // 🔹 change image if you want
+    caption: text,
+    footer: "㋚ 𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳",
+    buttons,
+    headerType: 4
+  }, { quoted: msg });
+
+  break;
+}			  
 
  // ==================== SETTINGS MENU ===================
 case 'settings': {
