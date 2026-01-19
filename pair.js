@@ -1884,28 +1884,25 @@ case 'csong': {
 }
 			  
 case 'menu': {
-  try { 
-    await socket.sendMessage(sender, { react: { text: "🧚‍♂️", key: msg.key } }); 
-  } catch(e){}
+  try { await socket.sendMessage(sender, { react: { text: "🧚‍♂️", key: msg.key } }); } catch(e){}
 
   try {
+    // Uptime calculation
     const startTime = socketCreationTime.get(number) || Date.now();
     const uptime = Math.floor((Date.now() - startTime) / 1000);
     const hours = Math.floor(uptime / 3600);
     const minutes = Math.floor((uptime % 3600) / 60);
     const seconds = Math.floor(uptime % 60);
 
-    // greeting
+    // Greeting based on time
     const hourNow = new Date().getHours();
     let greeting = "Hello";
     if (hourNow < 12) greeting = "Good Morning";
     else if (hourNow < 18) greeting = "Good Afternoon";
-    else greeting = "Good Evening";
+    else if (hourNow < 21) greeting = "Good Evening";
+    else greeting = "Good Night"; // Night greeting
 
-    // safe pushname
-    const pushnameSafe = msg.pushName || 'User';
-
-    // load user config if any
+    // Load per-user config
     let userCfg = {};
     try {
       if (number && typeof loadUserConfigFromMongo === 'function') {
@@ -1913,9 +1910,9 @@ case 'menu': {
       }
     } catch(e){ userCfg = {}; }
 
-    const title = userCfg.botName || 'QUEEN ASHI MD MINI';
+    const title = userCfg.botName || 'QUEEN ASHI MD';
 
-    // fake contact for quoted
+    // Fake contact for quote
     const shonux = {
       key: {
         remoteJid: "status@broadcast",
@@ -1938,7 +1935,7 @@ END:VCARD`
     };
 
     const text = `
-🎀 ${greeting}, *${pushnameSafe}*
+🎀 ${greeting}, *${pushname || 'User'}*
 
 ╭──❂ 🧚 𝐁𝙾𝚃 𝐌𝙰𝙸𝙽 𝐌𝙴𝙽𝚄 ❂──╮
 │ 🔹 *Owner*    : Dev Xanz
@@ -1957,12 +1954,7 @@ ${config.BOT_FOOTER || ''}
       { buttonId: `${config.PREFIX}user`, buttonText: { displayText: "🧑‍🔧 USER" }, type: 1 },
       { buttonId: `${config.PREFIX}group`, buttonText: { displayText: "👥 GROUP" }, type: 1 },
       { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: "⚙️ SETTINGS" }, type: 1 },
-      { 
-        urlButton: { 
-          displayText: "VIEW CHANNEL", 
-          url: "https://whatsapp.com/channel/0029Vb6yaNMIt5s3s5iUK51g"  // 👉 ඔයාගේ channel link
-        }
-      }
+      { urlButton: { displayText: "👁️ VIEW CHANNEL", url: "https://whatsapp.com/channel/0029Vb6yaNMIt5s3s5iUK51g" } }
     ];
 
     const defaultImg = 'https://files.catbox.moe/i6kedi.jpg';
@@ -1978,8 +1970,8 @@ ${config.BOT_FOOTER || ''}
     await socket.sendMessage(sender, {
       image: imagePayload,
       caption: text,
-      footer: "",
-      buttons: buttons,
+      footer: "㋚ 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳 𝐋𝙸𝚃𝙴",
+      buttons,
       headerType: 4
     }, { quoted: shonux });
 
@@ -1988,7 +1980,8 @@ ${config.BOT_FOOTER || ''}
     await socket.sendMessage(sender, { text: '❌ Failed to show menu.' }, { quoted: msg });
   }
   break;
-}
+  }
+
 
 // ==================== DOWNLOAD MENU ====================
 case 'download': {
