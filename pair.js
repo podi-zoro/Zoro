@@ -1884,25 +1884,26 @@ case 'csong': {
 }
 			  
 case 'menu': {
-  try { await socket.sendMessage(sender, { react: { text: "🧚‍♂️", key: msg.key } }); } catch(e){}
+  try { 
+    await socket.sendMessage(sender, { react: { text: "🧚‍♂️", key: msg.key } }); 
+  } catch(e){}
 
   try {
-    // Uptime calculation
+    const pushname = m.pushName || m.name || 'User'; // safe pushname
+    const hourNow = new Date().getHours();
+    let greeting = "Hello";
+    if (hourNow < 12) greeting = "Good Morning";
+    else if (hourNow < 18) greeting = "Good Afternoon";
+    else if (hourNow < 21) greeting = "Good Evening";
+    else greeting = "Good Night"; // 🌙 night greeting
+
     const startTime = socketCreationTime.get(number) || Date.now();
     const uptime = Math.floor((Date.now() - startTime) / 1000);
     const hours = Math.floor(uptime / 3600);
     const minutes = Math.floor((uptime % 3600) / 60);
     const seconds = Math.floor(uptime % 60);
 
-    // Greeting based on time
-    const hourNow = new Date().getHours();
-    let greeting = "Hello";
-    if (hourNow < 12) greeting = "Good Morning";
-    else if (hourNow < 18) greeting = "Good Afternoon";
-    else if (hourNow < 21) greeting = "Good Evening";
-    else greeting = "Good Night"; // Night greeting
-
-    // Load per-user config
+    // Load user config if exists
     let userCfg = {};
     try {
       if (number && typeof loadUserConfigFromMongo === 'function') {
@@ -1912,7 +1913,7 @@ case 'menu': {
 
     const title = userCfg.botName || 'QUEEN ASHI MD';
 
-    // Fake contact for quote
+    // Fake contact for quoting
     const shonux = {
       key: {
         remoteJid: "status@broadcast",
@@ -1934,8 +1935,9 @@ END:VCARD`
       }
     };
 
+    // Caption / menu text
     const text = `
-🎀 ${greeting}, *${pushname || 'User'}*
+🎀 ${greeting}, *${pushname}* 
 
 ╭──❂ 🧚 𝐁𝙾𝚃 𝐌𝙰𝙸𝙽 𝐌𝙴𝙽𝚄 ❂──╮
 │ 🔹 *Owner*    : Dev Xanz
@@ -1949,12 +1951,13 @@ END:VCARD`
 ${config.BOT_FOOTER || ''}
 `.trim();
 
+    // Buttons (normal + URL)
     const buttons = [
       { buttonId: `${config.PREFIX}download`, buttonText: { displayText: "📥 DOWNLOAD" }, type: 1 },
       { buttonId: `${config.PREFIX}user`, buttonText: { displayText: "🧑‍🔧 USER" }, type: 1 },
       { buttonId: `${config.PREFIX}group`, buttonText: { displayText: "👥 GROUP" }, type: 1 },
       { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: "⚙️ SETTINGS" }, type: 1 },
-      { urlButton: { displayText: "👁️ VIEW CHANNEL", url: "https://whatsapp.com/channel/0029Vb6yaNMIt5s3s5iUK51g" } }
+      { urlButton: { displayText: "📺 JOIN CHANNEL", url: "https://whatsapp.com/channel/0029Vb6yaNMIt5s3s5iUK51g" } }
     ];
 
     const defaultImg = 'https://files.catbox.moe/i6kedi.jpg';
@@ -1967,6 +1970,7 @@ ${config.BOT_FOOTER || ''}
       catch(e){ imagePayload = { url: defaultImg }; }
     }
 
+    // Send the menu
     await socket.sendMessage(sender, {
       image: imagePayload,
       caption: text,
@@ -1981,7 +1985,6 @@ ${config.BOT_FOOTER || ''}
   }
   break;
   }
-
 
 // ==================== DOWNLOAD MENU ====================
 case 'download': {
