@@ -1884,67 +1884,51 @@ case 'csong': {
 }
 			  
 case 'menu': {
-  try { await socket.sendMessage(sender, { react: { text: "🧚‍♂️", key: msg.key } }); } catch(e){}
+  socket.sendMessage(sender, { react: { text: "🧚‍♂️", key: msg.key } }).catch(()=>{});
 
   try {
-    const startTime = socketCreationTime.get(number) || Date.now();
+    // ===== SAFE VARS =====
+    const pushname = msg.pushName || 'User';
+    const startTime = socketCreationTime?.get(number) || Date.now();
     const uptime = Math.floor((Date.now() - startTime) / 1000);
     const hours = Math.floor(uptime / 3600);
     const minutes = Math.floor((uptime % 3600) / 60);
     const seconds = Math.floor(uptime % 60);
 
-    // greeting
+    // ===== GREETING =====
     const hourNow = new Date().getHours();
-    let greeting = "Hello";
-    if (hourNow < 12) greeting = "Good Morning";
-    else if (hourNow < 18) greeting = "Good Afternoon";
-    else greeting = "Good Evening";
+    const greeting =
+      hourNow < 12 ? 'Good Morning' :
+      hourNow < 18 ? 'Good Afternoon' :
+      'Good Evening';
 
+    // ===== LOAD USER CONFIG (SAFE) =====
     let userCfg = {};
-    try {
-      if (number && typeof loadUserConfigFromMongo === 'function') {
-        userCfg = await loadUserConfigFromMongo((number || '').replace(/[^0-9]/g, '')) || {};
-      }
-    } catch(e){ userCfg = {}; }
+    if (number && typeof loadUserConfigFromMongo === 'function') {
+      try {
+        userCfg = await loadUserConfigFromMongo(number.replace(/[^0-9]/g, '')) || {};
+      } catch(e){ userCfg = {}; }
+    }
 
     const title = userCfg.botName || 'QUEEN ASHI MD MINI';
 
-    const shonux = {
-      key: {
-        remoteJid: "status@broadcast",
-        participant: "0@s.whatsapp.net",
-        fromMe: false,
-        id: "META_AI_FAKE_ID_MENU"
-      },
-      message: {
-        contactMessage: {
-          displayName: title,
-          vcard: `BEGIN:VCARD
-VERSION:3.0
-N:${title};;;;
-FN:${title}
-ORG:Meta Platforms
-TEL;type=CELL;type=VOICE;waid=13135550002:+1 313 555 0002
-END:VCARD`
-        }
-      }
-    };
-
+    // ===== MENU TEXT =====
     const text = `
- 🎀 ${greeting}, *${pushname || 'User'}* 
+🎀 ${greeting}, *${pushname}*
 
-╭──❂ 🧚 𝐁𝙾𝚃 𝐌𝙰𝙸𝙽 𝐌𝙴𝙽𝚄 ❂──╮
-│ 🔹 *Owner*    : Dev Xanz
-│ 🔹 *Version*  : ${config.BOT_VERSION || '0.0001+'}
-│ 🔹 *Host*     : ${process.env.PLATFORM || 'Ashi Linux'}
-│ 🔹 *Uptime*   : ${hours}h ${minutes}m ${seconds}s
-│ 🔹 *Language* : JavaScript
-│ 🔹 *Commands* : 50+
+╭──❂ 🧚 BOT MAIN MENU ❂──╮
+│ 🔹 Owner    : Dev Xanz
+│ 🔹 Version  : ${config.BOT_VERSION || '0.0.0'}
+│ 🔹 Host     : ${process.env.PLATFORM || 'Linux'}
+│ 🔹 Uptime   : ${hours}h ${minutes}m ${seconds}s
+│ 🔹 Language : JavaScript
+│ 🔹 Commands : 50+
 ╰──────────────❂
 
 ${config.BOT_FOOTER || ''}
 `.trim();
 
+    // ===== BUTTONS =====
     const buttons = [
       { buttonId: `${config.PREFIX}download`, buttonText: { displayText: "📥 DOWNLOAD" }, type: 1 },
       { buttonId: `${config.PREFIX}user`, buttonText: { displayText: "🧑‍🔧 USER" }, type: 1 },
@@ -1952,30 +1936,27 @@ ${config.BOT_FOOTER || ''}
       { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: "⚙️ SETTINGS" }, type: 1 }
     ];
 
-    const defaultImg = 'https://files.catbox.moe/i6kedi.jpg';
-    const useLogo = userCfg.logo || defaultImg;
+    // ===== IMAGE (URL ONLY = FAST & SAFE) =====
+    const imageUrl =
+      (userCfg.logo && userCfg.logo.startsWith('http'))
+        ? userCfg.logo
+        : 'https://files.catbox.moe/i6kedi.jpg';
 
-    let imagePayload;
-    if (String(useLogo).startsWith('http')) imagePayload = { url: useLogo };
-    else {
-      try { imagePayload = fs.readFileSync(useLogo); }
-      catch(e){ imagePayload = { url: defaultImg }; }
-    }
-
+    // ===== SEND =====
     await socket.sendMessage(sender, {
-      image: imagePayload,
+      image: { url: imageUrl },
       caption: text,
       footer: "㋚ 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳 𝐋𝙸𝚃𝙴",
       buttons,
       headerType: 4
-    }, { quoted: shonux });
+    });
 
   } catch (err) {
     console.error('menu command error:', err);
-    await socket.sendMessage(sender, { text: '❌ Failed to show menu.' }, { quoted: msg });
+    socket.sendMessage(sender, { text: '❌ Failed to show menu.' }).catch(()=>{});
   }
   break;
-	  }
+}
 
 // ==================== DOWNLOAD MENU ====================
 case 'download': {
@@ -2121,14 +2102,6 @@ END:VCARD`
 │ ☛ Usage ${config.PREFIX}jid
 │ _✨ Desc : Get jid of a user_
 │
-│ ➤ *Command .tagall*
-│ ☛ Usage ${config.PREFIX}tagall (message)
-│ _✨ Desc : Mention everyone in group_
-│
-│ ➤ *Command .online*
-│ ☛ Usage ${config.PREFIX}online
-│ _✨ Desc : Check online members_
-│
 │ ➤ *Command .block*
 │ ☛ Usage ${config.PREFIX}block (number)
 │ _✨ Desc : Block a user_
@@ -2218,6 +2191,10 @@ case 'group': {
 │ ➤ *Command .tagall*
 │ ☛ Usage ${config.PREFIX}tagall (msg)
 │ _✨ Desc : Mention all group members_
+│
+│ ➤ *Command .online*
+│ ☛ Usage ${config.PREFIX}online
+│ _✨ Desc : Check online members_
 │
 │ ➤ *Command .join*
 │ ☛ Usage ${config.PREFIX}join (group link)
