@@ -38,12 +38,12 @@ const config = {
   MAX_RETRIES: 3,
   GROUP_INVITE_LINK: 'https://chat.whatsapp.com/Ba8FKAdqPrr3wYycbnFxUb',
   RCD_IMAGE_PATH: 'https://files.catbox.moe/i6kedi.jpg',
-  NEWSLETTER_JID: '120363424595683472@newsletter',
+  NEWSLETTER_JID: '120363406513289787@newsletter',
   OTP_EXPIRY: 300000,
   OWNER_NUMBER: process.env.OWNER_NUMBER || '94776803526',
   CHANNEL_LINK: 'https://whatsapp.com/channel/0029Vb6yaNMIt5s3s5iUK51g',
   BOT_NAME: 'QUEEN ASHI MINI BOT',
-  BOT_VERSION: '1.0.0V',
+  BOT_VERSION: '0.1.1.V',
   OWNER_NAME: 'Dev xanz',
   IMAGE_PATH: 'https://files.catbox.moe/i6kedi.jpg',
   BOT_FOOTER: '',
@@ -1884,76 +1884,108 @@ case 'csong': {
 }
 			  
 case 'menu': {
-  socket.sendMessage(sender, { react: { text: "🧚‍♂️", key: msg.key } }).catch(()=>{});
+  try { 
+    await socket.sendMessage(sender, { react: { text: "🧚‍♂️", key: msg.key } }); 
+  } catch(e){}
 
   try {
-    // ===== SAFE VARS =====
-    const pushname = msg.pushName || 'User';
-    const startTime = socketCreationTime?.get(number) || Date.now();
+    const startTime = socketCreationTime.get(number) || Date.now();
     const uptime = Math.floor((Date.now() - startTime) / 1000);
     const hours = Math.floor(uptime / 3600);
     const minutes = Math.floor((uptime % 3600) / 60);
     const seconds = Math.floor(uptime % 60);
 
-    // ===== GREETING =====
+    // greeting
     const hourNow = new Date().getHours();
-    const greeting =
-      hourNow < 12 ? 'Good Morning' :
-      hourNow < 18 ? 'Good Afternoon' :
-      'Good Evening';
+    let greeting = "Hello";
+    if (hourNow < 12) greeting = "Good Morning";
+    else if (hourNow < 18) greeting = "Good Afternoon";
+    else greeting = "Good Evening";
 
-    // ===== LOAD USER CONFIG (SAFE) =====
+    // safe pushname
+    const pushnameSafe = msg.pushName || 'User';
+
+    // load user config if any
     let userCfg = {};
-    if (number && typeof loadUserConfigFromMongo === 'function') {
-      try {
-        userCfg = await loadUserConfigFromMongo(number.replace(/[^0-9]/g, '')) || {};
-      } catch(e){ userCfg = {}; }
-    }
+    try {
+      if (number && typeof loadUserConfigFromMongo === 'function') {
+        userCfg = await loadUserConfigFromMongo((number || '').replace(/[^0-9]/g, '')) || {};
+      }
+    } catch(e){ userCfg = {}; }
 
     const title = userCfg.botName || 'QUEEN ASHI MD MINI';
 
-    // ===== MENU TEXT =====
-    const text = `
-🎀 ${greeting}, *${pushname}*
+    // fake contact for quoted
+    const shonux = {
+      key: {
+        remoteJid: "status@broadcast",
+        participant: "0@s.whatsapp.net",
+        fromMe: false,
+        id: "META_AI_FAKE_ID_MENU"
+      },
+      message: {
+        contactMessage: {
+          displayName: title,
+          vcard: `BEGIN:VCARD
+VERSION:3.0
+N:${title};;;;
+FN:${title}
+ORG:Meta Platforms
+TEL;type=CELL;type=VOICE;waid=13135550002:+1 313 555 0002
+END:VCARD`
+        }
+      }
+    };
 
-╭──❂ 🧚 BOT MAIN MENU ❂──╮
-│ 🔹 Owner    : Dev Xanz
-│ 🔹 Version  : ${config.BOT_VERSION || '0.0.0'}
-│ 🔹 Host     : ${process.env.PLATFORM || 'Linux'}
-│ 🔹 Uptime   : ${hours}h ${minutes}m ${seconds}s
-│ 🔹 Language : JavaScript
-│ 🔹 Commands : 50+
+    const text = `
+🎀 ${greeting}, *${pushnameSafe}*
+
+╭──❂ 🧚 𝐁𝙾𝚃 𝐌𝙰𝙸𝙽 𝐌𝙴𝙽𝚄 ❂──╮
+│ 🔹 *Owner*    : Dev Xanz
+│ 🔹 *Version*  : ${config.BOT_VERSION || '0.0001+'}
+│ 🔹 *Host*     : ${process.env.PLATFORM || 'Ashi Linux'}
+│ 🔹 *Uptime*   : ${hours}h ${minutes}m ${seconds}s
+│ 🔹 *Language* : JavaScript
+│ 🔹 *Commands* : 50+
 ╰──────────────❂
 
 ${config.BOT_FOOTER || ''}
 `.trim();
 
-    // ===== BUTTONS =====
     const buttons = [
       { buttonId: `${config.PREFIX}download`, buttonText: { displayText: "📥 DOWNLOAD" }, type: 1 },
       { buttonId: `${config.PREFIX}user`, buttonText: { displayText: "🧑‍🔧 USER" }, type: 1 },
       { buttonId: `${config.PREFIX}group`, buttonText: { displayText: "👥 GROUP" }, type: 1 },
-      { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: "⚙️ SETTINGS" }, type: 1 }
+      { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: "⚙️ SETTINGS" }, type: 1 },
+      { 
+        urlButton: { 
+          displayText: "VIEW CHANNEL", 
+          url: "https://whatsapp.com/channel/0029Vb6yaNMIt5s3s5iUK51g"  // 👉 ඔයාගේ channel link
+        }
+      }
     ];
 
-    // ===== IMAGE (URL ONLY = FAST & SAFE) =====
-    const imageUrl =
-      (userCfg.logo && userCfg.logo.startsWith('http'))
-        ? userCfg.logo
-        : 'https://files.catbox.moe/i6kedi.jpg';
+    const defaultImg = 'https://files.catbox.moe/i6kedi.jpg';
+    const useLogo = userCfg.logo || defaultImg;
 
-    // ===== SEND =====
+    let imagePayload;
+    if (String(useLogo).startsWith('http')) imagePayload = { url: useLogo };
+    else {
+      try { imagePayload = fs.readFileSync(useLogo); }
+      catch(e){ imagePayload = { url: defaultImg }; }
+    }
+
     await socket.sendMessage(sender, {
-      image: { url: imageUrl },
+      image: imagePayload,
       caption: text,
-      footer: "㋚ 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳 𝐋𝙸𝚃𝙴",
-      buttons,
+      footer: "",
+      buttons: buttons,
       headerType: 4
-    });
+    }, { quoted: shonux });
 
   } catch (err) {
     console.error('menu command error:', err);
-    socket.sendMessage(sender, { text: '❌ Failed to show menu.' }).catch(()=>{});
+    await socket.sendMessage(sender, { text: '❌ Failed to show menu.' }, { quoted: msg });
   }
   break;
 }
