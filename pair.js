@@ -1882,12 +1882,11 @@ case 'csong': {
   }
   break;
 }
-			  
 case 'menu': {
   await socket.sendMessage(sender, { react: { text: "🧚‍♂️", key: msg.key } }).catch(()=>{});
 
   try {
-    // ===== BASIC =====
+    // ===== BASIC INFO =====
     const pushname = msg.pushName || 'User';
     const startTime = socketCreationTime?.get(number) || Date.now();
     const uptime = Math.floor((Date.now() - startTime) / 1000);
@@ -1906,16 +1905,16 @@ case 'menu': {
     const menuText = `
 🎀 ${greeting}, *${pushname}*
 
-╭──❂ 🧚 BOT MAIN MENU ❂──╮
-│ ● 👑 Bot Name : QUEEN ASHI MD
-│ ● 👤 Owner   : Dev Xanz
-│ ● 🧩 Version : ${config.BOT_VERSION || '1.0.0'}
-│ ● ⏱ Uptime  : ${h}h ${m}m ${s}s
-│ ● 💻 Host    : ${process.env.PLATFORM || 'Linux'}
-│ ● 📦 Cmds    : 50+
+╭──❂ 🧚 𝐁𝙾𝚃 𝐌𝙰𝙸𝙽 𝐌𝙴𝙽𝚄 ❂──╮
+│ ●  Bot Name :  QUEEN ASHI MD
+│ ●  Owner   :  Dev Xanz
+│ ●  Version :  ${config.BOT_VERSION || '1.0.0'}
+│ ●  Uptime  :  ${h}h ${m}m ${s}s
+│ ●  Host    :  ${process.env.PLATFORM || 'Linux'}
+│ ●  Cmds    :  50+
 ╰──────────────❂
 
-${config.BOT_FOOTER || '© 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳'}
+${config.BOT_FOOTER || '> © 𝐐𝐔𝐄𝐄𝐍 𝐀𝐒𝐇𝐈 𝐌𝐃 𝐋𝐈𝐓𝐄'}
 `.trim();
 
     // ===== BUTTONS =====
@@ -1926,32 +1925,50 @@ ${config.BOT_FOOTER || '© 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳'}
       { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: "⚙️ SETTINGS" }, type: 1 }
     ];
 
-    // ===== SEND MENU =====
+    // ===== FAKE CONTACT (for quoted context) =====
+    const fakeContact = {
+      key: {
+        remoteJid: "status@broadcast",
+        participant: "0@s.whatsapp.net",
+        fromMe: false,
+        id: "FAKE_CONTACT_MENU"
+      },
+      message: {
+        contactMessage: {
+          displayName: 'QUEEN ASHI MD',
+          vcard: `BEGIN:VCARD
+VERSION:3.0
+N:QUEEN ASHI MD;;;;
+FN:QUEEN ASHI MD
+ORG:QUEEN ASHI MD
+TEL;type=CELL;type=VOICE;waid=13135550002:+1 313 555 0002
+END:VCARD`
+        }
+      }
+    };
+
+    // ===== SEND MENU IMAGE WITH FAKE CONTACT =====
     await socket.sendMessage(sender, {
       image: { url: 'https://files.catbox.moe/i6kedi.jpg' },
       caption: menuText,
       footer: '',
       buttons,
       headerType: 4
-    });
+    }, { quoted: fakeContact });
 
-    // ===== SEND AUDIO (VOICE NOTE) =====
+    // ===== OPTIONAL: SEND AUDIO =====
     await socket.sendMessage(sender, {
-      audio: {
-        url: 'https://drive.google.com/uc?export=download&id=1sg_bFFuyaa64J2ehsZHdHa5KSkvXnVtE'
-      },
+      audio: { url: 'https://drive.google.com/uc?export=download&id=1qafJfhII7vuZwGxPLGBsOLAnJnXgQAQl' },
       mimetype: 'audio/mpeg',
-      ptt: true   // 🎧 voice note
+      ptt: true
     });
 
   } catch (err) {
     console.error('menu error:', err);
-    await socket.sendMessage(sender, {
-      text: '❌ Failed to show menu.'
-    });
+    await socket.sendMessage(sender, { text: '❌ Failed to show menu.' });
   }
   break;
- }
+}			  
 // ==================== DOWNLOAD MENU ====================
 case 'download': {
   try { await socket.sendMessage(sender, { react: { text: "🧬", key: msg.key } }); } catch(e){}
