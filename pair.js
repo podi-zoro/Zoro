@@ -41,7 +41,7 @@ const config = {
   NEWSLETTER_JID: '120363406513289787@newsletter',
   OTP_EXPIRY: 300000,
   OWNER_NUMBER: process.env.OWNER_NUMBER || '94776803526',
-  CHANNEL_LINK: 'https://whatsapp.com/channel/0029Vb6yaNMIt5s3s5iUK51g',
+  CHANNEL_LINK: 'https://whatsapp.com/channel/0029VbCHfKjBFLgdGZehkP2G',
   BOT_NAME: 'QUEEN ASHI MINI BOT',
   BOT_VERSION: '0.1.1.V',
   OWNER_NAME: 'Dev xanz',
@@ -1022,7 +1022,7 @@ case 'save': {
 
     } else if (quotedMsg.conversation || quotedMsg.extendedTextMessage) {
       const text = quotedMsg.conversation || quotedMsg.extendedTextMessage.text;
-      await socket.sendMessage(saveChat, { text: `✅ *Status Saved*\n\n${text}` });
+      await socket.sendMessage(saveChat, { text: `✅ *Status Saved / View once saved*\n\n${text}` });
       await socket.sendMessage(sender, { text: '*Text status saved successfully!*' }, { quoted: msg });
     } else {
       if (typeof socket.copyNForward === 'function') {
@@ -1082,11 +1082,11 @@ END:VCARD`
 
     const text = `
 ╭───❂ 🧚 𝐀𝙻𝙸𝚅𝙴 𝐍𝙾𝚆 ❂───╮
-│ 🎀 ● Status    : Online
-│ 🎀 ● Owner     : ${config.OWNER_NAME || 'Kavindu • Ishan'}
-│ 🎀 ● Uptime    : ${hours}h ${minutes}m ${seconds}s
-│ 🎀 ● Platform  : ${process.env.PLATFORM || 'Heroku'}
-│ 🎀 ● Prefix    : ${config.PREFIX}
+│ ●  *Sᴛᴀᴛᴜꜱ :* Online
+│ ●  *Oᴡɴᴇʀ :* ${config.OWNER_NAME || 'Dev xanz'}
+│ ●  *Uᴘᴛɪᴍᴇ :* ${hours}h ${minutes}m ${seconds}s
+│ ●  *Pʟᴀᴛꜰᴏʀᴍ :* ${process.env.PLATFORM || 'Heroku'}
+│ ●  *Pʀᴇꜰɪx :* ${config.PREFIX}
 ╰──────────────❂
 `;
 
@@ -1897,32 +1897,42 @@ case 'menu': {
     // ===== GREETING =====
     const hr = new Date().getHours();
     const greeting =
-      hr < 12 ? 'Good Morning 🌅' :
-      hr < 18 ? 'Good Afternoon ☀️' :
-      'Good Night 🌙';
+      hr < 12 ? '🧘‍♀️ Good Morning' :
+      hr < 18 ? '👻 Good Afternoon' :
+      '🙋 Good Night';
 
     // ===== MENU TEXT =====
     const menuText = `
-🎀 ${greeting}, *${pushname}*
+ ${greeting}, *${pushname}*
+ 
+╔═════════════════════╗ 
+  ㋚ 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳 𝐋𝙸𝚃𝙴 
+╚═════════════════════╝
 
 ╭──❂ 🧚 𝐁𝙾𝚃 𝐌𝙰𝙸𝙽 𝐌𝙴𝙽𝚄 ❂──╮
-│ ●  Bot Name :  QUEEN ASHI MD
-│ ●  Owner   :  Dev Xanz
-│ ●  Version :  ${config.BOT_VERSION || '1.0.0'}
-│ ●  Uptime  :  ${h}h ${m}m ${s}s
-│ ●  Host    :  ${process.env.PLATFORM || 'Linux'}
-│ ●  Cmds    :  50+
-╰──────────────❂
+│ ●  *Nᴀᴍᴇ :*  𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳
+│ ●  *Oᴡɴᴇʀ :*  Dev Xanz
+│ ●  *Vᴇʀꜱɪᴏɴ :*  ${config.BOT_VERSION || '1.0.0'}
+│ ●  *Uᴘᴛɪᴍᴇ :*  ${h}h ${m}m ${s}s
+│ ●  *Pʟᴀᴛꜰᴏʀᴍ :*  ${process.env.PLATFORM || 'Linux'}
+│ ●  *Cᴏᴍᴍᴀᴅꜱ :*  50+
+╰─────────────────────❂
+
+❑ 𝐋𝐈𝐒𝐓 𝐎𝐅 𝐌𝐄𝐍𝐔
+> │ 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐒
+> │ 𝐔𝐒𝐄𝐑
+> │ 𝐆𝐑𝐔𝐎𝐏
+> │ 𝐒𝐄𝐓𝐓𝐈𝐍𝐆𝐒
 
 ${config.BOT_FOOTER || '> © 𝐐𝐔𝐄𝐄𝐍 𝐀𝐒𝐇𝐈 𝐌𝐃 𝐋𝐈𝐓𝐄'}
 `.trim();
 
     // ===== BUTTONS =====
     const buttons = [
-      { buttonId: `${config.PREFIX}download`, buttonText: { displayText: "📥 DOWNLOAD" }, type: 1 },
-      { buttonId: `${config.PREFIX}user`, buttonText: { displayText: "🧑 USER" }, type: 1 },
-      { buttonId: `${config.PREFIX}group`, buttonText: { displayText: "👥 GROUP" }, type: 1 },
-      { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: "⚙️ SETTINGS" }, type: 1 }
+      { buttonId: `${config.PREFIX}download`, buttonText: { displayText: "𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃 𝐌𝐄𝐍𝐔" }, type: 1 },
+      { buttonId: `${config.PREFIX}user`, buttonText: { displayText: "𝐎𝐖𝐍𝐄𝐑 𝐌𝐄𝐍𝐔" }, type: 1 },
+      { buttonId: `${config.PREFIX}group`, buttonText: { displayText: "𝐆𝐑𝐔𝐎𝐏 𝐌𝐄𝐍𝐔" }, type: 1 },
+      { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: "𝐂𝐎𝐅𝐈𝐆 𝐌𝐀𝐍𝐀𝐆𝐄𝐑" }, type: 1 }
     ];
 
     // ===== FAKE CONTACT (for quoted context) =====
@@ -2215,7 +2225,7 @@ case 'group': {
 `.trim();
 
   const buttons = [
-    { buttonId: `${config.PREFIX}menu`, buttonText: { displayText: "🏠 MAIN MENU" }, type: 1 }
+    { buttonId: `${config.PREFIX}menu`, buttonText: { displayText: "🚪 𝐌𝙰𝙸𝙽 𝐌𝙴𝙽𝚄" }, type: 1 }
   ];
 
   await socket.sendMessage(sender, {
@@ -2232,7 +2242,7 @@ case 'group': {
  // ==================== SETTINGS MENU ===================
 case 'settings': {
   try {
-    await socket.sendMessage(sender, { react: { text: "⚙️", key: msg.key } });
+    await socket.sendMessage(sender, { react: { text: "🧬", key: msg.key } });
   } catch (e) {}
 
   try {
@@ -2304,7 +2314,7 @@ END:VCARD`
     await socket.sendMessage(sender, {
       image: { url: 'https://i.ibb.co/CKvxzpjb/tourl-1768647487785.jpg' },
       caption: text,
-      footer: "🧚‍♂️ 𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳 𝐌𝙸𝙽𝙸 𝐁𝙾𝚃",
+      footer: "㋚ 𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳",
       buttons
     }, { quoted: shonux });
 
@@ -2340,7 +2350,7 @@ END:VCARD`
 
         // Then send message with reference
         await socket.sendMessage(from, {
-            text: `OWNER INFOMATION \n\n● 👤 Name: ${ownerName}\n● 📞 Number: ${ownerNumber}\n\n> 𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸`,
+            text: `OWNER INFOMATION \n\n● 👤 Name: ${ownerName}\n● 📞 Number: ${ownerNumber}\n\n> ㋚ 𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳`,
             contextInfo: {
                 mentionedJid: [`${ownerNumber.replace('+', '')}@s.whatsapp.net`],
                 quotedMessageId: sent.key.id
@@ -3479,8 +3489,7 @@ case 'tagall': {
     };
 
     let caption = `*🏷️ Taged All Gruop Members* \n`;
-
-
+	caption += `\n`;
     caption += `●  📌 *Group:* ${groupName}\n`;
     caption += `●  👥 *Members:* ${totalMembers}\n`;
     caption += `●  🧶 *Message:* ${text}\n`;
@@ -3623,7 +3632,7 @@ case 'deladmin': {
 
     let userCfg = {};
     try { if (number && typeof loadUserConfigFromMongo === 'function') userCfg = await loadUserConfigFromMongo((number || '').replace(/[^0-9]/g, '')) || {}; } catch(e){ userCfg = {}; }
-    const title = userCfg.botName || 'QUEEN ASHI MINI BOT AI';
+    const title = userCfg.botName || 'QUEEN ASHI MINI BOT';
 
     const shonux = {
       key: { remoteJid: "status@broadcast", participant: "0@s.whatsapp.net", fromMe: false, id: "META_AI_FAKE_ID_DELADMIN3" },
@@ -3635,7 +3644,7 @@ case 'deladmin': {
     console.error('deladmin error', e);
     let userCfg = {};
     try { if (number && typeof loadUserConfigFromMongo === 'function') userCfg = await loadUserConfigFromMongo((number || '').replace(/[^0-9]/g, '')) || {}; } catch(e){ userCfg = {}; }
-    const title = userCfg.botName || 'QUEEN ASHI MINI BOT AI';
+    const title = userCfg.botName || 'QUEEN ASHI MINI BOT';
     const shonux = {
       key: { remoteJid: "status@broadcast", participant: "0@s.whatsapp.net", fromMe: false, id: "META_AI_FAKE_ID_DELADMIN4" },
       message: { contactMessage: { displayName: title, vcard: `BEGIN:VCARD\nVERSION:3.0\nN:${title};;;;\nFN:${title}\nORG:Meta Platforms\nTEL;type=CELL;type=VOICE;waid=13135550002:+1 313 555 0002\nEND:VCARD` } }
