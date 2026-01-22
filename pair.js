@@ -1884,108 +1884,74 @@ case 'csong': {
 }
 			  
 case 'menu': {
-  try { 
-    await socket.sendMessage(sender, { react: { text: "🧚‍♂️", key: msg.key } }); 
-  } catch(e){}
+  await socket.sendMessage(sender, { react: { text: "🧚‍♂️", key: msg.key } }).catch(()=>{});
 
   try {
-    const pushname = m.pushName || m.name || 'User'; // safe pushname
-    const hourNow = new Date().getHours();
-    let greeting = "Hello";
-    if (hourNow < 12) greeting = "Good Morning";
-    else if (hourNow < 18) greeting = "Good Afternoon";
-    else if (hourNow < 21) greeting = "Good Evening";
-    else greeting = "Good Night"; // 🌙 night greeting
-
-    const startTime = socketCreationTime.get(number) || Date.now();
+    // ===== BASIC =====
+    const pushname = msg.pushName || 'User';
+    const startTime = socketCreationTime?.get(number) || Date.now();
     const uptime = Math.floor((Date.now() - startTime) / 1000);
-    const hours = Math.floor(uptime / 3600);
-    const minutes = Math.floor((uptime % 3600) / 60);
-    const seconds = Math.floor(uptime % 60);
+    const h = Math.floor(uptime / 3600);
+    const m = Math.floor((uptime % 3600) / 60);
+    const s = Math.floor(uptime % 60);
 
-    // Load user config if exists
-    let userCfg = {};
-    try {
-      if (number && typeof loadUserConfigFromMongo === 'function') {
-        userCfg = await loadUserConfigFromMongo((number || '').replace(/[^0-9]/g, '')) || {};
-      }
-    } catch(e){ userCfg = {}; }
+    // ===== GREETING =====
+    const hr = new Date().getHours();
+    const greeting =
+      hr < 12 ? 'Good Morning 🌅' :
+      hr < 18 ? 'Good Afternoon ☀️' :
+      'Good Night 🌙';
 
-    const title = userCfg.botName || 'QUEEN ASHI MD';
+    // ===== MENU TEXT =====
+    const menuText = `
+🎀 ${greeting}, *${pushname}*
 
-    // Fake contact for quoting
-    const shonux = {
-      key: {
-        remoteJid: "status@broadcast",
-        participant: "0@s.whatsapp.net",
-        fromMe: false,
-        id: "META_AI_FAKE_ID_MENU"
-      },
-      message: {
-        contactMessage: {
-          displayName: title,
-          vcard: `BEGIN:VCARD
-VERSION:3.0
-N:${title};;;;
-FN:${title}
-ORG:Meta Platforms
-TEL;type=CELL;type=VOICE;waid=13135550002:+1 313 555 0002
-END:VCARD`
-        }
-      }
-    };
-
-    // Caption / menu text
-    const text = `
-🎀 ${greeting}, *${pushname}* 
-
-╭──❂ 🧚 𝐁𝙾𝚃 𝐌𝙰𝙸𝙽 𝐌𝙴𝙽𝚄 ❂──╮
-│ 🔹 *Owner*    : Dev Xanz
-│ 🔹 *Version*  : ${config.BOT_VERSION || '0.0001+'}
-│ 🔹 *Host*     : ${process.env.PLATFORM || 'Ashi Linux'}
-│ 🔹 *Uptime*   : ${hours}h ${minutes}m ${seconds}s
-│ 🔹 *Language* : JavaScript
-│ 🔹 *Commands* : 50+
+╭──❂ 🧚 BOT MAIN MENU ❂──╮
+│ ● 👑 Bot Name : QUEEN ASHI MD
+│ ● 👤 Owner   : Dev Xanz
+│ ● 🧩 Version : ${config.BOT_VERSION || '1.0.0'}
+│ ● ⏱ Uptime  : ${h}h ${m}m ${s}s
+│ ● 💻 Host    : ${process.env.PLATFORM || 'Linux'}
+│ ● 📦 Cmds    : 50+
 ╰──────────────❂
 
-${config.BOT_FOOTER || ''}
+${config.BOT_FOOTER || '© 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳'}
 `.trim();
 
-    // Buttons (normal + URL)
+    // ===== BUTTONS =====
     const buttons = [
       { buttonId: `${config.PREFIX}download`, buttonText: { displayText: "📥 DOWNLOAD" }, type: 1 },
-      { buttonId: `${config.PREFIX}user`, buttonText: { displayText: "🧑‍🔧 USER" }, type: 1 },
+      { buttonId: `${config.PREFIX}user`, buttonText: { displayText: "🧑 USER" }, type: 1 },
       { buttonId: `${config.PREFIX}group`, buttonText: { displayText: "👥 GROUP" }, type: 1 },
-      { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: "⚙️ SETTINGS" }, type: 1 },
-      { urlButton: { displayText: "📺 JOIN CHANNEL", url: "https://whatsapp.com/channel/0029Vb6yaNMIt5s3s5iUK51g" } }
+      { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: "⚙️ SETTINGS" }, type: 1 }
     ];
 
-    const defaultImg = 'https://files.catbox.moe/i6kedi.jpg';
-    const useLogo = userCfg.logo || defaultImg;
-
-    let imagePayload;
-    if (String(useLogo).startsWith('http')) imagePayload = { url: useLogo };
-    else {
-      try { imagePayload = fs.readFileSync(useLogo); }
-      catch(e){ imagePayload = { url: defaultImg }; }
-    }
-
-    // Send the menu
+    // ===== SEND MENU =====
     await socket.sendMessage(sender, {
-      image: imagePayload,
-      caption: text,
-      footer: "㋚ 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳 𝐋𝙸𝚃𝙴",
+      image: { url: 'https://files.catbox.moe/i6kedi.jpg' },
+      caption: menuText,
+      footer: '',
       buttons,
       headerType: 4
-    }, { quoted: shonux });
+    });
+
+    // ===== SEND AUDIO (VOICE NOTE) =====
+    await socket.sendMessage(sender, {
+      audio: {
+        url: 'https://drive.google.com/uc?export=download&id=1sg_bFFuyaa64J2ehsZHdHa5KSkvXnVtE'
+      },
+      mimetype: 'audio/mpeg',
+      ptt: true   // 🎧 voice note
+    });
 
   } catch (err) {
-    console.error('menu command error:', err);
-    await socket.sendMessage(sender, { text: '❌ Failed to show menu.' }, { quoted: msg });
+    console.error('menu error:', err);
+    await socket.sendMessage(sender, {
+      text: '❌ Failed to show menu.'
+    });
   }
   break;
-  }
-
+ }
 // ==================== DOWNLOAD MENU ====================
 case 'download': {
   try { await socket.sendMessage(sender, { react: { text: "🧬", key: msg.key } }); } catch(e){}
