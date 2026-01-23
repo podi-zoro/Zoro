@@ -1084,18 +1084,18 @@ END:VCARD`
 🎀 𝐐𝐔𝐄𝐄𝐍 𝐀𝐒𝐇𝐈 𝐌𝐃 𝐀𝐋𝐈𝐕𝐄 𝐍𝐎𝐖
 
 ╭─── *「 ʙᴏᴛ ᴅᴇᴛᴀɪʟꜱ 」*
-│ 🔆 *Sᴛᴀᴛᴜꜱ :* Online
-│ 👨‍💻 *Oᴡɴᴇʀ :* ${config.OWNER_NAME || 'Dev xanz'}
-│ ⌛ *Uᴘᴛɪᴍᴇ :* ${hours}h ${minutes}m ${seconds}s
-│ 🔮 *Pʟᴀᴛꜰᴏʀᴍ :* ${process.env.PLATFORM || 'Linux'}
-│ 🔧 *Pʀᴇꜰɪx :* ${config.PREFIX}
-│ 💠 *Hᴏꜱᴛ :* Cloud
+│ 👾 *\`Sᴛᴀᴛᴜꜱ :\`* Online
+│ 👨‍💻 *\`Oᴡɴᴇʀ :\`* ${config.OWNER_NAME || 'Dev xanz'}
+│ ⌛ *\`Uᴘᴛɪᴍᴇ :\`* ${hours}h ${minutes}m ${seconds}s
+│ 🔮 *\`Pʟᴀᴛꜰᴏʀᴍ :\`* ${process.env.PLATFORM || 'Linux'}
+│ 🖋️ *\`Pʀᴇꜰɪx :\`* ${config.PREFIX}
+│ 💡 *\`Hᴏꜱᴛ :\`* Cloud
 ╰──────────────⦁✦⦁
 
 ╭─── *「 ᴍᴀɪɴ ᴄᴏᴍᴍᴀɴᴅꜱ 」*
-│ 🔸 ${config.PREFIX}menu
-│ 🔸 ${config.PREFIX}alive
-│ 🔸 ${config.PREFIX}ping
+│ 🚪 \`${config.PREFIX}menu\`
+│ 👾 \`${config.PREFIX}alive\`
+│ 👻 \`${config.PREFIX}ping\`
 ╰─────────────⦁✦⦁
 `;
 
@@ -1137,7 +1137,7 @@ END:VCARD`
     });
 
     var inital = new Date().getTime();
-    let ping = await socket.sendMessage(sender, { text: '*_CHEKING SPEED..._*' });
+    let ping = await socket.sendMessage(sender, { text: '*_ANALYZING SPEED..._*' });
     var final = new Date().getTime();
 
     // Progress bar animation
@@ -1915,25 +1915,26 @@ case 'menu': {
  ${greeting}, *${pushname}*
  
 ╔═════════════════════╗ 
-  ㋚ 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳 𝐋𝙸𝚃𝙴 
+    ㋚ 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳 𝐋𝙸𝚃𝙴 
 ╚═════════════════════╝
 
-╭──❂ 🧚 𝐁𝙾𝚃 𝐌𝙰𝙸𝙽 𝐌𝙴𝙽𝚄 ❂──╮
-│ ●  *Nᴀᴍᴇ :*  𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳
-│ ●  *Oᴡɴᴇʀ :*  Dev Xanz
-│ ●  *Vᴇʀꜱɪᴏɴ :*  ${config.BOT_VERSION || '1.0.0'}
-│ ●  *Uᴘᴛɪᴍᴇ :*  ${h}h ${m}m ${s}s
-│ ●  *Pʟᴀᴛꜰᴏʀᴍ :*  ${process.env.PLATFORM || 'Linux'}
-│ ●  *Cᴏᴍᴍᴀᴅꜱ :*  50+
-╰─────────────────────❂
+╭── *「 🧚 𝐁𝙾𝚃 𝐌𝙰𝙸𝙽 𝐌𝙴𝙽𝚄 」*
+│ 🎀 *\`Nᴀᴍᴇ :\`*  𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳
+│ 👨‍💻 *\`Oᴡɴᴇʀ :\`*  Dev Xanz
+│ 🧬 *\`Vᴇʀꜱɪᴏɴ :\`*  ${config.BOT_VERSION || '1.0.0'}
+│ ⌛ *\`Uᴘᴛɪᴍᴇ :\`*  ${h}h ${m}m ${s}s
+│ 🔮 *\`Pʟᴀᴛꜰᴏʀᴍ :\`*  ${process.env.PLATFORM || 'Linux'}
+│ 💡 *\`Cᴏᴍᴍᴀᴅꜱ :\`*  50+
+╰──────────────────⦁✦⦁
 
-❑ 𝐋𝐈𝐒𝐓 𝐎𝐅 𝐌𝐄𝐍𝐔
-> │ 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐒
-> │ 𝐔𝐒𝐄𝐑
-> │ 𝐆𝐑𝐔𝐎𝐏
-> │ 𝐒𝐄𝐓𝐓𝐈𝐍𝐆𝐒
+*「 𝐋𝐈𝐒𝐓 𝐎𝐅 𝐌𝐄𝐍𝐔 」*
 
-${config.BOT_FOOTER || '> © 𝐐𝐔𝐄𝐄𝐍 𝐀𝐒𝐇𝐈 𝐌𝐃 𝐋𝐈𝐓𝐄'}
+> │ 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃 𝐌𝐄𝐍𝐔
+> │ 𝐔𝐒𝐄𝐑 𝐌𝐄𝐍𝐔
+> │ 𝐆𝐑𝐔𝐎𝐏 𝐌𝐄𝐍𝐔
+> │ 𝐂𝐎𝐍𝐅𝐈𝐆 𝐌𝐄𝐍𝐔
+
+${config.BOT_FOOTER || '> ㋚ 𝐐𝐔𝐄𝐄𝐍 𝐀𝐒𝐇𝐈 𝐌𝐃 𝐋𝐈𝐓𝐄'}
 `.trim();
 
     // ===== BUTTONS =====
@@ -2026,35 +2027,35 @@ END:VCARD`
     const text = `
 ╭───❂ 𝐃𝙾𝚆𝙽𝙻𝙾𝙰𝙳 𝐌𝙴𝙽𝚄 ❂───╮
 │
-│ ➤ *Command .song*
+│ ➤ *\`Command .song\`*
 │ ☛ Usage ${config.PREFIX}song (query)
 │ _✨ Desc : download yt songs_
 │
-│ ➤ *Command .csong*
+│ ➤ *\`Command .csong\`*
 │ ☛ Usage ${config.PREFIX}csong (query)
 │ _✨ Desc : post songs to channels_
 │
-│ ➤ *Command .tiktok*
+│ ➤ *\`Command .tiktok\`*
 │ ☛ Usage ${config.PREFIX}tiktok (url)
 │ _✨ Desc : download tiktok videos_
 │
-│ ➤ *Command .video*
+│ ➤ *\`Command .video\`*
 │ ☛ Usage ${config.PREFIX}video (query)
 │ _✨ Desc : download yt videos_
 │
-│ ➤ *Command .apksearch*
+│ ➤ *\`Command .apksearch\`*
 │ ☛ Usage ${config.PREFIX}apksearch (app name)
 │ _✨ Desc : get information for apks_
 │
-│ ➤ *Command .getdp*
+│ ➤ *\`Command .getdp\`*
 │ ☛ Usage ${config.PREFIX}getdp (number)
 │ _✨ Desc : get whatsapp dp picture_
 │
-│ ➤ *Command .save*
+│ ➤ *\`Command .save\`*
 │ ☛ Usage ${config.PREFIX}save (reply to status)
 │ _✨ Desc : download whatsapp status_
 │
-│ ➤ *Command .img*
+│ ➤ *\`Command .img\`*
 │ ☛ Usage ${config.PREFIX}img (query)
 │ _✨ Desc : download google images_
 │
@@ -2062,8 +2063,8 @@ END:VCARD`
 `.trim();
 
     const buttons = [
-      { buttonId: `${config.PREFIX}menu`, buttonText: { displayText: "🚪 𝐌𝙰𝙸𝙽 𝐌𝙴𝙽𝚄" }, type: 1 },
-      { buttonId: `${config.PREFIX}user`, buttonText: { displayText: "🧑‍🔧 𝐔𝚂𝙴𝚁 𝐌𝙴𝙽𝚄" }, type: 1 }
+      { buttonId: `${config.PREFIX}menu`, buttonText: { displayText: "🚪 𝐌𝐀𝐈𝐍 𝐌𝐄𝐍𝐔" }, type: 1 },
+      { buttonId: `${config.PREFIX}user`, buttonText: { displayText: "🧑‍🔧 𝐔𝐒𝐄𝐑 𝐌𝐄𝐍𝐔" }, type: 1 }
     ];
 
     // 🔹 ONLY ADDITION: image + caption
@@ -2128,23 +2129,23 @@ END:VCARD`
     const text = `
 ╭───❂ 𝐔𝚂𝙴𝚁 𝐂𝙾𝙼𝙼𝙰𝙽𝙳𝚂 ❂───╮
 │
-│ ➤ *Command .jid*
+│ ➤ *\`Command .jid\`*
 │ ☛ Usage ${config.PREFIX}jid
 │ _✨ Desc : Get jid of a user_
 │
-│ ➤ *Command .block*
+│ ➤ *\`Command .block\`*
 │ ☛ Usage ${config.PREFIX}block (number)
 │ _✨ Desc : Block a user_
 │
-│ ➤ *Command .unblock*
+│ ➤ *\`Command .unblock\`*
 │ ☛ Usage ${config.PREFIX}unblock (number)
 │ _✨ Desc : Unblock a user_
 │
-│ ➤ *Command .ping*
+│ ➤ *\`Command .ping\`*
 │ ☛ Usage ${config.PREFIX}ping
 │ _✨ Desc : Check bot ping_
 │
-│ ➤ *Command .alive*
+│ ➤ *\`Command .alive\`*
 │ ☛ Usage ${config.PREFIX}alive
 │ _✨ Desc : Check bot alive status_
 │
@@ -2152,8 +2153,8 @@ END:VCARD`
 `.trim();
 
     const buttons = [
-      { buttonId: `${config.PREFIX}menu`, buttonText: { displayText: "🚪 𝐌𝙰𝙸𝙽 𝐌𝙴𝙽𝚄" }, type: 1 },
-      { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: "⚙️ 𝐒𝙴𝚃𝚃𝙸𝙽𝙶𝚂" }, type: 1 }
+      { buttonId: `${config.PREFIX}menu`, buttonText: { displayText: "🚪 𝐌𝐀𝐈𝐍 𝐌𝐄𝐍𝐔" }, type: 1 },
+      { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: "⚙️ 𝐒𝐄𝐓𝐓𝐈𝐍𝐆𝐒" }, type: 1 }
     ];
 
     await socket.sendMessage(sender, {
@@ -2178,55 +2179,55 @@ case 'group': {
   const text = `
 ╭──❂ 𝐆𝚁𝚄𝙾𝙿 𝐂𝙾𝙼𝙼𝙰𝙽𝙳𝚂 ❂──╮
 │
-│ ➤ *Command .add*
+│ ➤ *\`Command .add\`*
 │ ☛ Usage ${config.PREFIX}add 947xxxxxxxx
 │ _✨ Desc : Add a member to group_
 │
-│ ➤ *Command .setname*
+│ ➤ *\`Command .setname\`*
 │ ☛ Usage ${config.PREFIX}setname (group name)
 │ _✨ Desc : Change group name_
 │
-│ ➤ *Command .warn*
+│ ➤ *\`Command .warn\`*
 │ ☛ Usage ${config.PREFIX}warn @user
 │ _✨ Desc : Warn a group member_
 │
-│ ➤ *Command .kick*
+│ ➤ *\`Command .kick\`*
 │ ☛ Usage ${config.PREFIX}kick @user
 │ _✨ Desc : Remove a member from group_
 │
-│ ➤ *Command .kickall*
+│ ➤ *\`Command .kickall\`*
 │ ☛ Usage ${config.PREFIX}kickall
 │ _✨ Desc : Remove all non-admin members_
 │
-│ ➤ *Command .open*
+│ ➤ *\`Command .open\`*
 │ ☛ Usage ${config.PREFIX}open
 │ _✨ Desc : Open group for everyone_
 │
-│ ➤ *Command .close*
+│ ➤ *\`Command .close\`*
 │ ☛ Usage ${config.PREFIX}close
 │ _✨ Desc : Close group (admins only)_
 │
-│ ➤ *Command .invite*
+│ ➤ *\`Command .invite\`*
 │ ☛ Usage ${config.PREFIX}invite
 │ _✨ Desc : Get group invite link_
 │
-│ ➤ *Command .promote*
+│ ➤ *\`Command .promote\`*
 │ ☛ Usage ${config.PREFIX}promote @user
 │ _✨ Desc : Promote member to admin_
 │
-│ ➤ *Command .demote*
+│ ➤ *\`Command .demote\`*
 │ ☛ Usage ${config.PREFIX}demote @user
 │ _✨ Desc : Demote admin to member_
 │
-│ ➤ *Command .tagall*
+│ ➤ *\`Command .tagall\`*
 │ ☛ Usage ${config.PREFIX}tagall (msg)
 │ _✨ Desc : Mention all group members_
 │
-│ ➤ *Command .online*
+│ ➤ *\`Command .online\`*
 │ ☛ Usage ${config.PREFIX}online
 │ _✨ Desc : Check online members_
 │
-│ ➤ *Command .join*
+│ ➤ *\`Command .join\`*
 │ ☛ Usage ${config.PREFIX}join (group link)
 │ _✨ Desc : Join group via invite link_
 │
@@ -2292,23 +2293,23 @@ END:VCARD`
     const text = `
 ╭─❂ ⚙ 𝐒𝙴𝚃𝚃𝙸𝙽𝙶𝚂 𝐂𝙾𝙼𝙼𝙰𝙽𝙳𝚂 ❂─╮
 │
-│ ➤ *Command .setbotname*
+│ ➤ *\`Command .setbotname\`*
 │ ☛ Usage ${config.PREFIX}setbotname (name)
 │ _✨ Desc : Set a new bot name_
 │
-│ ➤ *Command .setlogo*
+│ ➤ *\`Command .setlogo\`*
 │ ☛ Usage ${config.PREFIX}setlogo (reply to image/url)
 │ _✨ Desc : Change bot profile picture_
 │
-│ ➤ *Command .showconfig*
+│ ➤ *\`Command .showconfig\`*
 │ ☛ Usage ${config.PREFIX}showconfig
 │ _✨ Desc : Show your current config_
 │
-│ ➤ *Command .resetconfig*
+│ ➤ *\`Command .resetconfig\`*
 │ ☛ Usage ${config.PREFIX}resetconfig
 │ _✨ Desc : Reset your bot config_
 │
-│ ➤ *Command .deleteme*
+│ ➤ *\`Command .deleteme\`*
 │ ☛ Usage ${config.PREFIX}deleteme
 │ _✨ Desc : Delete your bot session_
 │
