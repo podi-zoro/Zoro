@@ -1096,7 +1096,7 @@ END:VCARD`
 │ 🚪 \`${config.PREFIX}menu\`
 │ 👾 \`${config.PREFIX}alive\`
 │ 👻 \`${config.PREFIX}ping\`
-│ 💡 \`${config.PREFIX}system\`
+│ 🐉 \`${config.PREFIX}system\`
 ╰─────────────⦁✦⦁
 `;
 
@@ -1487,7 +1487,7 @@ await socket.sendMessage(sender, { react: { text: '📥', key: msg.key } });
     const meidaLink = q.split(" ")[1];
     
     try {
-        const yt_mp3_Api = await fetch(`https:///www.movanest.xyz/v2/ytdl2?input=${meidaLink}&quality=128`);
+        const yt_mp3_Api = await fetch(`https:///www.movanest.xyz/v2/ytmp3?url=${meidaLink}&quality=128`);
         const yt_mp3_Api_Call = await yt_mp3_Api.json();
         const downloadUrl = yt_mp3_Api_Call?.result?.download?.url;
         
@@ -1658,7 +1658,7 @@ END:VCARD`
             videoUrl = maybeLink;
         } else {
             // search by title using new API
-            const searchUrl = `https:///movanest.xyz/v2/ytsearch?query=${encodeURIComponent(q.trim())}`;
+            const searchUrl = `https:///www.movanest.xyz/v2/ytmp4?url=${encodeURIComponent(q.trim())}`;
             const searchRes = await axios.get(searchUrl, { 
                 timeout: 30000,
                 headers: {
@@ -1678,7 +1678,7 @@ END:VCARD`
             videoUrl = first.url;
         }
         // call new mp4 API
-        const apiUrl = `https:///movanest.xyz/v2/ytmp4?url=${encodeURIComponent(videoUrl)}`;
+        const apiUrl = `https:///www.movanest.xyz/v2/ytmp4?url=${encodeURIComponent(videoUrl)}`;
         const apiRes = await axios.get(apiUrl, { 
             timeout: 30000,
             headers: {
@@ -1798,11 +1798,11 @@ case 'csong': {
   await socket.sendMessage(sender, { react: { text: "🐻", key: msg.key } });
 
   try {
-    const search = await axios.get(`https:///movanest.xyz/v2/ytsearch?query=${encodeURIComponent(query)}`);
+    const search = await axios.get(`https:///www.movanest.xyz/v2/ytsearch?query=${encodeURIComponent(query)}`);
     const video = search.data.results.find(v => v.type === "video");
     if (!video) return socket.sendMessage(sender,{text:"No results found"});
 
-    const ytmp3 = await axios.get(`https:///movanest.xyz/v2/ytmp3?url=${encodeURIComponent(video.url)}`);
+    const ytmp3 = await axios.get(`https:///www.movanest.xyz/v2/ytmp3?url=${encodeURIComponent(video.url)}`);
     const data = ytmp3.data.results;
 
     const title = data.metadata.title;
