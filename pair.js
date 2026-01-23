@@ -590,10 +590,10 @@ END:VCARD`
             const caption = `
 🎵 *${botName} TIK TOK DOWNLOADER*
 
-● 📌 *Title:* ${v.title || 'No Title'}
-● 👤 *Author:* ${v.author?.nickname || 'Unknown'}
-● ❤️ *Likes:* ${v.digg_count || 0}
-● 👁 *Views:* ${v.play_count || 0}
+📌 *\`Title:\`* ${v.title || 'No Title'}
+👤 *\`Author:\`* ${v.author?.nickname || 'Unknown'}
+❤️ *\`Likes:\`* ${v.digg_count || 0}
+👁 *\`Views:\`* ${v.play_count || 0}
 `.trim();
 
             await socket.sendMessage(sender, {
@@ -1096,6 +1096,7 @@ END:VCARD`
 │ 🚪 \`${config.PREFIX}menu\`
 │ 👾 \`${config.PREFIX}alive\`
 │ 👻 \`${config.PREFIX}ping\`
+│ 💡 \`${config.PREFIX}system\`
 ╰─────────────⦁✦⦁
 `;
 
@@ -1942,7 +1943,7 @@ ${config.BOT_FOOTER || '> ㋚ 𝐐𝐔𝐄𝐄𝐍 𝐀𝐒𝐇𝐈 𝐌𝐃 �
       { buttonId: `${config.PREFIX}download`, buttonText: { displayText: "𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃 𝐌𝐄𝐍𝐔" }, type: 1 },
       { buttonId: `${config.PREFIX}user`, buttonText: { displayText: "𝐎𝐖𝐍𝐄𝐑 𝐌𝐄𝐍𝐔" }, type: 1 },
       { buttonId: `${config.PREFIX}group`, buttonText: { displayText: "𝐆𝐑𝐔𝐎𝐏 𝐌𝐄𝐍𝐔" }, type: 1 },
-      { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: "𝐂𝐎𝐅𝐈𝐆 𝐌𝐀𝐍𝐀𝐆𝐄𝐑" }, type: 1 }
+      { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: "𝐂𝐎𝐍𝐅𝐈𝐆 𝐌𝐀𝐍𝐀𝐆𝐄𝐑" }, type: 1 }
     ];
 
     // ===== FAKE CONTACT (for quoted context) =====
