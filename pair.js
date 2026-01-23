@@ -1081,18 +1081,27 @@ END:VCARD`
     const seconds = Math.floor(uptime % 60);
 
     const text = `
-╭───❂ 🧚 𝐀𝙻𝙸𝚅𝙴 𝐍𝙾𝚆 ❂───╮
-│ ●  *Sᴛᴀᴛᴜꜱ :* Online
-│ ●  *Oᴡɴᴇʀ :* ${config.OWNER_NAME || 'Dev xanz'}
-│ ●  *Uᴘᴛɪᴍᴇ :* ${hours}h ${minutes}m ${seconds}s
-│ ●  *Pʟᴀᴛꜰᴏʀᴍ :* ${process.env.PLATFORM || 'Heroku'}
-│ ●  *Pʀᴇꜰɪx :* ${config.PREFIX}
-╰──────────────❂
+🎀 𝐐𝐔𝐄𝐄𝐍 𝐀𝐒𝐇𝐈 𝐌𝐃 𝐀𝐋𝐈𝐕𝐄 𝐍𝐎𝐖
+
+╭─── *「 ʙᴏᴛ ᴅᴇᴛᴀɪʟꜱ 」*
+│ 🔆 *Sᴛᴀᴛᴜꜱ :* Online
+│ 👨‍💻 *Oᴡɴᴇʀ :* ${config.OWNER_NAME || 'Dev xanz'}
+│ ⌛ *Uᴘᴛɪᴍᴇ :* ${hours}h ${minutes}m ${seconds}s
+│ 🔮 *Pʟᴀᴛꜰᴏʀᴍ :* ${process.env.PLATFORM || 'Linux'}
+│ 🔧 *Pʀᴇꜰɪx :* ${config.PREFIX}
+│ 💠 *Hᴏꜱᴛ :* Cloud
+╰──────────────⦁✦⦁
+
+╭─── *「 ᴍᴀɪɴ ᴄᴏᴍᴍᴀɴᴅꜱ 」*
+│ 🔸 ${config.PREFIX}menu
+│ 🔸 ${config.PREFIX}alive
+│ 🔸 ${config.PREFIX}ping
+╰─────────────⦁✦⦁
 `;
 
     const buttons = [
-      { buttonId: `${config.PREFIX}menu`, buttonText: { displayText: "🚪 𝐌𝙴𝙽𝚄" }, type: 1 },
-      { buttonId: `${config.PREFIX}ping`, buttonText: { displayText: "👻 𝐏𝙸𝙽𝙶" }, type: 1 }
+      { buttonId: `${config.PREFIX}menu`, buttonText: { displayText: "🚪 𝐌𝐄𝐍𝐔" }, type: 1 },
+      { buttonId: `${config.PREFIX}ping`, buttonText: { displayText: "👻 𝐏𝐈𝐍𝐆" }, type: 1 }
     ];
 
     const imagePayload = String(logo).startsWith('http')
@@ -1104,7 +1113,7 @@ END:VCARD`
       {
         image: imagePayload,
         caption: text,
-        footer: `${botName} 𝐀𝙻𝙸𝚅𝙴`,
+        footer: `${botName} 𝐀𝙻𝙸𝚅𝙴 𝐍𝙾𝚆`,
         buttons,
         headerType: 4
       },
@@ -1140,7 +1149,7 @@ END:VCARD`
 
     // Final output
     return await socket.sendMessage(sender, {
-        text: `*♻ Speed : ${final - inital} ms*\n`,
+        text: `*♻ SPEED : ${final - inital} ms*\n`,
         edit: ping.key
     });
 }
