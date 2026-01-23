@@ -1400,60 +1400,97 @@ case 'bots': {
   break;
 }
 
+// ==================== SONG COMMAND ====================
 case 'song': {
-  const axios = require('axios');
-  const text = msg.message?.conversation || msg.message?.extendedTextMessage?.text || '';
-  const query = text.replace(`${config.PREFIX}song`, '').trim();
+    const yts = require('yt-search');
+    const q = args.join(" ");
+    if (!q) return await socket.sendMessage(sender, { text: "⚠️ Enter song name or YouTube link!" }, { quoted: msg });
 
-  if (!query) {
-    return socket.sendMessage(sender, { text: "*🎵 Song name ekak denna*" }, { quoted: msg });
-  }
+    try {
+        const search = await yts(q);
+        const video = search.videos[0];
+        if (!video) return await socket.sendMessage(sender, { text: "❌ Song not found!" }, { quoted: msg });
 
-  try {
-    // 🔍 SEARCH API
-    const res = await axios.get(`https://www.movanest.xyz/v2/ytsearch?query=${encodeURIComponent(query)}`);
-    const v = res.data.result[0];
+        const caption = `
+🎵 *Song Info*
 
-    if (!v) return socket.sendMessage(sender, { text: "❌ Song not found" }, { quoted: msg });
+📌 Title: ${video.title}
+👤 Artist: ${video.author.name}
+⏱ Duration: ${video.timestamp}
+👀 Views: ${video.views.toLocaleString()}
+📅 Uploaded: ${video.ago}
+📎 Link: ${video.url}
+`;
 
-    const title = v.title;
-    const url = v.url;
-    const duration = v.duration || "Unknown";
-    const views = v.views || "N/A";
-    const channel = v.channel || "Unknown";
-    const thumb = v.thumbnail;
+        // Buttons for download
+        const buttons = [
+            { buttonId: `.yt_mp3 AUDIO ${video.url}`, buttonText: { displayText: "🎧 AUDIO" }, type: 1 },
+            { buttonId: `.yt_mp3 DOCUMENT ${video.url}`, buttonText: { displayText: "📂 DOCUMENT" }, type: 1 },
+            { buttonId: `.yt_mp3 VOICECUT ${video.url}`, buttonText: { displayText: "🎤 VOICE NOTE" }, type: 1 },
+        ];
 
-    const caption = `
-🎵 *${title}*
+        await socket.sendMessage(sender, {
+            image: { url: video.thumbnail },
+            caption: caption,
+            buttons: buttons,
+            headerType: 4
+        }, { quoted: msg });
 
-👤 Channel : ${channel}
-⏱ Duration : ${duration}
-👁 Views : ${views}
+    } catch (err) {
+        console.error("❌ Song command error:", err);
+        await socket.sendMessage(sender, { text: "⚠️ Error while fetching song!" }, { quoted: msg });
+    }
 
-📥 Choose format below 👇
-`.trim();
+    break;
+}
 
-    const buttons = [
-      { buttonId: `${config.PREFIX}mp3play ${url}`, buttonText: { displayText: "🎧 Play MP3" }, type: 1 },
-      { buttonId: `${config.PREFIX}mp3doc ${url}`, buttonText: { displayText: "📄 MP3 Document" }, type: 1 },
-      { buttonId: `${config.PREFIX}mp3ptt ${url}`, buttonText: { displayText: "🎙 Voice Note" }, type: 1 }
-    ];
+// ==================== YT_MP3 COMMAND ====================
+case 'yt_mp3': {
+    const ddownr = require('denethdev-ytmp3');
+    const q = args.join(" ");
+    const mediatype = q.split(" ")[0]; // AUDIO / DOCUMENT / VOICECUT
+    const videoUrl = q.split(" ")[1];
 
-    await socket.sendMessage(sender, {
-      image: { url: thumb },
-      caption: caption,
-      footer: "Queen Ashi MD Music",
-      buttons: buttons,
-      headerType: 4
-    }, { quoted: msg });
+    if (!videoUrl || !videoUrl.startsWith("http")) {
+        return await socket.sendMessage(sender, { text: "⚠️ Invalid or missing URL!" }, { quoted: msg });
+    }
 
-  } catch (err) {
-    console.error("Song error:", err);
-    socket.sendMessage(sender, { text: "❌ Error while searching song" }, { quoted: msg });
-  }
+    try {
+        const result = await ddownr.download(videoUrl, 'mp3');
+        const downloadUrl = result.downloadUrl;
+        const filename = result.title ? result.title.replace(/[^\w\s]/gi, '').substring(0, 30) + ".mp3" : "song.mp3";
 
-  break;
-		}
+        if (mediatype === "AUDIO") {
+            await socket.sendMessage(sender, {
+                audio: { url: downloadUrl },
+                mimetype: "audio/mpeg"
+            }, { quoted: msg });
+        }
+
+        if (mediatype === "DOCUMENT") {
+            await socket.sendMessage(sender, {
+                document: { url: downloadUrl },
+                mimetype: "audio/mpeg",
+                fileName: filename,
+                caption: `📂 Here is your song document`
+            }, { quoted: msg });
+        }
+
+        if (mediatype === "VOICECUT") {
+            await socket.sendMessage(sender, {
+                audio: { url: downloadUrl },
+                mimetype: "audio/mpeg",
+                ptt: true
+            }, { quoted: msg });
+        }
+
+    } catch (err) {
+        console.error("❌ YT_MP3 error:", err);
+        await socket.sendMessage(sender, { text: "⚠️ Error while downloading song!" }, { quoted: msg });
+    }
+
+    break;
+	}
 
 
 			   
