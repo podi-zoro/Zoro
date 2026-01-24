@@ -1572,7 +1572,7 @@ END:VCARD`
     }
     function convertYouTubeLink(input) {
         const videoId = extractYouTubeId(input);
-        if (videoId) return `https:///movanest.xyz/v2/ytsearch?query=${videoId}`;
+        if (videoId) return `https://www.youtube.com/watch?v=${videoId}`;
         return input;
     }
     // get message text
@@ -1616,7 +1616,7 @@ END:VCARD`
             videoUrl = maybeLink;
         } else {
             // search by title using new API
-            const searchUrl = `https:///www.movanest.xyz/v2/ytmp4?url=${encodeURIComponent(q.trim())}`;
+            const searchUrl = `https:///www.movanest.xyz/v2/ytsearch?query=${encodeURIComponent(q.trim())}`;
             const searchRes = await axios.get(searchUrl, { 
                 timeout: 30000,
                 headers: {
@@ -1655,16 +1655,16 @@ END:VCARD`
         const duration = apiRes.results.metadata.timestamp || null;
         const quality = apiRes.results.download.quality || '360p';
         const filename = apiRes.results.download.filename || `${title}.mp4`;
-        const caption = `✨ *Tɪᴛʟᴇ:* ${title}
+        const caption = `*\`${title}\`*
         
 ● ⏱️ *Dᴜʀᴀᴛɪᴏɴ:* ${duration || 'N/A'}
 ● 📺 *Qᴜᴀʟɪᴛʏ:* ${quality}
 ● 🔗 *Lɪɴᴋ:* ${videoUrl}
 
-*Reply to this message with a number to choose format:*
+*Reply to this message with a number*
 
-> 1️⃣. 📄 MP4 as Document
-> 2️⃣. ▶️ MP4 as Video
+1. 📄 MP4 as Document
+2. ▶️ MP4 as Video
 
 > 𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳 𝐋𝙸𝚃𝙴`;
         // send thumbnail card if available
