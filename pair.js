@@ -1376,7 +1376,7 @@ case 'bots': {
       text += `⚠️ No active sessions found.`;
     }
 
-    text += `\n● Checked at: ${getSriLankaTimestamp()}`;
+    text += `\n⌛ Checked at: ${getSriLankaTimestamp()}`;
 
     let imagePayload = String(logo).startsWith('http') ? { url: logo } : fs.readFileSync(logo);
 
@@ -1400,97 +1400,133 @@ case 'bots': {
   break;
 }
 
-// ==================== SONG COMMAND ====================
+// =============== SONG SEARCH COMMAND ===============
 case 'song': {
-    const yts = require('yt-search');
-    const q = args.join(" ");
-    if (!q) return await socket.sendMessage(sender, { text: "⚠️ Enter song name or YouTube link!" }, { quoted: msg });
+    await socket.sendMessage(sender, { react: { text: '🎧', key: msg.key } });
+
+    const axios = require('axios')
+    const yts = require('yt-search')
+
+    const query = args.join(" ")
+    if (!query) {
+        return socket.sendMessage(sender, { text: "Give song name or YouTube link" }, { quoted: msg })
+    }
 
     try {
-        const search = await yts(q);
-        const video = search.videos[0];
-        if (!video) return await socket.sendMessage(sender, { text: "❌ Song not found!" }, { quoted: msg });
+        const search = await yts(query)
+        const video = search.videos[0]
+
+        if (!video) return socket.sendMessage(sender, { text: "Song not found" }, { quoted: msg })
 
         const caption = `
-🎵 *Song Info*
+🎵 *SONG FOUND*
 
 📌 Title: ${video.title}
-👤 Artist: ${video.author.name}
 ⏱ Duration: ${video.timestamp}
-👀 Views: ${video.views.toLocaleString()}
-📅 Uploaded: ${video.ago}
-📎 Link: ${video.url}
-`;
+👀 Views: ${video.views}
+👤 Author: ${video.author.name}
+`
 
-        // Buttons for download
         const buttons = [
-            { buttonId: `.yt_mp3 AUDIO ${video.url}`, buttonText: { displayText: "🎧 AUDIO" }, type: 1 },
-            { buttonId: `.yt_mp3 DOCUMENT ${video.url}`, buttonText: { displayText: "📂 DOCUMENT" }, type: 1 },
-            { buttonId: `.yt_mp3 VOICECUT ${video.url}`, buttonText: { displayText: "🎤 VOICE NOTE" }, type: 1 },
-        ];
+            { buttonId: `${config.PREFIX}ytmp3 ${video.url}`, buttonText: { displayText: "🎧 AUDIO" }, type: 1 },
+            { buttonId: `${config.PREFIX}ytvoice ${video.url}`, buttonText: { displayText: "🎤 VOICE" }, type: 1 },
+            { buttonId: `${config.PREFIX}ytdoc ${video.url}`, buttonText: { displayText: "📁 DOCUMENT" }, type: 1 }
+        ]
 
         await socket.sendMessage(sender, {
             image: { url: video.thumbnail },
-            caption: caption,
-            buttons: buttons,
+            caption,
+            buttons,
             headerType: 4
-        }, { quoted: msg });
+        }, { quoted: msg })
 
-    } catch (err) {
-        console.error("❌ Song command error:", err);
-        await socket.sendMessage(sender, { text: "⚠️ Error while fetching song!" }, { quoted: msg });
+    } catch (e) {
+        console.log(e)
+        socket.sendMessage(sender, { text: "Error while searching song!" }, { quoted: msg })
     }
-
-    break;
 }
+break;
 
-// ==================== YT_MP3 COMMAND ====================
-case 'yt_mp3': {
-    const ddownr = require('denethdev-ytmp3');
-    const q = args.join(" ");
-    const mediatype = q.split(" ")[0]; // AUDIO / DOCUMENT / VOICECUT
-    const videoUrl = q.split(" ")[1];
 
-    if (!videoUrl || !videoUrl.startsWith("http")) {
-        return await socket.sendMessage(sender, { text: "⚠️ Invalid or missing URL!" }, { quoted: msg });
-    }
+// =============== DOWNLOAD AUDIO ===============
+case 'ytmp3': {
+    await socket.sendMessage(sender, { react: { text: '⬇️', key: msg.key } })
+
+    const url = args[0]
+    if (!url) return
 
     try {
-        const result = await ddownr.download(videoUrl, 'mp3');
-        const downloadUrl = result.downloadUrl;
-        const filename = result.title ? result.title.replace(/[^\w\s]/gi, '').substring(0, 30) + ".mp3" : "song.mp3";
+        const res = await fetch(`https://www.movanest.xyz/v2/ytmp3?url=${encodeURIComponent(url)}&quality=128`)
+        const data = await res.json()
 
-        if (mediatype === "AUDIO") {
-            await socket.sendMessage(sender, {
-                audio: { url: downloadUrl },
-                mimetype: "audio/mpeg"
-            }, { quoted: msg });
-        }
+        const dl = data.result.download.url
+        const title = data.result.title
 
-        if (mediatype === "DOCUMENT") {
-            await socket.sendMessage(sender, {
-                document: { url: downloadUrl },
-                mimetype: "audio/mpeg",
-                fileName: filename,
-                caption: `📂 Here is your song document`
-            }, { quoted: msg });
-        }
+        await socket.sendMessage(sender, {
+            audio: { url: dl },
+            mimetype: 'audio/mpeg',
+            fileName: `${title}.mp3`
+        }, { quoted: msg })
 
-        if (mediatype === "VOICECUT") {
-            await socket.sendMessage(sender, {
-                audio: { url: downloadUrl },
-                mimetype: "audio/mpeg",
-                ptt: true
-            }, { quoted: msg });
-        }
-
-    } catch (err) {
-        console.error("❌ YT_MP3 error:", err);
-        await socket.sendMessage(sender, { text: "⚠️ Error while downloading song!" }, { quoted: msg });
+    } catch (e) {
+        console.log(e)
+        socket.sendMessage(sender, { text: "⚠️ Error while downloading song!" }, { quoted: msg })
     }
+}
+break;
 
-    break;
-	}
+
+// =============== VOICE NOTE VERSION ===============
+case 'ytvoice': {
+    await socket.sendMessage(sender, { react: { text: '🎤', key: msg.key } })
+
+    const url = args[0]
+    if (!url) return
+
+    try {
+        const res = await fetch(`https://www.movanest.xyz/v2/ytmp3?url=${encodeURIComponent(url)}&quality=128`)
+        const data = await res.json()
+        const dl = data.result.download.url
+
+        await socket.sendMessage(sender, {
+            audio: { url: dl },
+            mimetype: 'audio/mpeg',
+            ptt: true
+        }, { quoted: msg })
+
+    } catch (e) {
+        socket.sendMessage(sender, { text: "Download error!" }, { quoted: msg })
+    }
+}
+break;
+
+
+// =============== DOCUMENT VERSION ===============
+case 'ytdoc': {
+    await socket.sendMessage(sender, { react: { text: '📁', key: msg.key } })
+
+    const url = args[0]
+    if (!url) return
+
+    try {
+        const res = await fetch(`https://www.movanest.xyz/v2/ytmp3?url=${encodeURIComponent(url)}&quality=128`)
+        const data = await res.json()
+
+        const dl = data.result.download.url
+        const title = data.result.title
+
+        await socket.sendMessage(sender, {
+            document: { url: dl },
+            mimetype: 'audio/mpeg',
+            fileName: `${title}.mp3`
+        }, { quoted: msg })
+
+    } catch (e) {
+        socket.sendMessage(sender, { text: "Document send error!" }, { quoted: msg })
+    }
+}
+break;
+
 
 
 			   
