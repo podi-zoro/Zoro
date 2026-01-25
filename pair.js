@@ -1150,7 +1150,7 @@ END:VCARD`
 
     // Final output
     return await socket.sendMessage(sender, {
-        text: `*♻ SPEED : ${final - inital} ms*\n`,
+        text: `*♻ Speed : ${final - inital} ms*\n`,
         edit: ping.key
     });
 }
@@ -1364,11 +1364,11 @@ case 'bots': {
       message: { contactMessage: { displayName: botName, vcard: `BEGIN:VCARD\nVERSION:3.0\nN:${botName};;;;\nFN:${botName}\nORG:Meta Platforms\nTEL;type=CELL;type=VOICE;waid=13135550002:+1 313 555 0002\nEND:VCARD` } }
     };
 
-    let text = `🧚‍♂️ 𝐓𝙾𝚃𝙰𝙻 𝐁𝙾𝚃𝚂  ${botName}\n\n`;
-    text += `📊 *Total Active Sessions:* ${activeCount}\n\n`;
+    let text = `💡 𝐓𝙾𝚃𝙰𝙻 𝐁𝙾𝚃𝚂  ${botName}\n\n`;
+    text += `📚 *Total Active Sessions:* ${activeCount}\n\n`;
 
     if (activeCount > 0) {
-      text += `📱 *Active Numbers :*\n`;
+      text += `📁 *Active Numbers :*\n`;
       activeNumbers.forEach((num, index) => {
         text += `${index + 1}. ${num}\n`;
       });
@@ -1385,8 +1385,8 @@ case 'bots': {
       caption: text,
       footer: ``,
       buttons: [
-        { buttonId: `${config.PREFIX}menu`, buttonText: { displayText: "🚪 MENU" }, type: 1 },
-        { buttonId: `${config.PREFIX}ping`, buttonText: { displayText: "👻 PING" }, type: 1 }
+        { buttonId: `${config.PREFIX}menu`, buttonText: { displayText: "🚪 𝐌𝐄𝐍𝐔" }, type: 1 },
+        { buttonId: `${config.PREFIX}ping`, buttonText: { displayText: "👻 𝐏𝐈𝐍𝐆" }, type: 1 }
       ],
       headerType: 4
     }, { quoted: metaQuote });
@@ -1837,7 +1837,7 @@ case 'csong': {
       image: imagePayload,
       caption: text,
       footer: `${botName}`,
-      buttons: [{ buttonId: `${config.PREFIX}menu`, buttonText: { displayText: "🚪 MENU" }, type: 1 }],
+      buttons: [{ buttonId: `${config.PREFIX}menu`, buttonText: { displayText: "🚪 𝐌𝐄𝐍𝐔" }, type: 1 }],
       headerType: 4
     }, { quoted: metaQuote });
 
@@ -1862,20 +1862,16 @@ case 'menu': {
     // ===== GREETING =====
     const hr = new Date().getHours();
     const greeting =
-      hr < 12 ? '🧘‍♀️ Good Morning' :
-      hr < 18 ? '👻 Good Afternoon' :
-      '🙋 Good Night';
+      hr < 12 ? '☀️ Gᴏᴏᴅ ᴍᴏʀɴɪɴɢ' :
+      hr < 18 ? '🌞 Gᴏᴏᴅ ᴀꜰᴛᴇʀɴᴏᴏɴ' :
+      '🌘 Gᴏᴏᴅ ɴɪɢʜᴛ';
 
     // ===== MENU TEXT =====
     const menuText = `
  ${greeting}, *${pushname}*
- 
-╔═════════════════════╗ 
-    ㋚ 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳 𝐋𝙸𝚃𝙴 
-╚═════════════════════╝
 
-╭── *「 🧚 𝐁𝙾𝚃 𝐌𝙰𝙸𝙽 𝐌𝙴𝙽𝚄 」*
-│ 🎀 *\`Nᴀᴍᴇ :\`*  𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳
+╭─ *「 ʙᴏᴛ ᴅᴇᴛᴀɪʟꜱ 」*
+│ 🎀 *\`Nᴀᴍᴇ :\`*  Queen ashi md V.1
 │ 👨‍💻 *\`Oᴡɴᴇʀ :\`*  Dev Xanz
 │ 🧬 *\`Vᴇʀꜱɪᴏɴ :\`*  ${config.BOT_VERSION || '1.0.0'}
 │ ⌛ *\`Uᴘᴛɪᴍᴇ :\`*  ${h}h ${m}m ${s}s
@@ -1883,23 +1879,30 @@ case 'menu': {
 │ 💡 *\`Cᴏᴍᴍᴀᴅꜱ :\`*  50+
 ╰──────────────────⦁✦⦁
 
-*「 𝐋𝐈𝐒𝐓 𝐎𝐅 𝐌𝐄𝐍𝐔 」*
+*「 ʟɪꜱᴛ ᴏꜰ ᴍᴇɴᴜ 」*
 
-> │ 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃 𝐌𝐄𝐍𝐔
-> │ 𝐔𝐒𝐄𝐑 𝐌𝐄𝐍𝐔
-> │ 𝐆𝐑𝐔𝐎𝐏 𝐌𝐄𝐍𝐔
-> │ 𝐂𝐎𝐍𝐅𝐈𝐆 𝐌𝐄𝐍𝐔
+🕯️ ❯❯ 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃 𝐌𝐄𝐍𝐔
+🕯️ ❯❯ 𝐔𝐒𝐄𝐑 𝐌𝐄𝐍𝐔
+🕯️ ❯❯ 𝐆𝐑𝐔𝐎𝐏 𝐌𝐄𝐍𝐔
+🕯️ ❯❯ 𝐂𝐎𝐍𝐅𝐈𝐆 𝐌𝐄𝐍𝐔
 
-${config.BOT_FOOTER || '> ㋚ 𝐐𝐔𝐄𝐄𝐍 𝐀𝐒𝐇𝐈 𝐌𝐃 𝐋𝐈𝐓𝐄'}
+${config.BOT_FOOTER || '> ㋚ 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳 𝐋𝙸𝚃𝙴'}
 `.trim();
 
     // ===== BUTTONS =====
     const buttons = [
-      { buttonId: `${config.PREFIX}download`, buttonText: { displayText: "𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃 𝐌𝐄𝐍𝐔" }, type: 1 },
-      { buttonId: `${config.PREFIX}user`, buttonText: { displayText: "𝐎𝐖𝐍𝐄𝐑 𝐌𝐄𝐍𝐔" }, type: 1 },
-      { buttonId: `${config.PREFIX}group`, buttonText: { displayText: "𝐆𝐑𝐔𝐎𝐏 𝐌𝐄𝐍𝐔" }, type: 1 },
-      { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: "𝐂𝐎𝐍𝐅𝐈𝐆 𝐌𝐀𝐍𝐀𝐆𝐄𝐑" }, type: 1 }
-    ];
+    { buttonId: `${config.PREFIX}download`, buttonText: { displayText: "㋚ 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃 𝐌𝐄𝐍𝐔" }, type: 1 },
+    { buttonId: `${config.PREFIX}user`, buttonText: { displayText: "㋚ 𝐔𝐒𝐄𝐑 𝐌𝐄𝐍𝐔" }, type: 1 },
+    { buttonId: `${config.PREFIX}group`, buttonText: { displayText: "㋚ 𝐆𝐑𝐎𝐔𝐏 𝐌𝐄𝐍𝐔" }, type: 1 },
+    { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: "㋚ 𝐂𝐎𝐍𝐅𝐈𝐆 𝐌𝐀𝐍𝐀𝐆𝐄𝐑" }, type: 1 },
+    {
+        type: 4, // CTA (URL button)
+        urlButton: {
+            displayText: "JOIN CHANNEL",
+            url: "https://whatsapp.com/channel/0029Vb6yaNMIt5s3s5iUK51g"
+        }
+    }
+];
 
     // ===== FAKE CONTACT (for quoted context) =====
     const fakeContact = {
