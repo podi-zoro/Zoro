@@ -1332,6 +1332,35 @@ case 'viewonce': {
     }
     break;
 		}
+
+case 'calculate':
+case 'calc':
+case 'math': {
+    const input = msg.message?.conversation ||
+                  msg.message?.extendedTextMessage?.text ||
+                  msg.message?.imageMessage?.caption ||
+                  msg.message?.videoMessage?.caption || '';
+
+    // Remove the command prefix
+    const expression = input.replace(/^(\.calculate|\.calc|\.math)\s+/i, '').trim();
+
+    if (!expression) {
+        return await socket.sendMessage(sender, { text: '❌ Please provide a math expression to calculate.\n\nExample: .calc 12 * (5 + 3)' }, { quoted: msg });
+    }
+
+    try {
+        // Use Function constructor to safely evaluate arithmetic
+        const safeEval = new Function(`return ${expression}`);
+        const result = safeEval();
+
+        await socket.sendMessage(sender, { text: `🧮 Expression: ${expression}\n✅ Result: ${result}` }, { quoted: msg });
+    } catch (err) {
+        console.error('Math command error:', err);
+        await socket.sendMessage(sender, { text: '❌ Invalid math expression. Please check your syntax.' }, { quoted: msg });
+    }
+
+    break;
+}			  
 			  
 case 'activesessions':
 case 'active':
