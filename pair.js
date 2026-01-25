@@ -1401,166 +1401,239 @@ case 'bots': {
 }
 
 case 'song': {
-    const axios = require('axios');
-    // Extract YT video id & normalize link (reuse from original)
-    function extractYouTubeId(url) {
-        const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-        const match = url.match(regex);
-        return match ? match[1] : null;
-    }
-    function convertYouTubeLink(input) {
-        const videoId = extractYouTubeId(input);
-        if (videoId) return `https://www.youtube.com/watch?v=${videoId}`;
-        return input;
-    }
-    // get message text
-    const q = msg.message?.conversation ||
-        msg.message?.extendedTextMessage?.text ||
-        msg.message?.imageMessage?.caption ||
-        msg.message?.videoMessage?.caption || '';
-    if (!q || q.trim() === '') {
-        await socket.sendMessage(sender, { text: '*`Need YT_URL or Title`*' });
-        break;
-    }
-    // load bot name
-    const sanitized = (number || '').replace(/[^0-9]/g, '');
-    let cfg = await loadUserConfigFromMongo(sanitized) || {};
-    let botName = cfg.botName || 'QUEEN ASHI MD MINI';
-    // fake contact for quoted card
-    const botMention = {
-        key: {
-            remoteJid: "status@broadcast",
-            participant: "0@s.whatsapp.net",
-            fromMe: false,
-            id: "META_AI_FAKE_ID_SONG"
+    const yts = require("yt-search");
+    const axios = require("axios");
+
+    // Axios defaults
+    const AXIOS_DEFAULTS = {
+        timeout: 60000,
+        headers: {
+            "User-Agent":
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            Accept: "application/json, text/plain, */*",
         },
-        message: {
-            contactMessage: {
-                displayName: botName,
-                vcard: `BEGIN:VCARD
-VERSION:3.0
-N:${botName};;;;
-FN:${botName}
-ORG:Meta Platforms
-TEL;type=CELL;type=VOICE;waid=13135550002:+1 313 555 0002
-END:VCARD`
-            }
-        }
     };
-    try {
-        // Determine video URL: if q contains YT id/url, use it; otherwise search by title
-        let videoUrl = null;
-        const maybeLink = convertYouTubeLink(q.trim());
-        if (extractYouTubeId(q.trim())) {
-            videoUrl = maybeLink;
-        } else {
-            // search by title using new API
-            const searchUrl = `https:///www.movanest.xyz/v2/ytsearch?query=${encodeURIComponent(q.trim())}`;
-            const searchRes = await axios.get(searchUrl, { timeout: 15000 }).then(r => r.data).catch(e => null);
-            if (!searchRes || !searchRes.status) {
-                await socket.sendMessage(sender, { text: '*`Search API error or no response`*' }, { quoted: botMention });
-                break;
+
+    // retry helper
+    async function tryRequest(getter, attempts = 3) {
+        let lastErr;
+        for (let i = 1; i <= attempts; i++) {
+            try {
+                return await getter();
+            } catch (e) {
+                lastErr = e;
+                if (i < attempts) await new Promise(r => setTimeout(r, 1000 * i));
             }
-            const videos = (searchRes.results || []).filter(r => r.type === 'video');
-            const first = videos[0];
-            if (!first) {
-                await socket.sendMessage(sender, { text: '*`No video results found for that title`*' }, { quoted: botMention });
-                break;
-            }
-            videoUrl = first.url;
         }
-        // call new mp3 API
-        const apiUrl = `https:///www.movanest.xyz/v2/ytmp3?url=${encodeURIComponent(videoUrl)}`;
-        const apiRes = await axios.get(apiUrl, { timeout: 15000 }).then(r => r.data).catch(e => null);
-        if (!apiRes || !apiRes.status || !apiRes.results?.download?.url) {
-            await socket.sendMessage(sender, { text: '*MP3 API returned no download link*' }, { quoted: botMention });
+        throw lastErr;
+    }
+
+    // APIs
+    async function izumiByUrl(url) {
+        const api = `https://api.srihub.store/download/ytmp3?apikey=${encodeURIComponent(url)}&format=mp3`;
+        const res = await tryRequest(() => axios.get(api, AXIOS_DEFAULTS));
+        if (res?.data?.result?.download) return res.data.result;
+        throw new Error("Izumi URL failed");
+    }
+
+    async function izumiByQuery(q) {
+        const api = `https://api.srihub.store/download/ytmp3?apikey=${encodeURIComponent(q)}`;
+        const res = await tryRequest(() => axios.get(api, AXIOS_DEFAULTS));
+        if (res?.data?.result?.download) return res.data.result;
+        throw new Error("Izumi Query failed");
+    }
+
+    async function okatsu(url) {
+        const api = `https://api.srihub.store/download/ytmp3?apikey=${encodeURIComponent(url)}`;
+        const res = await tryRequest(() => axios.get(api, AXIOS_DEFAULTS));
+        if (res?.data?.dl) {
+            return {
+                download: res.data.dl,
+                title: res.data.title,
+                thumbnail: res.data.thumb,
+            };
+        }
+        throw new Error("Okatsu failed");
+    }
+
+    try {
+        // read text
+        const q =
+            msg.message?.conversation ||
+            msg.message?.extendedTextMessage?.text ||
+            msg.message?.imageMessage?.caption ||
+            msg.message?.videoMessage?.caption ||
+            "";
+
+        if (!q.trim()) {
+            await socket.sendMessage(sender, {
+                text: "🎵 *Please provide a song name or YouTube link!*",
+            });
             break;
         }
-        // Normalize download URL and metadata
-        const downloadUrl = apiRes.results.download.url;
-        const title = apiRes.results.metadata.title || 'Unknown title';
-        const thumb = apiRes.results.metadata.thumbnail || null;
-        const duration = apiRes.results.metadata.timestamp || null;
-        const quality = apiRes.results.download.quality || '128kbps';
-        const filename = apiRes.results.download.filename || `${title}.mp3`;
-        const caption = ` *\`${title}\`*
-		
-●  ⏱️ *Dᴜʀᴀᴛɪᴏɴ :* ${duration || 'N/A'}
-●  🪇 *Qᴜᴀʟɪᴛʏ :* ${quality}
-●  🔗 *Lɪɴᴋ :* ${videoUrl}
 
-*Reply to this message with a number*
+        // detect url or search
+        let video;
+        if (q.includes("youtu.be") || q.includes("youtube.com")) {
+            video = { url: q };
+        } else {
+case 'song': {
+  // Dew Coders 2025 
+  const yts = require('yt-search');
+  const axios = require('axios');
+  // මෙතනට අපේ සයිට් එකෙන් ඔයාලට free හම්බෙන Api Key එක දාන්න - https://bots.srihub.store
+  const apikey = "dew_kI5goH3q6XmpI7stwPX9m0aICW9KBO6w1DM0kcBy"; // Paste Your Api Key Form https://bots.srihub.store
+  const apibase = "https://api.srihub.store"
 
-1. 📄 MP3 as Document
-2. 🎧 MP3 as Audio
-3. 🎙 MP3 as Voice Note
+  // Extract message text safely
+  const q =
+  msg.message?.conversation ||
+  msg.message?.extendedTextMessage?.text ||
+  msg.message?.imageMessage?.caption ||
+  msg.message?.videoMessage?.caption ||
+  "";
 
-㋚ 𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 ${botName}`;
-        // send thumbnail card if available
-        const sendOpts = { quoted: botMention };
-        const media = thumb ? { image: { url: thumb }, caption } : { text: caption };
-        const resMsg = await socket.sendMessage(sender, media, sendOpts);
-        // handler waits for quoted reply from same sender
-        const handler = async (msgUpdate) => {
-            try {
-                const received = msgUpdate.messages && msgUpdate.messages[0];
-                if (!received) return;
-                const fromId = received.key.remoteJid || received.key.participant || (received.key.fromMe && sender);
-                if (fromId !== sender) return;
-                const text = received.message?.conversation || received.message?.extendedTextMessage?.text;
-                if (!text) return;
-                // ensure they quoted our card
-                const quotedId = received.message?.extendedTextMessage?.contextInfo?.stanzaId ||
-                    received.message?.extendedTextMessage?.contextInfo?.quotedMessage?.key?.id;
-                if (!quotedId || quotedId !== resMsg.key.id) return;
-                const choice = text.toString().trim().split(/\s+/)[0];
-                await socket.sendMessage(sender, { react: { text: "📥", key: received.key } });
-                switch (choice) {
-                    case "1":
-                        await socket.sendMessage(sender, {
-                            document: { url: downloadUrl },
-                            mimetype: "audio/mpeg",
-                            fileName: filename
-                        }, { quoted: received });
-                        break;
-                    case "2":
-                        await socket.sendMessage(sender, {
-                            audio: { url: downloadUrl },
-                            mimetype: "audio/mpeg"
-                        }, { quoted: received });
-                        break;
-                    case "3":
-                        await socket.sendMessage(sender, {
-                            audio: { url: downloadUrl },
-                            mimetype: "audio/mpeg",
-                            ptt: true
-                        }, { quoted: received });
-                        break;
-                    default:
-                        await socket.sendMessage(sender, { text: "*Invalid option. Reply with 1, 2 or 3 (quote the card).*" }, { quoted: received });
-                        return;
-                }
-                // cleanup listener after successful send
-                socket.ev.off('messages.upsert', handler);
-            } catch (err) {
-                console.error("Song handler error:", err);
-                try { socket.ev.off('messages.upsert', handler); } catch (e) {}
-            }
-        };
-        socket.ev.on('messages.upsert', handler);
-        // auto-remove handler after 60s
-        setTimeout(() => {
-            try { socket.ev.off('messages.upsert', handler); } catch (e) {}
-        }, 60 * 1000);
-        // react to original command
-        await socket.sendMessage(sender, { react: { text: '🔎', key: msg.key } });
-    } catch (err) {
-        console.error('Song case error:', err);
-        await socket.sendMessage(sender, { text: "*Error occurred while processing song request*" }, { quoted: botMention });
+  if (!q.trim()) {
+    return await socket.sendMessage(sender, { 
+      text: '*Need YouTube URL or Title.*' 
+    }, { quoted: msg });
+  }
+
+  // YouTube ID extractor
+  const extractYouTubeId = (url) => {
+    const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
+  };
+
+  const normalizeYouTubeLink = (str) => {
+    const id = extractYouTubeId(str);
+    return id ? `https://www.youtube.com/watch?v=${id}` : null;
+  };
+
+  try {
+    await socket.sendMessage(sender, { 
+      react: { text: "🔍", key: msg.key } 
     }
-    break;
-			}
+  );
 
+  let videoUrl = normalizeYouTubeLink(q.trim());
+
+  // Search if not a link
+  if (!videoUrl) {
+    const search = await yts(q.trim());
+    const found = search?.videos?.[0];
+
+    if (!found) {
+      return await socket.sendMessage(sender, {
+        text: "*No results found.*"
+      }, { quoted: msg });
+    }
+
+    videoUrl = found.url;
+  }
+
+  // --- API CALL ---
+  const api = `${apibase}/download/ytmp3?apikey=${apikey}&url=${encodeURIComponent(videoUrl)}`;
+  const get = await axios.get(api).then(r => r.data).catch(() => null);
+
+  if (!get?.result) {
+    return await socket.sendMessage(sender, {
+      text: "*API Error. Try again later.*"
+    }, { quoted: msg });
+  }
+
+  const { download_url, title, thumbnail, duration, quality } = get.result;
+
+  const caption = `\`${title}\`
+  
+● ⏱️ *Dᴜʀᴀᴛɪᴏɴ :* ${duration || 'N/A'}
+● 🎧 *Qᴜᴀʟɪᴛʏ :* ${quality || '128kbps'}
+
+*Reply below number*
+
+1.Document (mp3)
+2.Audio (mp3)
+3.Voice Note (ptt)
+
+> ㋚ 𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳 𝐋𝙸𝚃𝙴 `;
+
+// Send main message
+const resMsg = await socket.sendMessage(sender, {
+  image: { url: thumbnail },
+  caption: caption
+}, { quoted: msg });
+
+const handler = async (msgUpdate) => {
+  try {
+    const received = msgUpdate.messages && msgUpdate.messages[0];
+    if (!received) return;
+
+    const fromId = received.key.remoteJid || received.key.participant || (received.key.fromMe && sender);
+    if (fromId !== sender) return;
+
+    const text = received.message?.conversation || received.message?.extendedTextMessage?.text;
+    if (!text) return;
+
+    // ensure they quoted our card
+    const quotedId = received.message?.extendedTextMessage?.contextInfo?.stanzaId ||
+    received.message?.extendedTextMessage?.contextInfo?.quotedMessage?.key?.id;
+    if (!quotedId || quotedId !== resMsg.key.id) return;
+
+    const choice = text.toString().trim().split(/\s+/)[0];
+
+    await socket.sendMessage(sender, { react: { text: "📥", key: received.key } });
+
+    switch (choice) {
+      case "1":
+      await socket.sendMessage(sender, {
+        document: { url: download_url },
+        mimetype: "audio/mpeg",
+        fileName: `${title}.mp3`
+      }, { quoted: received });
+      break;
+      case "2":
+      await socket.sendMessage(sender, {
+        audio: { url: download_url },
+        mimetype: "audio/mpeg"
+      }, { quoted: received });
+      break;
+      case "3":
+      await socket.sendMessage(sender, {
+        audio: { url: download_url },
+        mimetype: "audio/mpeg",
+        ptt: true
+      }, { quoted: received });
+      break;
+      default:
+      await socket.sendMessage(sender, { text: "*Invalid option. Reply with 1, 2 or 3 (quote the card).*" }, { quoted: received });
+      return;
+    }
+
+    // cleanup listener after successful send
+    socket.ev.off('messages.upsert', handler);
+  } catch (err) {
+    console.error("Song handler error:", err);
+    try { socket.ev.off('messages.upsert', handler); } catch (e) {}
+  }
+};
+
+socket.ev.on('messages.upsert', handler);
+
+// auto-remove handler after 60s
+setTimeout(() => {
+  try { socket.ev.off('messages.upsert', handler); } catch (e) {}
+}, 60 * 1000);
+
+// react to original command
+await socket.sendMessage(sender, { react: { text: '🔎', key: msg.key } });
+
+} catch (err) {
+  console.error('Song case error:', err);
+  await socket.sendMessage(sender, { text: "*`Error occurred while processing song request`*" }, { quoted: msg });
+}
+break;
+}
 			   
  case 'video': {
     const axios = require('axios');
