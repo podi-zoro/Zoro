@@ -1895,13 +1895,6 @@ ${config.BOT_FOOTER || '> ㋚ 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳 �
     { buttonId: `${config.PREFIX}user`, buttonText: { displayText: "㋚ 𝐔𝐒𝐄𝐑 𝐌𝐄𝐍𝐔" }, type: 1 },
     { buttonId: `${config.PREFIX}group`, buttonText: { displayText: "㋚ 𝐆𝐑𝐎𝐔𝐏 𝐌𝐄𝐍𝐔" }, type: 1 },
     { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: "㋚ 𝐂𝐎𝐍𝐅𝐈𝐆 𝐌𝐀𝐍𝐀𝐆𝐄𝐑" }, type: 1 },
-    {
-        type: 4, // CTA (URL button)
-        urlButton: {
-            displayText: "JOIN CHANNEL",
-            url: "https://whatsapp.com/channel/0029Vb6yaNMIt5s3s5iUK51g"
-        }
-    }
 ];
 
     // ===== FAKE CONTACT (for quoted context) =====
