@@ -8,19 +8,20 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;color:#00aaff;}
+/* Only Theme Colors - Pink & Black */
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;color:#ff69b4;}
 body{height:100vh;overflow:hidden;background:#000;}
 #bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;}
 
 .container{display:flex;justify-content:center;align-items:center;height:100vh;}
-.box{width:330px;padding:25px;background:rgba(0,0,0,.85);border-radius:15px;text-align:center;border:2px solid #00aaff;box-shadow:0 0 20px #00aaff;position:relative;transition:transform .2s;}
-.rgb-text{font-size:22px;font-weight:bold;background:linear-gradient(90deg,#00aaff,#00ffaa,#ff00ff);-webkit-background-clip:text;color:transparent;animation:grad 5s linear infinite;}
+.box{width:330px;padding:25px;background:rgba(0,0,0,.85);border-radius:15px;text-align:center;border:2px solid #ff69b4;box-shadow:0 0 20px #ff69b4;position:relative;transition:transform .2s;}
+.rgb-text{font-size:22px;font-weight:bold;background:linear-gradient(90deg,#ff69b4,#ff1493,#ff69b4);-webkit-background-clip:text;color:transparent;animation:grad 5s linear infinite;}
 @keyframes grad{to{background-position:300px;}}
 h6{margin-top:8px;}
 .input-container{display:flex;margin-top:15px;}
-.input-container input{width:70%;height:45px;border:1px solid #00aaff;background:#000;color:#00aaff;outline:none;border-radius:10px 0 0 10px;padding-left:10px;font-size:16px;}
-.input-container button{width:30%;height:45px;border:1px solid #00aaff;border-left:none;border-radius:0 10px 10px 0;background:#000;color:#00aaff;font-weight:bold;cursor:pointer;}
-.music-btn{position:fixed;right:15px;bottom:60px;background:#000;color:#00aaff;padding:12px 18px;border-radius:30px;font-weight:bold;cursor:pointer;box-shadow:0 0 15px #00aaff;border:1px solid #00aaff;z-index:10;}
+.input-container input{width:70%;height:45px;border:1px solid #ff69b4;background:#000;color:#ff69b4;outline:none;border-radius:10px 0 0 10px;padding-left:10px;font-size:16px;}
+.input-container button{width:30%;height:45px;border:1px solid #ff69b4;border-left:none;border-radius:0 10px 10px 0;background:#000;color:#ff69b4;font-weight:bold;cursor:pointer;}
+.music-btn{position:fixed;right:15px;bottom:60px;background:#000;color:#ff69b4;padding:12px 18px;border-radius:30px;font-weight:bold;cursor:pointer;box-shadow:0 0 15px #ff69b4;border:1px solid #ff69b4;z-index:10;}
 .volume{position:fixed;right:20px;bottom:25px;width:120px;}
 .cooldown{font-size:12px;margin-top:6px;opacity:.7;}
 </style>
@@ -150,7 +151,7 @@ function draw(){
 
     ctx.beginPath();
     ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-    ctx.fillStyle="#00aaff";
+    ctx.fillStyle="#ff69b4";
     ctx.fill();
 
     for(let j=i+1;j<particles.length;j++){
@@ -161,7 +162,7 @@ function draw(){
         ctx.beginPath();
         ctx.moveTo(p.x,p.y);
         ctx.lineTo(q.x,q.y);
-        ctx.strokeStyle=`rgba(0,170,255,${1-d/140})`;
+        ctx.strokeStyle=`rgba(255,105,180,${1-d/140})`;
         ctx.stroke();
       }
     }
