@@ -2315,8 +2315,7 @@ END:VCARD`
   }
   break;
 		  }
-	/ ==================== NEWS MENU ===================
-case 'newsmenu':
+	
 case 'news': {
   try { await socket.sendMessage(sender, { react: { text: "📰", key: msg.key } }); } catch(e){}
 
@@ -2348,7 +2347,7 @@ case 'news': {
   ];
 
   await socket.sendMessage(sender, {
-    image: { url: 'https://i.ibb.co/jk3TmSPx/tourl-1768806720932.jpg' }, // change if you want
+    image: { url: 'https://files.catbox.moe/4fxhas.jpeg' }, // change if you want
     caption: text,
     footer: "㋚ 𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳",
     buttons,
