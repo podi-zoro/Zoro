@@ -1484,34 +1484,31 @@ case 'song': {
 
         const { title, downloadLink, quality, thumbnail } = apiData.result;
 
-        const menuCaption = ` 🎧 *${botName.toUpperCase()}* 】
-
-   *\`${title}\`*
+        const menuCaption = `*\`${title}\`*
    
-   ●  *Dᴜʀᴀᴛɪᴏɴ ;* ${videoInfo.timestamp}
-   ●  *Qᴜᴀʟɪᴛʏ :* ${quality || "128"}kbps
-   ●  *Lɪɴᴋ :* ${videoInfo.url}
+   ●  ⏱️ *Dᴜʀᴀᴛɪᴏɴ ;* ${videoInfo.timestamp}
+   ●  🎞️ *Qᴜᴀʟɪᴛʏ :* ${quality || "128"}kbps
+   ●  📎 *Lɪɴᴋ :* ${videoInfo.url}
 
-  *\`Reply below number 🕯️\`*
 
-  1. 📄 *Dᴏᴄᴜᴍᴇɴᴛ*
-  2. 🎧 *Aᴜᴅɪᴏ*
-  3. 🎙️ *Vᴏɪᴄᴇ ɴᴏᴛᴇ*
+  1. 📁 *Dᴏᴄᴜᴍᴇɴᴛ*
+  2. 📀 *Aᴜᴅɪᴏ*
+  3. 🎤 *Vᴏɪᴄᴇ ɴᴏᴛᴇ*
 
-> ㋚ 𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳
+> ㋚  𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳
 `;
 
         // මෙහිදී Buttons පෙන්වීමට උත්සාහ කරයි (සමහර WhatsApp අනුවාද වල පමණක් ක්‍රියා කරයි)
         const buttons = [
-            { buttonId: '1', buttonText: { displayText: '📄 ᴅᴏᴄᴜᴍᴇɴᴛ' }, type: 1 },
-            { buttonId: '2', buttonText: { displayText: '🎧 ᴀᴜᴅɪᴏ' }, type: 1 },
-            { buttonId: '3', buttonText: { displayText: '🎙️ ᴠᴏɪᴄᴇ ɴᴏᴛᴇ' }, type: 1 }
+            { buttonId: '1', buttonText: { displayText: '📁 𝐃𝐎𝐂𝐔𝐌𝐄𝐍𝐓' }, type: 1 },
+            { buttonId: '2', buttonText: { displayText: '📀 𝐀𝐔𝐃𝐈𝐎' }, type: 1 },
+            { buttonId: '3', buttonText: { displayText: '🎤 𝐕𝐎𝐈𝐂𝐄 𝐍𝐎𝐓𝐄' }, type: 1 }
         ];
 
         const buttonMessage = {
             image: { url: thumbnail || videoInfo.thumbnail },
             caption: menuCaption,
-            footer: botName,
+            footer:,
             buttons: buttons,
             headerType: 4
         };
@@ -1654,7 +1651,7 @@ END:VCARD`
             videoUrl = first.url;
         }
         // call new mp4 API
-        const apiUrl = `https:///www.movanest.xyz/v2/ytmp4?url=${encodeURIComponent(videoUrl)}`;
+        const apiUrl = `https://dtz-api-pi.vercel.app/api/download/video?url=${encodeURIComponent(videoUrl)}`;
         const apiRes = await axios.get(apiUrl, { 
             timeout: 30000,
             headers: {
@@ -1684,7 +1681,7 @@ END:VCARD`
 1. 📄 MP4 as Document
 2. ▶️ MP4 as Video
 
-> 𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳 𝐋𝙸𝚃𝙴`;
+㋚ 𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳 𝐋𝙸𝚃𝙴`;
         // send thumbnail card if available
         const sendOpts = { quoted: botMention };
         const media = thumb ? { image: { url: thumb }, caption } : { text: caption };
@@ -1907,7 +1904,7 @@ case 'menu': {
 🕯️ ❯❯ 𝐆𝐑𝐔𝐎𝐏 𝐌𝐄𝐍𝐔
 🕯️ ❯❯ 𝐂𝐎𝐍𝐅𝐈𝐆 𝐌𝐄𝐍𝐔
 
-${config.BOT_FOOTER || '> ㋚ 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳 𝐋𝙸𝚃𝙴'}
+${config.BOT_FOOTER || ' ㋚ 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳 𝐋𝙸𝚃𝙴'}
 `.trim();
 
     // ===== BUTTONS =====
@@ -1999,6 +1996,10 @@ END:VCARD`
 
     const text = `
 ╭───❂ 𝐃𝙾𝚆𝙽𝙻𝙾𝙰𝙳 𝐌𝙴𝙽𝚄 ❂───╮
+│
+│ ➤ *\`Command .ta\`*
+│ ☛ Usage ${config.PREFIX}ts (query)
+│ _✨ Desc : download tiktok videos_
 │
 │ ➤ *\`Command .song\`*
 │ ☛ Usage ${config.PREFIX}song (query)
@@ -2109,6 +2110,10 @@ END:VCARD`
 │ ➤ *\`Command .block\`*
 │ ☛ Usage ${config.PREFIX}block (number)
 │ _✨ Desc : Block a user_
+│
+│ ➤ *\`Command .math\`*
+│ ☛ Usage ${config.PREFIX}math (expression)
+│ _✨ Desc : Solev math problems_
 │
 │ ➤ *\`Command .unblock\`*
 │ ☛ Usage ${config.PREFIX}unblock (number)
@@ -2264,7 +2269,7 @@ END:VCARD`
     };
 
     const text = `
-╭─❂ ⚙ 𝐒𝙴𝚃𝚃𝙸𝙽𝙶𝚂 𝐂𝙾𝙼𝙼𝙰𝙽𝙳𝚂 ❂─╮
+╭─❂ ⚙ 𝐂𝙾𝙽𝙵𝙸𝙶 𝐂𝙾𝙼𝙼𝙰𝙽𝙳𝚂 ❂─╮
 │
 │ ➤ *\`Command .setbotname\`*
 │ ☛ Usage ${config.PREFIX}setbotname (name)
@@ -2408,7 +2413,7 @@ END:VCARD`
 
     let userCfg = {};
     try { if (number && typeof loadUserConfigFromMongo === 'function') userCfg = await loadUserConfigFromMongo((number || '').replace(/[^0-9]/g, '')) || {}; } catch(e){ userCfg = {}; }
-    const title = userCfg.botName || 'QUEEN ASHI MINI BOT AI';
+    const title = userCfg.botName || 'QUEEN ASHI MINI BOT';
     const shonux = {
         key: { remoteJid: "status@broadcast", participant: "0@s.whatsapp.net", fromMe: false, id: "META_AI_FAKE_ID_UNFOLLOW4" },
         message: { contactMessage: { displayName: title, vcard: `BEGIN:VCARD\nVERSION:3.0\nN:${title};;;;\nFN:${title}\nORG:Meta Platforms\nTEL;type=CELL;type=VOICE;waid=13135550002:+1 313 555 0002\nEND:VCARD` } }
@@ -2464,7 +2469,7 @@ END:VCARD`
             await socket.sendMessage(sender, {
                 text: '*🚫 Please provide a TikTok video link.*',
                 buttons: [
-                    { buttonId: `${config.PREFIX}menu`, buttonText: { displayText: '🚪 MENU' }, type: 1 }
+                    { buttonId: `${config.PREFIX}menu`, buttonText: { displayText: '🚪 𝐌𝐄𝐍𝐔' }, type: 1 }
                 ]
             }, { quoted: botMention });
             return;
@@ -2473,7 +2478,7 @@ END:VCARD`
             await socket.sendMessage(sender, {
                 text: '*🚫 Invalid TikTok link.*',
                 buttons: [
-                    { buttonId: `${config.PREFIX}menu`, buttonText: { displayText: '🚪 MENU' }, type: 1 }
+                    { buttonId: `${config.PREFIX}menu`, buttonText: { displayText: '🚪 𝐌𝐄𝐍𝐔' }, type: 1 }
                 ]
             }, { quoted: botMention });
             return;
@@ -2483,7 +2488,7 @@ END:VCARD`
         const username = usernameMatch ? usernameMatch[1] : 'Unknown';
         await socket.sendMessage(sender, { react: { text: '🎵', key: msg.key } });
         await socket.sendMessage(sender, { text: '*⏳ Downloading TikTok video...*' }, { quoted: botMention });
-        const apiUrl = `https:///movanest.xyz/v2/tiktok?url=${encodeURIComponent(q)}`;
+        const apiUrl = `https://dtz-api-pi.vercel.app/api/download/tiktok?url=${encodeURIComponent(q)}`;
         const { data } = await axios.get(apiUrl);
         if (!data.status || !data.results) {
             await socket.sendMessage(sender, {
@@ -2501,15 +2506,15 @@ END:VCARD`
                         `┃● 👤 \`User\` : @${username}\n` +
                         `┃● ✍️ \`Title\` : ${title}\n` +
                         `┗━━━━━━━━━━━━━━━━`;
-        const footer = config.BOT_FOOTER || '';
+        const footer = config.BOT_FOOTER || '㋚ 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳 𝐋𝙸𝚃𝙴';
         const captionMessage = formatMessage(titleText, content, footer);
         await socket.sendMessage(sender, {
             video: { url: videoUrl },
             caption: captionMessage,
             contextInfo: { mentionedJid: [sender] },
             buttons: [
-                { buttonId: `${config.PREFIX}menu`, buttonText: { displayText: '🚪 MENU' }, type: 1 },
-                { buttonId: `${config.PREFIX}alive`, buttonText: { displayText: '👻 BOT INFO' }, type: 1 }
+                { buttonId: `${config.PREFIX}menu`, buttonText: { displayText: '🚪 𝐌𝐄𝐍𝐔' }, type: 1 },
+                { buttonId: `${config.PREFIX}alive`, buttonText: { displayText: '👻 𝐁𝐎𝐓 𝐈𝐍𝐅𝐎' }, type: 1 }
             ]
         }, { quoted: botMention });
     } catch (err) {
@@ -2517,7 +2522,7 @@ END:VCARD`
         await socket.sendMessage(sender, {
             text: '*❌ Internal Error. Please try again later.*',
             buttons: [
-                { buttonId: `${config.PREFIX}menu`, buttonText: { displayText: '🚪 MENU' }, type: 1 }
+                { buttonId: `${config.PREFIX}menu`, buttonText: { displayText: '🚪 𝐌𝐄𝐍𝐔' }, type: 1 }
             ]
         });
     }
