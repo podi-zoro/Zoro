@@ -1508,7 +1508,6 @@ case 'song': {
         const buttonMessage = {
             image: { url: thumbnail || videoInfo.thumbnail },
             caption: menuCaption,
-            footer:,
             buttons: buttons,
             headerType: 4
         };
