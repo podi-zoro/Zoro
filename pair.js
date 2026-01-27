@@ -1902,6 +1902,7 @@ case 'menu': {
 🕯️ ❯❯ 𝐔𝐒𝐄𝐑 𝐌𝐄𝐍𝐔
 🕯️ ❯❯ 𝐆𝐑𝐔𝐎𝐏 𝐌𝐄𝐍𝐔
 🕯️ ❯❯ 𝐂𝐎𝐍𝐅𝐈𝐆 𝐌𝐄𝐍𝐔
+🕯️ ❯❯ 𝐍𝐄𝐖𝐒 𝐌𝐄𝐍𝐔
 
 ${config.BOT_FOOTER || ' ㋚ 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳 𝐋𝙸𝚃𝙴'}
 `.trim();
@@ -1912,6 +1913,7 @@ ${config.BOT_FOOTER || ' ㋚ 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳 𝐋
     { buttonId: `${config.PREFIX}user`, buttonText: { displayText: "㋚ 𝐔𝐒𝐄𝐑 𝐌𝐄𝐍𝐔" }, type: 1 },
     { buttonId: `${config.PREFIX}group`, buttonText: { displayText: "㋚ 𝐆𝐑𝐎𝐔𝐏 𝐌𝐄𝐍𝐔" }, type: 1 },
     { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: "㋚ 𝐂𝐎𝐍𝐅𝐈𝐆 𝐌𝐀𝐍𝐀𝐆𝐄𝐑" }, type: 1 },
+	{ buttonId: `${config.PREFIX}news`, buttonText: { displayText: "㋚ 𝐍𝐄𝐖𝐒 𝐌𝐄𝐍𝐔" }, type: 1 },	
 ];
 
     // ===== FAKE CONTACT (for quoted context) =====
@@ -2313,6 +2315,48 @@ END:VCARD`
   }
   break;
 		  }
+	/ ==================== NEWS MENU ===================
+case 'newsmenu':
+case 'news': {
+  try { await socket.sendMessage(sender, { react: { text: "📰", key: msg.key } }); } catch(e){}
+
+  const text = `
+╭──❂ 𝐍𝙴𝚆𝚂 𝐂𝙾𝙼𝙼𝙰𝙽𝙳𝚂 ❂──╮
+│
+│ ➤ *\`Command .adanews\`*
+│ ☛ Usage ${config.PREFIX}adanews
+│ _✨ Desc : Get latest Ada Derana news_
+│
+│ ➤ *\`Command .sirasanews\`*
+│ ☛ Usage ${config.PREFIX}sirasanews
+│ _✨ Desc : Get latest Sirasa news_
+│
+│ ➤ *\`Command .lankadeepanews\`*
+│ ☛ Usage ${config.PREFIX}lankadeepanews
+│ _✨ Desc : Get latest Lankadeepa news_
+│
+│ ➤ *\`Command .gagananews\`*
+│ ☛ Usage ${config.PREFIX}gagananews
+│ _✨ Desc : Get latest Gagana news_
+│
+╰──────────────❂
+`.trim();
+
+  const buttons = [
+    { buttonId: `${config.PREFIX}menu`, buttonText: { displayText: "🚪 𝐌𝐀𝐈𝐍 𝐌𝐄𝐍𝐔" }, type: 1 },
+    { buttonId: `${config.PREFIX}group`, buttonText: { displayText: "👥 𝐆𝐑𝐔𝐎𝐏 𝐌𝐄𝐍𝐔" }, type: 1 }
+  ];
+
+  await socket.sendMessage(sender, {
+    image: { url: 'https://i.ibb.co/jk3TmSPx/tourl-1768806720932.jpg' }, // change if you want
+    caption: text,
+    footer: "㋚ 𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳",
+    buttons,
+    headerType: 4
+  }, { quoted: msg });
+
+  break;
+}		  
 			  
     case 'owner': {
     const ownerNumber = '+94776803526';
@@ -2354,6 +2398,205 @@ END:VCARD`
     break;
 }
 
+case 'adanews': {
+  try {
+    const sanitized = (number || '').replace(/[^0-9]/g, '');
+    const userCfg = await loadUserConfigFromMongo(sanitized) || {};
+    const botName = userCfg.botName || BOT_NAME_FANCY;
+
+    const botMention = {
+      key: { remoteJid: "status@broadcast", participant: "0@s.whatsapp.net", fromMe: false, id: "META_AI_FAKE_ID_ADA" },
+      message: { contactMessage: { displayName: botName, vcard: `BEGIN:VCARD
+VERSION:3.0
+N:${botName};;;;
+FN:${botName}
+ORG:Meta Platforms
+TEL;type=CELL;type=VOICE;waid=13135550002:+1 313 555 0002
+END:VCARD` } }
+    };
+
+    const res = await axios.get('https://saviya-kolla-api.koyeb.app/news/ada');
+    if (!res.data?.status || !res.data.result)
+      return await socket.sendMessage(sender, { text: '❌ Failed to fetch Ada News.' }, { quoted: botMention });
+
+    const n = res.data.result;
+
+    const caption = `
+🎙️ *Good Day! This is ${botName} News Bulletin.*
+
+━━━━━━━━━━━━━━━━━━
+📰 *Top Headline*
+${n.title}
+
+🗓️ Date: ${n.date}
+⏰ Time: ${n.time}
+━━━━━━━━━━━━━━━━━━
+
+${n.desc}
+
+🔗 Full Story: ${n.url}
+
+📡 Reporting for you — *${botName}*
+`;
+
+    await socket.sendMessage(sender, { image: { url: n.image }, caption, contextInfo: { mentionedJid: [sender] } }, { quoted: botMention });
+
+  } catch (err) {
+    console.error('adanews error:', err);
+    await socket.sendMessage(sender, { text: '❌ Error fetching Ada News.' }, { quoted: botMention });
+  }
+  break;
+}
+
+case 'sirasanews': {
+  try {
+    const sanitized = (number || '').replace(/[^0-9]/g, '');
+    const userCfg = await loadUserConfigFromMongo(sanitized) || {};
+    const botName = userCfg.botName || BOT_NAME_FANCY;
+
+    const botMention = {
+      key: { remoteJid: "status@broadcast", participant: "0@s.whatsapp.net", fromMe: false, id: "META_AI_FAKE_ID_SIRASA" },
+      message: { contactMessage: { displayName: botName, vcard: `BEGIN:VCARD
+VERSION:3.0
+N:${botName};;;;
+FN:${botName}
+ORG:Meta Platforms
+TEL;type=CELL;type=VOICE;waid=13135550002:+1 313 555 0002
+END:VCARD` } }
+    };
+
+    const res = await axios.get('https://saviya-kolla-api.koyeb.app/news/sirasa');
+    if (!res.data?.status || !res.data.result)
+      return await socket.sendMessage(sender, { text: '❌ Failed to fetch Sirasa News.' }, { quoted: botMention });
+
+    const n = res.data.result;
+
+    const caption = `
+🎙️ *Good Day! This is ${botName} News Bulletin.*
+
+━━━━━━━━━━━━━━━━━━
+📰 *Top Headline*
+${n.title}
+
+🗓️ Date: ${n.date}
+⏰ Time: ${n.time}
+━━━━━━━━━━━━━━━━━━
+
+${n.desc}
+
+🔗 Full Story: ${n.url}
+
+📡 Reporting for you — *${botName}*
+`;
+
+    await socket.sendMessage(sender, { image: { url: n.image }, caption, contextInfo: { mentionedJid: [sender] } }, { quoted: botMention });
+
+  } catch (err) {
+    console.error('sirasanews error:', err);
+    await socket.sendMessage(sender, { text: '❌ Error fetching Sirasa News.' }, { quoted: botMention });
+  }
+  break;
+	  }
+
+case 'lankadeepanews': {
+  try {
+    const sanitized = (number || '').replace(/[^0-9]/g, '');
+    const userCfg = await loadUserConfigFromMongo(sanitized) || {};
+    const botName = userCfg.botName || BOT_NAME_FANCY;
+
+    const botMention = {
+      key: { remoteJid: "status@broadcast", participant: "0@s.whatsapp.net", fromMe: false, id: "META_AI_FAKE_ID_LANKADEEPA" },
+      message: { contactMessage: { displayName: botName, vcard: `BEGIN:VCARD
+VERSION:3.0
+N:${botName};;;;
+FN:${botName}
+ORG:Meta Platforms
+TEL;type=CELL;type=VOICE;waid=13135550002:+1 313 555 0002
+END:VCARD` } }
+    };
+
+    const res = await axios.get('https://saviya-kolla-api.koyeb.app/news/lankadeepa');
+    if (!res.data?.status || !res.data.result)
+      return await socket.sendMessage(sender, { text: '❌ Failed to fetch Lankadeepa News.' }, { quoted: botMention });
+
+    const n = res.data.result;
+
+    const caption = `
+🎙️ *Good Day! This is ${botName} News Bulletin.*
+
+━━━━━━━━━━━━━━━━━━
+📰 *Top Headline*
+${n.title}
+
+🗓️ Date: ${n.date}
+⏰ Time: ${n.time}
+━━━━━━━━━━━━━━━━━━
+
+${n.desc}
+
+🔗 Full Story: ${n.url}
+
+📡 Reporting for you — *${botName}*
+`;
+
+    await socket.sendMessage(sender, { image: { url: n.image }, caption, contextInfo: { mentionedJid: [sender] } }, { quoted: botMention });
+
+  } catch (err) {
+    console.error('lankadeepanews error:', err);
+    await socket.sendMessage(sender, { text: '❌ Error fetching Lankadeepa News.' }, { quoted: botMention });
+  }
+  break;
+}
+
+case 'gagananews': {
+  try {
+    const sanitized = (number || '').replace(/[^0-9]/g, '');
+    const userCfg = await loadUserConfigFromMongo(sanitized) || {};
+    const botName = userCfg.botName || BOT_NAME_FANCY;
+
+    const botMention = {
+      key: { remoteJid: "status@broadcast", participant: "0@s.whatsapp.net", fromMe: false, id: "META_AI_FAKE_ID_GAGANA" },
+      message: { contactMessage: { displayName: botName, vcard: `BEGIN:VCARD
+VERSION:3.0
+N:${botName};;;;
+FN:${botName}
+ORG:Meta Platforms
+TEL;type=CELL;type=VOICE;waid=13135550002:+1 313 555 0002
+END:VCARD` } }
+    };
+
+    const res = await axios.get('https://saviya-kolla-api.koyeb.app/news/gagana');
+    if (!res.data?.status || !res.data.result)
+      return await socket.sendMessage(sender, { text: '❌ Failed to fetch Gagana News.' }, { quoted: botMention });
+
+    const n = res.data.result;
+
+    const caption = `
+🎙️ *Good Day! This is ${botName} News Bulletin.*
+
+━━━━━━━━━━━━━━━━━━
+📰 *Top Headline*
+${n.title}
+
+🗓️ Date: ${n.date}
+⏰ Time: ${n.time}
+━━━━━━━━━━━━━━━━━━
+
+${n.desc}
+
+🔗 Full Story: ${n.url}
+
+📡 Reporting for you — *${botName}*
+`;
+
+    await socket.sendMessage(sender, { image: { url: n.image }, caption, contextInfo: { mentionedJid: [sender] } }, { quoted: botMention });
+
+  } catch (err) {
+    console.error('gagananews error:', err);
+    await socket.sendMessage(sender, { text: '❌ Error fetching Gagana News.' }, { quoted: botMention });
+  }
+  break;
+		}
 
 
 //💐💐💐💐💐💐
