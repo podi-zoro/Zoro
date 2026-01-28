@@ -1866,13 +1866,12 @@ case 'csong': {
   }
   break;
 }
-// ==================== MAIN MENU ====================
 case 'menu': {
-  await socket.sendMessage(m.chat, { react: { text: "📁", key: msg.key } }).catch(()=>{});
+  await socket.sendMessage(sender, { react: { text: "📁", key: msg.key } }).catch(()=>{});
 
   try {
     const pushname = msg.pushName || 'User';
-    const startTime = socketCreationTime?.get(number) || Date.now();
+    const startTime = socketCreationTime?.get(number || sender) || Date.now();
     const uptime = Math.floor((Date.now() - startTime) / 1000);
     const h = Math.floor(uptime / 3600);
     const m = Math.floor((uptime % 3600) / 60);
@@ -1884,7 +1883,13 @@ case 'menu': {
       hr < 18 ? '🌞 Gᴏᴏᴅ ᴀꜰᴛᴇʀɴᴏᴏɴ' :
       '🌘 Gᴏᴏᴅ ɴɪɢʜᴛ';
 
-    const title = 'QUEEN ASHI MD MINI';
+    let userCfg = {};
+    try {
+      if (number && typeof loadUserConfigFromMongo === 'function')
+        userCfg = await loadUserConfigFromMongo((number || '').replace(/[^0-9]/g, '')) || {};
+    } catch(e){ userCfg = {}; }
+
+    const title = userCfg.botName || 'QUEEN ASHI MD MINI';
 
     const shonux = {
       key: {
@@ -1907,12 +1912,11 @@ END:VCARD`
       }
     };
 
-    // WUTTO
-    const Text = `
+    const menuText = `
  ${greeting}, *${pushname}*
 
 ╭─ *「 ʙᴏᴛ ᴅᴇᴛᴀɪʟꜱ 」*
-│ 🎀 *\`Nᴀᴍᴇ :\`* 'Queen ashi md V.1
+│ 🎀 *\`Nᴀᴍᴇ :\`* ${config.BOT_NAME || 'Queen ashi md V.1'}
 │ 👑 *\`Oᴡɴᴇʀ :\`*  Ash girl
 │ 👨‍💻 *\`Dᴇᴠᴇʟᴏᴘᴇʀ :\`* (Dev) xanz
 │ 🧬 *\`Vᴇʀꜱɪᴏɴ :\`*  ${config.BOT_VERSION || '1.0.0'}
@@ -1935,25 +1939,28 @@ END:VCARD`
     const buttons = [
       { buttonId: `${config.PREFIX}download`, buttonText: { displayText: "㋚ 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃" }, type: 1 },
       { buttonId: `${config.PREFIX}user`, buttonText: { displayText: "㋚ 𝐔𝐒𝐄𝐑" }, type: 1 },
-      { buttonId: `${config.PREFIX}group`, buttonText: { displayText: "㋚ 𝐆𝐑𝐔𝐎𝐏" }, type: 1 }, // fixed spelling
+      { buttonId: `${config.PREFIX}group`, buttonText: { displayText: "㋚ 𝐆𝐑𝐔𝐎𝐏" }, type: 1 },
       { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: "㋚ 𝐂𝐎𝐍𝐅𝐈𝐆" }, type: 1 },
       { buttonId: `${config.PREFIX}news`, buttonText: { displayText: "㋚ 𝐍𝐄𝐖𝐒" }, type: 1 }
     ];
 
-    await socket.sendMessage(m.chat, {
-      image: { url: 'https://files.catbox.moe/i6kedi.jpg' },
-      caption: menuText, // fixed variable
+    const imageUrl = userCfg.logo || 'https://files.catbox.moe/i6kedi.jpg';
+
+    await socket.sendMessage(sender, {
+      image: { url: imageUrl },
+      caption: menuText,
       footer: "",
       buttons,
-      headerType: 1 // fixed type
+      headerType: 4
     }, { quoted: shonux });
 
   } catch (err) {
     console.error('menu command error:', err);
+    await socket.sendMessage(sender, { text: '❌ Failed to show menu.' }, { quoted: msg });
   }
+
   break;
-}
-			  
+	  }	  
 // ==================== DOWNLOAD MENU ====================
 case 'download': {
   try { await socket.sendMessage(sender, { react: { text: "🧬", key: msg.key } }); } catch(e){}
