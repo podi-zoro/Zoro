@@ -1868,10 +1868,9 @@ case 'csong': {
 }
 // ==================== MAIN MENU ====================
 case 'menu': {
-  await socket.sendMessage(sender, { react: { text: "📁", key: msg.key } }).catch(()=>{});
+  await socket.sendMessage(m.chat, { react: { text: "📁", key: msg.key } }).catch(()=>{});
 
   try {
-    // ===== BASIC INFO =====
     const pushname = msg.pushName || 'User';
     const startTime = socketCreationTime?.get(number) || Date.now();
     const uptime = Math.floor((Date.now() - startTime) / 1000);
@@ -1879,44 +1878,37 @@ case 'menu': {
     const m = Math.floor((uptime % 3600) / 60);
     const s = Math.floor(uptime % 60);
 
-    // ===== GREETING =====
     const hr = new Date().getHours();
     const greeting =
       hr < 12 ? '☀️ Gᴏᴏᴅ ᴍᴏʀɴɪɴɢ' :
       hr < 18 ? '🌞 Gᴏᴏᴅ ᴀꜰᴛᴇʀɴᴏᴏɴ' :
       '🌘 Gᴏᴏᴅ ɴɪɢʜᴛ';
-      
-// load per-session config (logo, botName)
-    let userCfg = {};
-    try { if (number && typeof loadUserConfigFromMongo === 'function') userCfg = await loadUserConfigFromMongo((number || '').replace(/[^0-9]/g, '')) || {}; }
-    catch(e){ console.warn('menu: failed to load config', e); userCfg = {}; }
 
-    const title = userCfg.botName || 'QUEEN ASHI MD MINI';
+    const title = 'QUEEN ASHI MD MINI';
 
-    // 🔹 Fake contact for Meta AI mention
     const shonux = {
-        key: {
-            remoteJid: "status@broadcast",
-            participant: "0@s.whatsapp.net",
-            fromMe: false,
-            id: "META_AI_FAKE_ID_MENU"
-        },
-        message: {
-            contactMessage: {
-                displayName: title,
-                vcard: `BEGIN:VCARD
+      key: {
+        remoteJid: "status@broadcast",
+        participant: "0@s.whatsapp.net",
+        fromMe: false,
+        id: "META_AI_FAKE_ID_MENU"
+      },
+      message: {
+        contactMessage: {
+          displayName: title,
+          vcard: `BEGIN:VCARD
 VERSION:3.0
 N:${title};;;;
 FN:${title}
 ORG:Meta Platforms
 TEL;type=CELL;type=VOICE;waid=13135550002:+1 313 555 0002
 END:VCARD`
-            }
         }
-    };      
+      }
+    };
 
-    // ===== MENU TEXT =====
-    const menuText = `
+    // WUTTO
+    const Text = `
  ${greeting}, *${pushname}*
 
 ╭─ *「 ʙᴏᴛ ᴅᴇᴛᴀɪʟꜱ 」*
@@ -1943,35 +1935,24 @@ END:VCARD`
     const buttons = [
       { buttonId: `${config.PREFIX}download`, buttonText: { displayText: "㋚ 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃" }, type: 1 },
       { buttonId: `${config.PREFIX}user`, buttonText: { displayText: "㋚ 𝐔𝐒𝐄𝐑" }, type: 1 },
-      { buttonId: `${config.PREFIX}gruop`, buttonText: { displayText: "㋚ 𝐆𝐑𝐔𝐎𝐏" }, type: 1 },
+      { buttonId: `${config.PREFIX}group`, buttonText: { displayText: "㋚ 𝐆𝐑𝐔𝐎𝐏" }, type: 1 }, // fixed spelling
       { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: "㋚ 𝐂𝐎𝐍𝐅𝐈𝐆" }, type: 1 },
       { buttonId: `${config.PREFIX}news`, buttonText: { displayText: "㋚ 𝐍𝐄𝐖𝐒" }, type: 1 }
     ];
 
-    const defaultImg = 'https://files.catbox.moe/i6kedi.jpg';
-    const useLogo = userCfg.logo || defaultImg;
-
-    // build image payload (url or buffer)
-    let imagePayload;
-    if (String(useLogo).startsWith('http')) imagePayload = { url: useLogo };
-    else {
-      try { imagePayload = fs.readFileSync(useLogo); } catch(e){ imagePayload = { url: defaultImg }; }
-    }
-
-    await socket.sendMessage(sender, {
-      image: imagePayload,
-      caption: text,
+    await socket.sendMessage(m.chat, {
+      image: { url: 'https://files.catbox.moe/i6kedi.jpg' },
+      caption: menuText, // fixed variable
       footer: "",
       buttons,
-      headerType: 4
+      headerType: 1 // fixed type
     }, { quoted: shonux });
 
   } catch (err) {
     console.error('menu command error:', err);
-    try { await socket.sendMessage(sender, { text: '❌ Failed to show menu.' }, { quoted: msg }); } catch(e){}
   }
   break;
- }
+}
 			  
 // ==================== DOWNLOAD MENU ====================
 case 'download': {
