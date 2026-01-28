@@ -1866,115 +1866,112 @@ case 'csong': {
   }
   break;
 }
+// ==================== MAIN MENU ====================
 case 'menu': {
   await socket.sendMessage(sender, { react: { text: "📁", key: msg.key } }).catch(()=>{});
 
-  const pushname = msg.pushName || 'User';
-  const startTime = socketCreationTime.get(number) || Date.now();
-  const uptime = Math.floor((Date.now() - startTime) / 1000);
-  const h = Math.floor(uptime / 3600);
-  const m = Math.floor((uptime % 3600) / 60);
-  const s = Math.floor(uptime % 60);
+  try {
+    // ===== BASIC INFO =====
+    const pushname = msg.pushName || 'User';
+    const startTime = socketCreationTime?.get(number) || Date.now();
+    const uptime = Math.floor((Date.now() - startTime) / 1000);
+    const h = Math.floor(uptime / 3600);
+    const m = Math.floor((uptime % 3600) / 60);
+    const s = Math.floor(uptime % 60);
 
-  const hr = new Date().getHours();
-  const greeting =
-    hr < 12 ? '☀️ Gᴏᴏᴅ ᴍᴏʀɴɪɴɢ' :
-    hr < 18 ? '🌞 Gᴏᴏᴅ ᴀꜰᴛᴇʀɴᴏᴏɴ' :
-    '🌙 Gᴏᴏᴅ ɴɪɢʜᴛ';
+    // ===== GREETING =====
+    const hr = new Date().getHours();
+    const greeting =
+      hr < 12 ? '☀️ Gᴏᴏᴅ ᴍᴏʀɴɪɴɢ' :
+      hr < 18 ? '🌞 Gᴏᴏᴅ ᴀꜰᴛᴇʀɴᴏᴏɴ' :
+      '🌘 Gᴏᴏᴅ ɴɪɢʜᴛ';
+      
+// load per-session config (logo, botName)
+    let userCfg = {};
+    try { if (number && typeof loadUserConfigFromMongo === 'function') userCfg = await loadUserConfigFromMongo((number || '').replace(/[^0-9]/g, '')) || {}; }
+    catch(e){ console.warn('menu: failed to load config', e); userCfg = {}; }
 
-  const captionText = `
-${greeting}, *${pushname}*
+    const title = userCfg.botName || 'QUEEN ASHI MD MINI';
 
-╭─ *「 ʙᴏᴛ ᴅᴇᴛᴀɪʟꜱ 」*
-│ 🎀 *\`Nᴀᴍᴇ :\`* Queen Ashi MD
-│ 👨‍💻 *\`Oᴡɴᴇʀ :\`* Dev Xanz
-│ 🧬 *\`Vᴇʀꜱɪᴏɴ :\`* ${config.BOT_VERSION || '1.0.0'}
-│ ⌛ *\`Uᴘᴛɪᴍᴇ :\`* ${h}h ${m}m ${s}s
-│ 🔮 *\`Pʟᴀᴛꜰᴏʀᴍ :\`* ${process.env.PLATFORM || 'Linux'}
-│ 💡 *\`Cᴏᴍᴍᴀɴᴅꜱ :\`* 50+
-╰──────────────────⦁✦⦁
-
-*「 ᴍᴇɴᴜ ʟɪꜱᴛ 」*
-
-🕯️ ❯❯ 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃 𝐌𝐄𝐍𝐔  
-🕯️ ❯❯ 𝐔𝐒𝐄𝐑 𝐌𝐄𝐍𝐔  
-🕯️ ❯❯ 𝐆𝐑𝐔𝐎𝐏 𝐌𝐄𝐍𝐔  
-🕯️ ❯❯ 𝐂𝐎𝐍𝐅𝐈𝐆 𝐌𝐄𝐍𝐔  
-🕯️ ❯❯ 𝐍𝐄𝐖𝐒 𝐌𝐄𝐍𝐔  
-
-> ㋚ 𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 ${botName}
-`;
-
-  const botName = "QUEEN ASHI MD";
-
-const fakeContact = {
-  key: {
-    remoteJid: "status@broadcast",
-    participant: "0@s.whatsapp.net",
-    fromMe: false,
-    id: "QUEEN_ASHI_FAKE_CONTACT"
-  },
-  message: {
-    contactMessage: {
-      displayName: botName,
-      vcard: `BEGIN:VCARD
+    // 🔹 Fake contact for Meta AI mention
+    const shonux = {
+        key: {
+            remoteJid: "status@broadcast",
+            participant: "0@s.whatsapp.net",
+            fromMe: false,
+            id: "META_AI_FAKE_ID_MENU"
+        },
+        message: {
+            contactMessage: {
+                displayName: title,
+                vcard: `BEGIN:VCARD
 VERSION:3.0
-N:${botName};;;;
-FN:${botName}
-ORG:Queen Ashi Systems
-TITLE:WhatsApp Bot Service
+N:${title};;;;
+FN:${title}
+ORG:Meta Platforms
 TEL;type=CELL;type=VOICE;waid=13135550002:+1 313 555 0002
 END:VCARD`
+            }
+        }
+    };      
+
+    // ===== MENU TEXT =====
+    const menuText = `
+ ${greeting}, *${pushname}*
+
+╭─ *「 ʙᴏᴛ ᴅᴇᴛᴀɪʟꜱ 」*
+│ 🎀 *\`Nᴀᴍᴇ :\`* ${config.BOT_NAME || 'Queen ashi md V.1'}
+│ 👑 *\`Oᴡɴᴇʀ :\`*  Ash girl
+│ 👨‍💻 *\`Dᴇᴠᴇʟᴏᴘᴇʀ :\`* (Dev) xanz
+│ 🧬 *\`Vᴇʀꜱɪᴏɴ :\`*  ${config.BOT_VERSION || '1.0.0'}
+│ ⌛ *\`Uᴘᴛɪᴍᴇ :\`*  ${h}h ${m}m ${s}s
+│ 🔮 *\`Pʟᴀᴛꜰᴏʀᴍ :\`*  ${process.env.PLATFORM || 'Linux'}
+│ 💡 *\`Cᴏᴍᴍᴀᴅꜱ :\`*  50+
+╰──────────────────⦁✦⦁
+
+*「 ʟɪꜱᴛ ᴏꜰ ᴍᴇɴᴜ 」*
+
+🕯️ ❯❯ 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃 𝐌𝐄𝐍𝐔
+🕯️ ❯❯ 𝐔𝐒𝐄𝐑 𝐌𝐄𝐍𝐔
+🕯️ ❯❯ 𝐆𝐑𝐔𝐎𝐏 𝐌𝐄𝐍𝐔
+🕯️ ❯❯ 𝐂𝐎𝐍𝐅𝐈𝐆 𝐌𝐄𝐍𝐔
+🕯️ ❯❯ 𝐍𝐄𝐖𝐒 𝐌𝐄𝐍𝐔
+
+> © ${config.BOT_FOOTER || '𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳 𝐋𝙸𝚃𝙴'}
+`.trim();
+
+    const buttons = [
+      { buttonId: `${config.PREFIX}download`, buttonText: { displayText: "㋚ 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃" }, type: 1 },
+      { buttonId: `${config.PREFIX}user`, buttonText: { displayText: "㋚ 𝐔𝐒𝐄𝐑" }, type: 1 },
+      { buttonId: `${config.PREFIX}gruop`, buttonText: { displayText: "㋚ 𝐆𝐑𝐔𝐎𝐏" }, type: 1 },
+      { buttonId: `${config.PREFIX}settings`, buttonText: { displayText: "㋚ 𝐂𝐎𝐍𝐅𝐈𝐆" }, type: 1 },
+      { buttonId: `${config.PREFIX}news`, buttonText: { displayText: "㋚ 𝐍𝐄𝐖𝐒" }, type: 1 }
+    ];
+
+    const defaultImg = 'https://files.catbox.moe/i6kedi.jpg';
+    const useLogo = userCfg.logo || defaultImg;
+
+    // build image payload (url or buffer)
+    let imagePayload;
+    if (String(useLogo).startsWith('http')) imagePayload = { url: useLogo };
+    else {
+      try { imagePayload = fs.readFileSync(useLogo); } catch(e){ imagePayload = { url: defaultImg }; }
     }
+
+    await socket.sendMessage(sender, {
+      image: imagePayload,
+      caption: text,
+      footer: "",
+      buttons,
+      headerType: 4
+    }, { quoted: shonux });
+
+  } catch (err) {
+    console.error('menu command error:', err);
+    try { await socket.sendMessage(sender, { text: '❌ Failed to show menu.' }, { quoted: msg }); } catch(e){}
   }
-};
-  // ===== QUEEN ASHI BUTTON SYSTEM =====
-  const templateButtons = [
-    {
-      buttonId: `${config.PREFIX}alive`,
-      buttonText: { displayText: '㋚ 𝐀𝐋𝐈𝐕𝐄' },
-      type: 1,
-    },
-    {
-      buttonId: `${config.PREFIX}owner`,
-      buttonText: { displayText: '㋚ 𝐃𝐄𝐕𝐄𝐋𝐎𝐏𝐄𝐑' },
-      type: 1,
-    },
-    {
-      buttonId: 'menu_select',
-      buttonText: { displayText: '𝐌𝐄𝐍𝐔 𝐒𝐄𝐋𝐄𝐂𝐓𝐈𝐎𝐍' },
-      type: 4,
-      nativeFlowInfo: {
-        name: 'single_select',
-        paramsJson: JSON.stringify({
-          title: '𝐐𝐔𝐄𝐄𝐍 𝐀𝐒𝐇𝐈 𝐌𝐈𝐍𝐈',
-          sections: [
-            {
-              title: '𝐒𝐄𝐋𝐄𝐂𝐓 𝐀 𝐌𝐄𝐍𝐔',
-              rows: [
-                { title: '㋚ 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃', id: `${config.PREFIX}download` },
-                { title: '㋚ 𝐔𝐒𝐄𝐑', id: `${config.PREFIX}user` },
-                { title: '㋚ 𝐆𝐑𝐔𝐎𝐏', id: `${config.PREFIX}group` },
-                { title: '㋚ 𝐂𝐎𝐍𝐅𝐈𝐆', id: `${config.PREFIX}settings` },
-                { title: '㋚ 𝐍𝐄𝐖𝐒', id: `${config.PREFIX}news` }
-              ],
-            },
-          ],
-        }),
-      },
-    }
-  ];
-
-  await socket.sendMessage(sender, {
-    image: { url: "https://files.catbox.moe/i6kedi.jpg" }, // Queen Ashi JPG
-    caption: captionText,
-    buttons: templateButtons,
-    headerType: 1,
-    viewOnce: true
-  }, { quoted: fakeContact });
-
   break;
-	  }
+ }
 			  
 // ==================== DOWNLOAD MENU ====================
 case 'download': {
@@ -2014,7 +2011,7 @@ END:VCARD`
     const text = `
 ╭───❂ 𝐃𝙾𝚆𝙽𝙻𝙾𝙰𝙳 𝐌𝙴𝙽𝚄 ❂───╮
 │
-│ ➤ *\`Command .ta\`*
+│ ➤ *\`Command .ts\`*
 │ ☛ Usage ${config.PREFIX}ts (query)
 │ _✨ Desc : download tiktok videos_
 │
@@ -2332,8 +2329,11 @@ END:VCARD`
   break;
 		  }
 	
+// ==================== NEWS MENU ====================
 case 'news': {
-  try { await socket.sendMessage(sender, { react: { text: "📰", key: msg.key } }); } catch(e){}
+  try {
+    await socket.sendMessage(m.chat, { react: { text: "📰", key: msg.key } });
+  } catch(e){}
 
   const text = `
 ╭──❂ 𝐍𝙴𝚆𝚂 𝐂𝙾𝙼𝙼𝙰𝙽𝙳𝚂 ❂──╮
@@ -2358,21 +2358,21 @@ case 'news': {
 `.trim();
 
   const buttons = [
-    { buttonId: `${config.PREFIX}menu`, buttonText: { displayText: "🚪 𝐌𝐀𝐈𝐍 𝐌𝐄𝐍𝐔" }, type: 1 },
-    { buttonId: `${config.PREFIX}group`, buttonText: { displayText: "👥 𝐆𝐑𝐔𝐎𝐏 𝐌𝐄𝐍𝐔" }, type: 1 }
+    { buttonId: `${config.PREFIX}menu`, buttonText: { displayText: "🚪 MAIN MENU" }, type: 1 },
+    { buttonId: `${config.PREFIX}group`, buttonText: { displayText: "👥 GROUP MENU" }, type: 1 }
   ];
 
-  await socket.sendMessage(sender, {
-    image: { url: 'https://files.catbox.moe/4fxhas.jpeg' }, // change if you want
+  await socket.sendMessage(m.chat, {
+    image: { url: 'https://files.catbox.moe/4fxhas.jpeg' },
     caption: text,
-    footer: "㋚ 𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳",
-    buttons,
-    headerType: 4
+    footer: "㋚ 𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐐𝚄𝙴𝙴𝙽 𝐀𝙰𝚂𝙸 𝐌𝙳",
+    buttons: buttons,
+    headerType: 1
   }, { quoted: msg });
 
   break;
-}		  
-			  
+}	
+// ==================== 𝙾𝚆𝙽𝙴𝚁 𝙲𝙰𝚂𝙴 ====================			  
     case 'owner': {
     const ownerNumber = '+94776803526';
     const ownerName = 'DEV XANZ';
@@ -2396,7 +2396,7 @@ case 'news': {
 
         // Then send message with reference
         await socket.sendMessage(from, {
-            text: `OWNER INFOMATION \n\n● 👤 Name: ${ownerName}\n● 📞 Number: ${ownerNumber}\n\n> ㋚ 𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳`,
+            text: `OWNER INFOMATION \n\n●  👤 *Nᴀᴍᴇ :* ${ownerName}\n●  📞 *Nᴜᴍʙᴇʀ :* ${ownerNumber}\n\n> ㋚ 𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳`,
             contextInfo: {
                 mentionedJid: [`${ownerNumber.replace('+', '')}@s.whatsapp.net`],
                 quotedMessageId: sent.key.id
