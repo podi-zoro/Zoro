@@ -1912,7 +1912,7 @@ END:VCARD`
  ${greeting}, *${pushname}*
 
 ╭─ *「 ʙᴏᴛ ᴅᴇᴛᴀɪʟꜱ 」*
-│ 🎀 *\`Nᴀᴍᴇ :\`* ${config.BOT_NAME || 'Queen ashi md V.1'}
+│ 🎀 *\`Nᴀᴍᴇ :\`* 'Queen ashi md V.1
 │ 👑 *\`Oᴡɴᴇʀ :\`*  Ash girl
 │ 👨‍💻 *\`Dᴇᴠᴇʟᴏᴘᴇʀ :\`* (Dev) xanz
 │ 🧬 *\`Vᴇʀꜱɪᴏɴ :\`*  ${config.BOT_VERSION || '1.0.0'}
