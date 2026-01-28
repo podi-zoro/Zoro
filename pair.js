@@ -1484,16 +1484,17 @@ case 'song': {
 
         const { title, downloadLink, quality, thumbnail } = apiData.result;
 
-        const menuCaption = `*\`${title}\`*
+        const menuCaption = `*\`❝${title}❞\`*
    
-   ●  ⏱️ *Dᴜʀᴀᴛɪᴏɴ ;* ${videoInfo.timestamp}
-   ●  🎞️ *Qᴜᴀʟɪᴛʏ :* ${quality || "128"}kbps
-   ●  📎 *Lɪɴᴋ :* ${videoInfo.url}
+   ●  ⏱️  *Dᴜʀᴀᴛɪᴏɴ :* ${videoInfo.timestamp}
+   ●  🎶  *Qᴜᴀʟɪᴛʏ :* ${quality || "128"}kbps
+   ●  🖇️  *Lɪɴᴋ :* ${videoInfo.url}
 
+   *「 ᴀᴠᴀɪʟᴀʙʟᴇ ꜰᴏʀᴍᴀᴛꜱ 」*
 
-  1. 📁 *Dᴏᴄᴜᴍᴇɴᴛ*
-  2. 📀 *Aᴜᴅɪᴏ*
-  3. 🎤 *Vᴏɪᴄᴇ ɴᴏᴛᴇ*
+   ➀.📁 ❯❯ 𝐃𝐎𝐂𝐔𝐌𝐄𝐍𝐓 
+   ➁.🎧 ❯❯ 𝐀𝐔𝐃𝐈𝐎
+   ➂.🎤 ❯❯ 𝐕𝐎𝐈𝐂𝐄 𝐍𝐎𝐓𝐄
 
 > ㋚  𝐏𝙾𝚆𝙴𝚁𝙴𝙳 𝐁𝚈 𝐐𝚄𝙴𝙴𝙽 𝐀𝚂𝙷𝙸 𝐌𝙳
 `;
@@ -1501,7 +1502,7 @@ case 'song': {
         // මෙහිදී Buttons පෙන්වීමට උත්සාහ කරයි (සමහර WhatsApp අනුවාද වල පමණක් ක්‍රියා කරයි)
         const buttons = [
             { buttonId: '1', buttonText: { displayText: '📁 𝐃𝐎𝐂𝐔𝐌𝐄𝐍𝐓' }, type: 1 },
-            { buttonId: '2', buttonText: { displayText: '📀 𝐀𝐔𝐃𝐈𝐎' }, type: 1 },
+            { buttonId: '2', buttonText: { displayText: '🎧 𝐀𝐔𝐃𝐈𝐎' }, type: 1 },
             { buttonId: '3', buttonText: { displayText: '🎤 𝐕𝐎𝐈𝐂𝐄 𝐍𝐎𝐓𝐄' }, type: 1 }
         ];
 
